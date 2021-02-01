@@ -1,19 +1,59 @@
 import React, { useContext } from 'react';
-
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import LizardAuthProvider, { LizardAuthContext } from './providers/LizardAuthProvider';
+
+import Tabs from './components/Tabs';
+import AlarmsTab from './components/AlarmsTab';
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <LizardAuthProvider>
-      <AppWithAuthentication />
-    </LizardAuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <LizardAuthProvider>
+        <AppWithAuthentication />
+      </LizardAuthProvider>
+    </QueryClientProvider>
   );
 }
 
+const DamAlarms = () => <p>This is the <strong>dam</strong> alarms component.</p>
+
+const tabDefinition = [{
+  url: 'alarms',
+  title: 'Alarms',
+  component: <AlarmsTab />
+}, {
+  url: 'damalarms',
+  title: 'Dam Alarms',
+  component: <DamAlarms />
+}, {
+  url: 'waterlevel',
+  title: 'Forecast waterlevel',
+  component: <AlarmsTab />
+}, {
+  url: 'meteo',
+  title: 'Meteo',
+  component: <DamAlarms />
+},{
+  url: 'stations',
+  title: 'Stations & Graphs',
+  component: <AlarmsTab />
+},]
+
 function AppWithAuthentication() {
-  const { bootstrap } = useContext(LizardAuthContext);
+  const bootstrap = useContext(LizardAuthContext)!.bootstrap;
+
   return (
-    <p>Logged in {bootstrap!.user.first_name}!</p>
+    <Router>
+      <p style={{height: 'var(--header-height)'}}>Logged in {bootstrap!.user.first_name}!</p>
+      <Switch>
+        <Route path="/" exact={true} children={(<Redirect to={tabDefinition[0].url}/>)} />
+        <Route path="/" children={(<Tabs definition={tabDefinition} />
+        )}/>
+      </Switch>
+    </Router>
   );
 }
 

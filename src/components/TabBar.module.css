@@ -1,0 +1,49 @@
+nav.TabBar {
+  width: calc(100% - 6rem);
+}
+
+nav.TabBar ol {
+  width: 100;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+}
+
+nav.TabBar ol li {
+  width: 100%;
+  text-align: center;
+  display: block;
+  clear: none;
+  flex-basis: auto;
+  margin-right: 0.5rem;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+nav.TabBar ol li:last-child {
+  margin-right: 0;
+}
+
+li.ActiveTab {
+  background: var(--white-color);
+}
+
+li.InactiveTab {
+  background: var(--secondary-color);
+}
+
+li.ActiveTab a, li.InactiveTab a {
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+li.ActiveTab a {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+li.InactiveTab a {
+  color: var(--white-color);
+}

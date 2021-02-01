@@ -10,8 +10,8 @@ module.exports = function(app) {
   }
 
   const proxyMiddleware = createProxyMiddleware({
-    target: 'https://nxt3.staging.lizard.net/',
-//    target: 'https://demo.lizard.net/',
+//    target: 'https://nxt3.staging.lizard.net/',
+    target: 'https://demo.lizard.net/',
     changeOrigin: true,
     // Use HTTP basic auth, works with Lizard only
     auth: `${username}:${password}`

@@ -1,0 +1,13 @@
+div.Tabs {
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+  background: var(--primary-color);
+  padding: 3rem;
+}
+
+div.Tabs div {
+  width: calc(100% - 12rem);
+  background: var(--white-color);
+  color: var(--primary-color);
+  padding: 3rem;
+}
