@@ -10,9 +10,26 @@ function AlarmsTab() {
     const alarms = response.data;
 
     return (
+      <>
       <ul>
-        {alarms.results.map(alarm => <li>{alarm.name}</li>)}
+        {alarms.results.map(alarm => <li key={alarm.uuid}>{alarm.name}</li>)}
       </ul>
+      <ul>
+        {alarms.results.map(alarm => <li key={alarm.uuid}>{alarm.name}</li>)}
+      </ul>
+      <ul>
+        {alarms.results.map(alarm => <li key={alarm.uuid}>{alarm.name}</li>)}
+      </ul>
+      <ul>
+        {alarms.results.map(alarm => <li key={alarm.uuid}>{alarm.name}</li>)}
+      </ul>
+      <ul>
+        {alarms.results.map(alarm => <li key={alarm.uuid}>{alarm.name}</li>)}
+      </ul>
+      <ul>
+        {alarms.results.map(alarm => <li key={alarm.uuid}>{alarm.name}</li>)}
+      </ul>
+      </>
     );
   } else {
     return <p>No alarms yet.</p>

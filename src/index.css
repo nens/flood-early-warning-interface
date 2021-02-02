@@ -9,6 +9,7 @@ body {
 
 :root {
   --header-height: 3rem;
+  --tabs-margin: 1rem;
   --primary-color: #002B49;
   --secondary-color: #00477A;
   --white-color: #f9f9f9;
@@ -17,11 +18,43 @@ body {
 /* Style to make body 100% height */
 html,
 body,
-#root,
-#root > div {
+#root {
   height: 100vh;
   margin: 0;
 
   background: var(--primary-color);
   color: var(--white-color);
+}
+
+
+/* For scaling, other sizes are all in rem */
+
+@media only screen and (max-width: 1229px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media only screen and and (max-width: 1499) and (min-width: 1230px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (max-width: 1774px) and (min-width: 1500px) {
+  html {
+    font-size: 19px;
+  }
+}
+
+@media only screen and (max-width: 2049px) and (min-width: 1775px) {
+  html {
+    font-size: 22px;
+  }
+}
+
+@media only screen and (min-width: 2050px) {
+  html {
+    font-size: 26px;
+  }
 }
