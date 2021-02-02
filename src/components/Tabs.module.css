@@ -6,7 +6,7 @@ div.Tabs {
   overflow: hidden;
 }
 
-div.Tabs div {
+div.TabContent {
   width: 100%;
   background: var(--white-color);
   color: var(--primary-color);

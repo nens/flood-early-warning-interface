@@ -1,0 +1,16 @@
+.TileList {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.Tile {
+  flex: none;
+  margin: 1rem;
+  width: 20rem;
+  height: 20rem;
+  background: green;
+}

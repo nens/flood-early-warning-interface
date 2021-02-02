@@ -26,7 +26,7 @@ function Tabs({definition}: TabsProps) {
         <Route path={`${path}${url}`} children={
           <div className={styles.Tabs}>
             <TabBar tabs={tabs} current={url} path={path}/>
-            <div>{component}</div>
+            <div className={styles.TabContent}>{component}</div>
           </div>
         }/>
       ))}

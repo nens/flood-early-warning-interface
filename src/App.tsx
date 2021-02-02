@@ -2,9 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import LizardAuthProvider from './providers/LizardAuthProvider';
+import ConfigProvider from './providers/ConfigProvider';
 
 import Tabs from './components/Tabs';
 import AlarmsTab from './components/AlarmsTab';
+import StationsChartsTab from './components/StationsChartsTab';
 import Header from './components/Header';
 
 const queryClient = new QueryClient();
@@ -13,7 +15,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LizardAuthProvider>
-        <AppWithAuthentication />
+        <ConfigProvider>
+          <AppWithAuthentication />
+        </ConfigProvider>
       </LizardAuthProvider>
     </QueryClientProvider>
   );
@@ -23,24 +27,24 @@ const DamAlarms = () => <p>This is the <strong>dam</strong> alarms component.</p
 
 const tabDefinition = [{
   url: 'alarms',
-  title: 'Alarms',
-  component: <AlarmsTab />
+    title: 'Alarms',
+    component: <AlarmsTab />
 }, {
   url: 'damalarms',
-  title: 'Dam Alarms',
-  component: <DamAlarms />
+    title: 'Dam Alarms',
+    component: <DamAlarms />
 }, {
   url: 'waterlevel',
-  title: 'Forecast waterlevel',
-  component: <AlarmsTab />
+    title: 'Forecast waterlevel',
+    component: <AlarmsTab />
 }, {
   url: 'meteo',
-  title: 'Meteo',
-  component: <DamAlarms />
+    title: 'Meteo',
+    component: <DamAlarms />
 },{
   url: 'stations',
-  title: 'Stations & Graphs',
-  component: <AlarmsTab />
+    title: 'Stations & Graphs',
+    component: <StationsChartsTab />
 },]
 
 function AppWithAuthentication() {

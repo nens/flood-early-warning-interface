@@ -3,6 +3,7 @@
 
 import { useQuery } from 'react-query';
 import { Paginated, APIError, Bootstrap, TimeseriesAlarm } from '../types/api';
+import { Config } from '../types/config';
 
 type ResponseT<T> = {status: "loading"} | {status: "error", "message": string} | {status: "ok", "data": T};
 
@@ -70,4 +71,12 @@ export function useTimeseriesAlarms(): ResponseT<Paginated<TimeseriesAlarm>> {
     'timeseriesalarms',
     '/api/v4/timeseriesalarms/?organisation__uuid=33b32fe8-0317-4390-9ef9-259744c32cc1',
     {retry: false, refetchInterval: 300000});
+}
+
+export function useConfig(): ResponseT<Config> {
+  return useTypedResponse<Config>(
+    'config',
+    '/api/v4/clientconfigs/8/',
+    {retry: false}
+  );
 }
