@@ -1,0 +1,176 @@
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-ExtraboldItalic.eot');
+    src: url('Parramatta-ExtraboldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-ExtraboldItalic.woff2') format('woff2'),
+        url('Parramatta-ExtraboldItalic.woff') format('woff'),
+        url('Parramatta-ExtraboldItalic.svg#Parramatta-ExtraboldItalic') format('svg');
+    font-weight: 800;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-Thin.eot');
+    src: url('Parramatta-Thin.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-Thin.woff2') format('woff2'),
+        url('Parramatta-Thin.woff') format('woff'),
+        url('Parramatta-Thin.svg#Parramatta-Thin') format('svg');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-BlackItalic.eot');
+    src: url('Parramatta-BlackItalic.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-BlackItalic.woff2') format('woff2'),
+        url('Parramatta-BlackItalic.woff') format('woff'),
+        url('Parramatta-BlackItalic.svg#Parramatta-BlackItalic') format('svg');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-Semibold.eot');
+    src: url('Parramatta-Semibold.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-Semibold.woff2') format('woff2'),
+        url('Parramatta-Semibold.woff') format('woff'),
+        url('Parramatta-Semibold.svg#Parramatta-Semibold') format('svg');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-Light.eot');
+    src: url('Parramatta-Light.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-Light.woff2') format('woff2'),
+        url('Parramatta-Light.woff') format('woff'),
+        url('Parramatta-Light.svg#Parramatta-Light') format('svg');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-LightItalic.eot');
+    src: url('Parramatta-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-LightItalic.woff2') format('woff2'),
+        url('Parramatta-LightItalic.woff') format('woff'),
+        url('Parramatta-LightItalic.svg#Parramatta-LightItalic') format('svg');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-Regular.eot');
+    src: url('Parramatta-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-Regular.woff2') format('woff2'),
+        url('Parramatta-Regular.woff') format('woff'),
+        url('Parramatta-Regular.svg#Parramatta-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Parramatta Extrathin';
+    src: url('Parramatta-ExtrathinItalic.eot');
+    src: url('Parramatta-ExtrathinItalic.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-ExtrathinItalic.woff2') format('woff2'),
+        url('Parramatta-ExtrathinItalic.woff') format('woff'),
+        url('Parramatta-ExtrathinItalic.svg#Parramatta-ExtrathinItalic') format('svg');
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-Bold.eot');
+    src: url('Parramatta-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-Bold.woff2') format('woff2'),
+        url('Parramatta-Bold.woff') format('woff'),
+        url('Parramatta-Bold.svg#Parramatta-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Parramatta Extrathin';
+    src: url('Parramatta-Extrathin.eot');
+    src: url('Parramatta-Extrathin.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-Extrathin.woff2') format('woff2'),
+        url('Parramatta-Extrathin.woff') format('woff'),
+        url('Parramatta-Extrathin.svg#Parramatta-Extrathin') format('svg');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-RegularItalic.eot');
+    src: url('Parramatta-RegularItalic.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-RegularItalic.woff2') format('woff2'),
+        url('Parramatta-RegularItalic.woff') format('woff'),
+        url('Parramatta-RegularItalic.svg#Parramatta-RegularItalic') format('svg');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-Black.eot');
+    src: url('Parramatta-Black.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-Black.woff2') format('woff2'),
+        url('Parramatta-Black.woff') format('woff'),
+        url('Parramatta-Black.svg#Parramatta-Black') format('svg');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-BoldItalic.eot');
+    src: url('Parramatta-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-BoldItalic.woff2') format('woff2'),
+        url('Parramatta-BoldItalic.woff') format('woff'),
+        url('Parramatta-BoldItalic.svg#Parramatta-BoldItalic') format('svg');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-ThinItalic.eot');
+    src: url('Parramatta-ThinItalic.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-ThinItalic.woff2') format('woff2'),
+        url('Parramatta-ThinItalic.woff') format('woff'),
+        url('Parramatta-ThinItalic.svg#Parramatta-ThinItalic') format('svg');
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-Extrabold.eot');
+    src: url('Parramatta-Extrabold.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-Extrabold.woff2') format('woff2'),
+        url('Parramatta-Extrabold.woff') format('woff'),
+        url('Parramatta-Extrabold.svg#Parramatta-Extrabold') format('svg');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Parramatta';
+    src: url('Parramatta-SemiboldItalic.eot');
+    src: url('Parramatta-SemiboldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Parramatta-SemiboldItalic.woff2') format('woff2'),
+        url('Parramatta-SemiboldItalic.woff') format('woff'),
+        url('Parramatta-SemiboldItalic.svg#Parramatta-SemiboldItalic') format('svg');
+    font-weight: 600;
+    font-style: italic;
+}
+
