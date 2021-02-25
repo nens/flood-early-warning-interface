@@ -5,12 +5,17 @@ interface BaseTileProps {
   id: number;
 }
 
-interface MapTile extends BaseTileProps {
+export interface MapTile extends BaseTileProps {
   type: "map"
 }
 
-interface ChartTile extends BaseTileProps {
-  type: "chart"
+export interface ChartTile extends BaseTileProps {
+  type: "timeseries"
 }
 
-export type TileDefinition = MapTile | ChartTile;
+export interface ExternalTile extends BaseTileProps {
+  type: "external";
+  imageUrl: string;
+}
+
+export type TileDefinition = MapTile | ChartTile | ExternalTile;

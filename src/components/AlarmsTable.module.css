@@ -1,0 +1,32 @@
+.alarmsTable {
+  position: relative;
+  bottom: 0;
+  display: table;
+  width: 100%;
+  font-size: 70%;
+  font-weight: semibold;
+}
+
+.tr {
+  display: table-row;
+  height: 3rem;
+}
+
+.thtd {
+  display: table-cell;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.2rem;
+}
+
+.tdLeft {
+  display: table-cell;
+  text-align: left;
+  padding: 0.2rem;
+}
+
+.tdCenter {
+  display: table-cell;
+  text-align: center;
+  padding: 0.2rem;
+}

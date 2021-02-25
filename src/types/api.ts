@@ -9,14 +9,6 @@ export type Paginated<T> = {
   results: T[]
 }
 
-export interface APIError {
-  status: number;
-  code: number;
-  message: string;
-  detail: string;
-}
-
-
 // Endpoints. Note that if a field is not in here, that means we don't use it
 
 
@@ -32,7 +24,7 @@ export interface Bootstrap {
 }
 
 
-export interface TimeseriesAlarm {
+export interface RasterAlarm {
   uuid: string;
   name: string;
   thresholds: {

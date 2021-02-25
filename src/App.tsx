@@ -5,8 +5,10 @@ import LizardAuthProvider from './providers/LizardAuthProvider';
 import ConfigProvider from './providers/ConfigProvider';
 
 import Tabs from './components/Tabs';
-import AlarmsTab from './components/AlarmsTab';
-import StationsChartsTab from './components/StationsChartsTab';
+import AlarmsTab from './tabs/AlarmsTab';
+import StationsChartsTab from './tabs/StationsChartsTab';
+import FloodModelTab from './tabs/FloodModelTab';
+import RainfallTab from './tabs/RainfallTab';
 import Header from './components/Header';
 
 const queryClient = new QueryClient();
@@ -23,7 +25,7 @@ function App() {
   );
 }
 
-const DamAlarms = () => <p>This is the <strong>dam</strong> alarms component.</p>
+const DamAlarms = () => <p>This is the <strong>dam alarms</strong> component.</p>
 
 const tabDefinition = [{
   url: 'alarms',
@@ -35,12 +37,12 @@ const tabDefinition = [{
     component: <DamAlarms />
 }, {
   url: 'waterlevel',
-    title: 'Forecast waterlevel',
-    component: <AlarmsTab />
+    title: 'Flood Model Extent and Depths',
+    component: <FloodModelTab />
 }, {
-  url: 'meteo',
-    title: 'Meteo',
-    component: <DamAlarms />
+  url: 'rainfall',
+    title: 'Rainfall',
+    component: <RainfallTab/>
 },{
   url: 'stations',
     title: 'Stations & Graphs',
@@ -48,15 +50,15 @@ const tabDefinition = [{
 },]
 
 function AppWithAuthentication() {
-  return (
-    <Router>
-      <Header />
-      <Switch>
-        <Route path="/" exact={true} children={(<Redirect to={'/'+tabDefinition[0].url}/>)} />
-        <Route path="/" children={(<Tabs definition={tabDefinition} />)}/>
-      </Switch>
-    </Router>
-  );
+return (
+<Router>
+  <Header />
+  <Switch>
+    <Route path="/floodsmart/" exact={true} children={(<Redirect to={'/floodsmart/'+tabDefinition[0].url}/>)} />
+    <Route path="/floodsmart/" children={(<Tabs definition={tabDefinition} />)}/>
+  </Switch>
+</Router>
+);
 }
 
 export default App;

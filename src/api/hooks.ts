@@ -2,81 +2,63 @@
 // These use useQuery, and return a status / json tuple.
 
 import { useQuery } from 'react-query';
-import { Paginated, APIError, Bootstrap, TimeseriesAlarm } from '../types/api';
+import { Paginated, Bootstrap, RasterAlarm } from '../types/api';
 import { Config } from '../types/config';
-
-type ResponseT<T> = {status: "loading"} | {status: "error", "message": string} | {status: "ok", "data": T};
 
 
 ///// React Query helper functions
 
 
-export function isErrorResponse<T>(data: T | APIError): data is APIError {
-  // Return true if JSON response represents an error message.
-  return (data && 'message' in data && 'status' in data &&
-          typeof data.status === "number" && (data.status >= 400) &&
-          data.status < 600);
+// Error to throw if status code isn't 2xx
+class FetchError extends Error {
+  constructor(public res: Response, message?: string) {
+    super(message)
+  }
 }
 
-function useTypedQuery<T>(queryKey: string, url: string, options?: Object) {
-  // Call useQuery, parse JSON, return the fields we want with the right types.
-  const useQueryResponse = useQuery(
-    queryKey,
-    () => fetch(url).then(r => r.json()),
-    options);
+// Fetch wrapper that throws an error on bad status
+const fetchWithError = async (path: string) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
 
-  const response = useQueryResponse.data as (T | APIError);
-  return {status: useQueryResponse.status, error: useQueryResponse.error, response};
-}
+  const response = await fetch(path, {
+    method: 'GET',
+    headers,
+  });
 
-
-function useTypedResponse<T>(queryKey: string, url: string, options?: Object): ResponseT<T> {
-  // Unpick various error states.
-  const { status, error, response } = useTypedQuery<T>(queryKey, url, options);
-
-  if (status === 'error') {
-    return {status: "error", message: error as string};
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new FetchError(response, `Received status: ${response.status}`)
   }
-
-  if (status === 'loading') {
-    return {status: "loading"};
-  }
-
-  if (status === 'success') {
-    if (isErrorResponse(response)) {
-      return {status: "error", message: `Response status ${response.status}`};
-    } else {
-      return {status: "ok", data: response};
-    }
-  }
-
-  return {status: "error", message: `Unknown error (${status}`};
-}
-
+};
 
 ////// API calls
 
-
-export function useBootstrap(): ResponseT<Bootstrap> {
-  return useTypedResponse<Bootstrap>(
+export function useBootstrap() {
+  return useQuery<Bootstrap, FetchError>(
     'bootstrap',
-    '/bootstrap/lizard/',
+    () => fetchWithError('/bootstrap/lizard/'),
     {retry: false}
   );
 }
 
 
-export function useTimeseriesAlarms(): ResponseT<Paginated<TimeseriesAlarm>> {
-  return useTypedResponse<Paginated<TimeseriesAlarm>>(
-    'timeseriesalarms',
-    '/api/v4/timeseriesalarms/?organisation__uuid=33b32fe8-0317-4390-9ef9-259744c32cc1',
+export function useRasterAlarms() {
+  return useQuery<Paginated<RasterAlarm>, FetchError>(
+    'rasteralarms',
+    () => fetchWithError('/api/v4/rasteralarms/?organisation__uuid=33b32fe8-0317-4390-9ef9-259744c32cc1&page_size=1000'),
     {retry: false, refetchInterval: 300000});
 }
 
-export function useConfig(): ResponseT<Config> {
-  return useTypedResponse<Config>(
+
+export function useConfig() {
+  return useQuery<Config, FetchError>(
     'config',
-    '/api/v4/clientconfigs/8/',
+    () => fetchWithError('/api/v4/clientconfigs/3/?format=json'),
     {retry: false}
   );
 }

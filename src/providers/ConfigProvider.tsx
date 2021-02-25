@@ -8,7 +8,7 @@ export const ConfigContext = React.createContext<{config: Config|null}>({config:
 function ConfigProvider({ children }: WithChildren) {
   const configResponse = useConfig();
 
-  if (configResponse.status === 'ok') {
+  if (configResponse.status === 'success') {
     const config = configResponse.data;
 
     return (
@@ -22,7 +22,7 @@ function ConfigProvider({ children }: WithChildren) {
     );
   } else {
     return (
-      <p>Error when loading configuration: {configResponse.message}.</p>
+      <p>Error when loading configuration: {JSON.stringify(configResponse)}.</p>
     );
   }
 }

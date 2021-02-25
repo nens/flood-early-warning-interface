@@ -1,0 +1,20 @@
+.RainfallTab {
+  background: white;
+  height: 100%;
+  display: flex;
+}
+
+.RainfallLeft {
+  flex: 25%;
+  padding: 1rem;
+}
+
+.RainfallLeft img {
+  display: block;
+  margin: auto;
+}
+
+.RainfallRight {
+  flex: 75%;
+  padding: 1rem;
+}

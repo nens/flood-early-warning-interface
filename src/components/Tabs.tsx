@@ -23,7 +23,7 @@ function Tabs({definition}: TabsProps) {
   return (
     <Switch>
       {definition.map(({url, component}) => (
-        <Route path={`${path}${url}`} children={
+        <Route path={`${path}${url}`} key={url} children={
           <div className={styles.Tabs}>
             <TabBar tabs={tabs} current={url} path={path}/>
             <div className={styles.TabContent}>{component}</div>

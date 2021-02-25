@@ -1,18 +1,28 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
-import { TileDefinition } from '../types/tiles';
+import { WithChildren } from '../types/util';
+import { useRect } from '../util/hooks';
+import RectProvider from '../providers/RectProvider';
 
 import styles from './Tile.module.css';
 
+type TileSize = "smallsquare" | "large";
+
 interface Props {
-  tile: TileDefinition
+  title: string;
+  size?: TileSize
 }
 
-function Tile({ tile }: Props) {
+function Tile({ title, children, size="smallsquare" }: WithChildren<Props>) {
+  const contentDivRef = useRef<HTMLDivElement>(null);
+  const rect = useRect(contentDivRef);
+
   return (
-    <div className={styles.Tile}>
-      <div className={styles.Title}>{tile.title}</div>
-      <div className={styles.Content}>{tile.type}</div>
+    <div className={size === "smallsquare" ? styles.Tile : styles.LargeTile}>
+      <div className={styles.Title}>{title}</div>
+      <RectProvider rect={rect}>
+        <div ref={contentDivRef} className={styles.Content}>{children}</div>
+      </RectProvider>
     </div>
   );
 }

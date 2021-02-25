@@ -8,7 +8,7 @@ export const LizardAuthContext = React.createContext<{bootstrap: Bootstrap|null}
 function LizardAuthProvider({ children }: WithChildren) {
   const bootstrapResponse = useBootstrap();
 
-  if (bootstrapResponse.status === 'ok') {
+  if (bootstrapResponse.status === 'success') {
     const bootstrap = bootstrapResponse.data;
 
     if (!bootstrap.user.authenticated) {
@@ -26,7 +26,7 @@ function LizardAuthProvider({ children }: WithChildren) {
     );
   } else {
     return (
-      <p>Error when loading authentication: {bootstrapResponse.message}.</p>
+      <p>Error when loading authentication: {JSON.stringify(bootstrapResponse)}.</p>
     );
   }
 }

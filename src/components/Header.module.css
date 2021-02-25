@@ -1,0 +1,11 @@
+.LogoCombo {
+  margin-left: var(--tabs-margin);
+  margin-top: 10px;
+}
+
+.Title {
+  width: 100%;
+  font-weight: bold;
+  font-size: 150%;
+  text-align: center;
+}

@@ -1,0 +1,7 @@
+.FloodModelTab {
+  display: grid;
+  grid-gap: 1rem;
+  min-height: 100%;
+  position: relative;
+  background: var(--white-color);
+}

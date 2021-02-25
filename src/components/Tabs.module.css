@@ -3,7 +3,7 @@ div.Tabs {
   background: var(--primary-color);
   height: calc(100vh - var(--header-height) - 2*var(--tabs-margin));
   margin: var(--tabs-margin);
-  overflow: hidden;
+  overflow: none;
 }
 
 div.TabContent {
