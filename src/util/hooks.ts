@@ -60,7 +60,7 @@ export function useRect<T extends HTMLElement>(
       window.addEventListener("resize", handleResize); // Browser support, remove freely
       return () => window.removeEventListener("resize", handleResize);
     }
-  }, [ref.current]);
+  }, [ref, handleResize]);
 
   return rect;
 }

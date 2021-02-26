@@ -13,7 +13,11 @@ function ImageTile({tile}: Props) {
   const { rect } = useContext(RectContext) as {rect: RectResult};
 
   return (
-    <img src={tile.imageUrl} width={rect.width} height={rect.height} />
+    <img
+      src={tile.imageUrl}
+      alt={tile.title}
+      width={rect.width}
+      height={rect.height} />
   );
 }
 

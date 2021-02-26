@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import LizardAuthProvider from './providers/LizardAuthProvider';
 import ConfigProvider from './providers/ConfigProvider';
 
+import { QUERY_OPTIONS } from './api/hooks';
 import Tabs from './components/Tabs';
 import AlarmsTab from './tabs/AlarmsTab';
 import StationsChartsTab from './tabs/StationsChartsTab';
@@ -11,7 +12,11 @@ import FloodModelTab from './tabs/FloodModelTab';
 import RainfallTab from './tabs/RainfallTab';
 import Header from './components/Header';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: QUERY_OPTIONS
+  }
+});
 
 function App() {
   return (

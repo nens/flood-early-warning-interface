@@ -14,6 +14,7 @@ interface Props {
 }
 
 function Tile({ title, children, size="smallsquare" }: WithChildren<Props>) {
+  // We compute the size of the content div and supply it in a context to children
   const contentDivRef = useRef<HTMLDivElement>(null);
   const rect = useRect(contentDivRef);
 
@@ -21,7 +22,9 @@ function Tile({ title, children, size="smallsquare" }: WithChildren<Props>) {
     <div className={size === "smallsquare" ? styles.Tile : styles.LargeTile}>
       <div className={styles.Title}>{title}</div>
       <RectProvider rect={rect}>
-        <div ref={contentDivRef} className={styles.Content}>{children}</div>
+        <div ref={contentDivRef} className={styles.Content}>
+          {children}
+        </div>
       </RectProvider>
     </div>
   );
