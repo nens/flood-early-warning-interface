@@ -8,25 +8,40 @@
 }
 
 .Tile {
-  flex: none;
-  margin: 1rem;
-  width: 18rem;
-  height: 18rem;
-  font-weight: semibold;
   background: var(--white-color);
   border: solid 1px var(--primary-color);
   color: var(--primary-color);
   overflow: none;
 }
 
-.LargeTile {
+.TileSmall {
+  flex: none;
+  margin: 1rem;
+  width: 18rem;
+  height: 18rem;
+}
+
+.TileLarge {
   flex-basis: auto;
   flex-grow: 1;
   margin: 1rem;
   width: 40%;
-  background: var(--white-color);
-  border: solid 1px var(--primary-color);
-  color: var(--primary-color);
+}
+
+.TileFull {
+  position: relative;
+  width: calc(100% - 1rem);
+  height: calc(100%);
+}
+
+.TileHalfHeight {
+  position: relative;
+  width: calc(100% - 1rem);
+  height: calc(50% - 1rem);
+}
+
+.TileHalfHeight + .TileHalfHeight {
+  margin-top: 2rem;
 }
 
 .Title {

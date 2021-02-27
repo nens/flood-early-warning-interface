@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { ConfigContext } from '../providers/ConfigProvider';
 import Tile from '../components/Tile';
 import ImageTile from '../components/ImageTile';
+import RainMap from '../components/RainMap';
 
 import { ExternalTile } from '../types/tiles';
 
@@ -15,13 +16,17 @@ function RainfallTab() {
     <div className={styles.RainfallTab}>
       <div className={styles.RainfallLeft}>
         {imageTiles.map(tile => (
-          <Tile key={tile.id} title={tile.title}>
+          <Tile key={tile.id} title={tile.title} size="halfheight">
             <ImageTile tile={tile} />
           </Tile>
         ))}
       </div>
 
-      <div className={styles.RainfallRight}>Testing 2</div>
+      <div className={styles.RainfallRight}>
+        <Tile size="full" title="Map with WMS layers that haven't been defined yet">
+          <RainMap />
+        </Tile>
+      </div>
     </div>
   );
 }

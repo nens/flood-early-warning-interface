@@ -1,5 +1,9 @@
+import pyproj
 import requests
 import json
+
+WGS84 = pyproj.Proj('+init=EPSG:4326')
+GOOG = pyproj.Proj('+init=EPSG:3857')
 
 def fix_json(original):
     original['bounding_box'] = [
@@ -21,6 +25,18 @@ def fix_json(original):
             del tile['bbox']
 
     original['mapbox_access_token'] = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImNrZWlnbHdycjFqNHMyem95cWFqNzhkc3IifQ.ymzd92iqviR5RZ-dd-xRIg"
+
+    fwa = json.load(open('data/fwa_wgs84_1pc.json'))
+    # for feature in fwa['features']:
+    #     for polygon in feature['geometry']['coordinates']:
+    #         for subpoly in polygon:
+    #             for point in subpoly:
+    #                 point[:] = pyproj.transform(GOOG, WGS84, *point)
+    # del fwa['crs']
+    # with open('data/fwa_wgs84.json', 'w') as f:
+    #     json.dump(fwa, f)
+
+    original['flood_warning_areas'] = fwa
 
     return original
 

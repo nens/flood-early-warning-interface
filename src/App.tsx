@@ -34,7 +34,7 @@ const DamAlarms = () => null;
 
 const tabDefinition = [{
   url: 'alarms',
-    title: 'Alarms',
+    title: 'FloodSmart Warnings',
     component: <AlarmsTab />
 }, {
   url: 'damalarms',
@@ -46,7 +46,7 @@ const tabDefinition = [{
     component: <FloodModelTab />
 }, {
   url: 'rainfall',
-    title: 'Rainfall',
+    title: 'Rainfall Forecast and Totals',
     component: <RainfallTab/>
 },{
   url: 'stations',

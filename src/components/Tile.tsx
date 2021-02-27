@@ -6,11 +6,11 @@ import RectProvider from '../providers/RectProvider';
 
 import styles from './Tile.module.css';
 
-type TileSize = "smallsquare" | "large";
+type TileSize = "smallsquare" | "large" | "full" | "halfheight";
 
 interface Props {
   title: string;
-  size?: TileSize
+  size?: TileSize;
 }
 
 function Tile({ title, children, size="smallsquare" }: WithChildren<Props>) {
@@ -18,8 +18,15 @@ function Tile({ title, children, size="smallsquare" }: WithChildren<Props>) {
   const contentDivRef = useRef<HTMLDivElement>(null);
   const rect = useRect(contentDivRef);
 
+  const sizeClass = (
+    size === "smallsquare" ? styles.TileSmall :
+    size === "large" ? styles.TileLarge :
+    size === "halfheight" ? styles.TileHalfHeight :
+    styles.TileFull
+  );
+
   return (
-    <div className={size === "smallsquare" ? styles.Tile : styles.LargeTile}>
+    <div className={`${styles.Tile} ${sizeClass}`}>
       <div className={styles.Title}>{title}</div>
       <RectProvider rect={rect}>
         <div ref={contentDivRef} className={styles.Content}>
