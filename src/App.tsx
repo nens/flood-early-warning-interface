@@ -30,7 +30,7 @@ function App() {
   );
 }
 
-const DamAlarms = () => <p>This is the <strong>dam alarms</strong> component.</p>
+const DamAlarms = () => null;
 
 const tabDefinition = [{
   url: 'alarms',

@@ -13,6 +13,9 @@ def fix_json(original):
         if 'bbox' in tile:
             del tile['bbox']
 
+        if tile['type'] == 'external' and 'api.flight.org' in tile['imageUrl']:
+            tile['imageUrl'] = 'https://parramatta.lizard.net/media/projecten/parramatta_s0024/movie.gif'
+
     for tile in original['publicTiles']:
         if 'bbox' in tile:
             del tile['bbox']

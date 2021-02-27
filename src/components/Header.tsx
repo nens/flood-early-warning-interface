@@ -9,13 +9,6 @@ function Header() {
 
   return (
     <div style={{height: 'var(--header-height)', width: '100%'}}>
-      <img
-        src={logoCombo}
-        style={{ width: '19.375rem' }}
-        alt="Logos for relevant organisations"
-        className={styles.LogoCombo}
-      />
-
       <span className={styles.Title}>
         FloodSmart Parramatta Dashboard
       </span>

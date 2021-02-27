@@ -3,6 +3,7 @@ import React from 'react';
 import { RasterAlarm } from '../types/api';
 import { thresholdsByWarningLevel } from '../util/rasterAlarms';
 import { withDefault } from '../util/functions';
+import { IconActiveAlarmSVG, IconInactiveAlarmSVG } from './Icons';
 
 import styles from './AlarmsTable.module.css';
 
@@ -15,24 +16,27 @@ function AlarmsTable({ alarms }: Props) {
   return (
     <div className={styles.alarmsTable}>
       <div className={styles.tr}>
+        <div className={styles.thtd}>&nbsp;</div>
         <div className={styles.thtd}>Warning area</div>
-        <div className={styles.thtd}>Current waterlevel</div>
-        <div className={styles.thtd}>Minor</div>
-        <div className={styles.thtd}>Moderate</div>
-        <div className={styles.thtd}>Major</div>
+        <div className={styles.thtd}>Current level</div>
+        <div className={styles.thtd}>Max level</div>
+        <div className={styles.thtd}>Time of max</div>
         <div className={styles.thtd}>Level breached</div>
-        <div className={styles.thtd}>Graph</div>
+        <div className={styles.thtd}>Chart</div>
       </div>
-      {alarms.map(alarm => {
+      {alarms.map((alarm, i) => {
         const thresholds = thresholdsByWarningLevel(alarm);
 
         return (
           <div className={styles.tr}>
+            <div className={styles.tdLeft}>
+              {i % 2 === 0 ? <IconActiveAlarmSVG /> : <IconInactiveAlarmSVG />}
+            </div>
             <div className={styles.tdLeft}>{alarm.name}</div>
             <div className={styles.tdCenter}>9.5</div>
-            <div className={styles.tdCenter}>{withDefault(thresholds.minor, '-')}</div>
-            <div className={styles.tdCenter}>{withDefault(thresholds.moderate, '-')}</div>
-            <div className={styles.tdCenter}>{withDefault(thresholds.major, '-')}</div>
+            <div className={styles.tdCenter}>10.5</div>
+            <div className={styles.tdCenter}>14:45</div>
+            <div className={styles.tdCenter}>Minor</div>
           </div>
         );
       })}

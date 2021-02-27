@@ -5,6 +5,8 @@
 
 .Title {
   width: 100%;
+  margin: auto;
+  display: block;
   font-weight: semibold;
   font-size: 200%;
   text-align: center;
