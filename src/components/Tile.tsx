@@ -11,9 +11,11 @@ type TileSize = "smallsquare" | "large" | "full" | "halfheight";
 interface Props {
   title: string;
   size?: TileSize;
+  onClick?: () => void;
+  x?: () => void;
 }
 
-function Tile({ title, children, size="smallsquare" }: WithChildren<Props>) {
+function Tile({ title, children, onClick, x, size="smallsquare" }: WithChildren<Props>) {
   // We compute the size of the content div and supply it in a context to children
   const contentDivRef = useRef<HTMLDivElement>(null);
   const rect = useRect(contentDivRef);
@@ -26,8 +28,13 @@ function Tile({ title, children, size="smallsquare" }: WithChildren<Props>) {
   );
 
   return (
-    <div className={`${styles.Tile} ${sizeClass}`}>
-      <div className={styles.Title}>{title}</div>
+    <div className={`${styles.Tile} ${sizeClass}`} onClick={onClick}>
+      <div className={styles.Title}>
+        {title}
+        {x ? (
+          <span className={styles.X} onClick={x} title="Close">&#128473;</span>
+        ) : null}
+      </div>
       <RectProvider rect={rect}>
         <div ref={contentDivRef} className={styles.Content}>
           {children}

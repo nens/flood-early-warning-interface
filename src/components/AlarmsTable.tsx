@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { RasterAlarm } from '../types/api';
-import { thresholdsByWarningLevel } from '../util/rasterAlarms';
-import { withDefault } from '../util/functions';
+//import { thresholdsByWarningLevel } from '../util/rasterAlarms';
 import { IconActiveAlarmSVG, IconInactiveAlarmSVG } from './Icons';
 
 import styles from './AlarmsTable.module.css';
@@ -25,7 +24,7 @@ function AlarmsTable({ alarms }: Props) {
         <div className={styles.thtd}>Chart</div>
       </div>
       {alarms.map((alarm, i) => {
-        const thresholds = thresholdsByWarningLevel(alarm);
+        //const thresholds = thresholdsByWarningLevel(alarm);
 
         return (
           <div className={styles.tr}>

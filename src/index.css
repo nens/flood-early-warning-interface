@@ -10,6 +10,8 @@ body {
 :root {
   --header-height: 3rem;
   --tabs-margin: 1rem;
+  --square-tile-size: 18rem;
+  --sidebar-left: 20rem;
   --primary-color: #002B49;
   --secondary-color: #00477A;
   --white-color: #f9f9f9;

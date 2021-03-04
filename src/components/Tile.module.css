@@ -17,8 +17,8 @@
 .TileSmall {
   flex: none;
   margin: 1rem;
-  width: 18rem;
-  height: 18rem;
+  width: var(--square-tile-size);
+  height: var(--square-tile-size);
 }
 
 .TileLarge {
@@ -30,8 +30,8 @@
 
 .TileFull {
   position: relative;
-  width: calc(100% - 1rem);
-  height: calc(100%);
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
 }
 
 .TileHalfHeight {
@@ -53,6 +53,19 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.X {
+  float: right;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 150%;
+  vertical-align: top;
+  margin-top: -0.25rem;
+}
+
+.X:hover {
+  background: var(--primary-color);
 }
 
 .Content {

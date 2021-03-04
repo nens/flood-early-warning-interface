@@ -48,6 +48,7 @@ li.ActiveTab a, li.InactiveTab a {
 li.ActiveTab a {
   color: var(--primary-color);
   font-weight: bold;
+  text-overflow: ellipsis;
 }
 
 li.InactiveTab a {

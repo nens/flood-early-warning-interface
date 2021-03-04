@@ -27,7 +27,7 @@ function TabBar({tabs, current, path}: TabBarProps) {
     <nav className={styles.TabBar}>
       <ol>
         {tabs.map(({url, title}) => (
-        <li
+        <li key={url}
           className={url === current ? styles.ActiveTab : styles.InactiveTab}
           onClick={handleOnClick(`${path}${url}`)}
         >
