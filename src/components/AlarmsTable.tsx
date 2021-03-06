@@ -27,7 +27,7 @@ function AlarmsTable({ alarms }: Props) {
         //const thresholds = thresholdsByWarningLevel(alarm);
 
         return (
-          <div className={styles.tr}>
+          <div key={`alarmrow-${alarm.uuid}`} className={styles.tr}>
             <div className={styles.tdLeft}>
               {i % 2 === 0 ? <IconActiveAlarmSVG /> : <IconInactiveAlarmSVG />}
             </div>

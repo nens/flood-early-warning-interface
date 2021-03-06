@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import { QueryClient, QueryClientProvider } from 'react-query';
 import LizardAuthProvider from './providers/LizardAuthProvider';
 import ConfigProvider from './providers/ConfigProvider';
+import TimeProvider from './providers/TimeProvider';
 
 import { QUERY_OPTIONS } from './api/hooks';
 import Tabs from './components/Tabs';
@@ -23,7 +24,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <LizardAuthProvider>
         <ConfigProvider>
-          <AppWithAuthentication />
+          <TimeProvider>
+            <AppWithAuthentication />
+          </TimeProvider>
         </ConfigProvider>
       </LizardAuthProvider>
     </QueryClientProvider>

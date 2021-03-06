@@ -30,7 +30,7 @@ function TileWithCallback({tile}: TileWithCallbackProps) {
       title={tile.shortTitle} key={tile.id}
       onClick={handleOnClick}
     >
-      {(tile.type === 'timeseries') ? <TimeseriesTile tile={tile} /> : null}
+      {(tile.type === 'timeseries') ? <TimeseriesTile tile={tile} full={false} /> : null}
     </Tile>
   )
 }

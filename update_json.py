@@ -1,9 +1,24 @@
 import pyproj
 import requests
+from requests.auth import HTTPBasicAuth
 import json
+import os
+
+auth = HTTPBasicAuth(os.environ['PROXY_USERNAME'], os.environ['PROXY_PASSWORD'])
+
+SERVER = 'https://parramatta.lizard.net/'
 
 WGS84 = pyproj.Proj('+init=EPSG:4326')
 GOOG = pyproj.Proj('+init=EPSG:3857')
+
+def get_raster_uuid(short_uuid):
+    # Returns actual uuid of short uuid
+    if len(short_uuid) > 10:
+        return short_uuid  # Already long
+
+    raster = requests.get(SERVER + 'api/v3/rasters/' + short_uuid, auth=auth).json()
+    return raster['uuid']
+
 
 def fix_json(original):
     original['bounding_box'] = [
@@ -13,16 +28,20 @@ def fix_json(original):
         "-33.78071682642826"
     ]
 
-    for tile in original['tiles']:
+    for tile in (original['tiles'] + original['publicTiles']):
         if 'bbox' in tile:
             del tile['bbox']
 
         if tile['type'] == 'external' and 'api.flight.org' in tile['imageUrl']:
             tile['imageUrl'] = 'https://parramatta.lizard.net/media/projecten/parramatta_s0024/movie.gif'
 
-    for tile in original['publicTiles']:
-        if 'bbox' in tile:
-            del tile['bbox']
+        if 'rasterIntersections' in tile:
+            for intersection in tile['rasterIntersections']:
+                long_uuid = get_raster_uuid(intersection['uuid'])
+
+                if long_uuid != intersection['uuid']:
+                    intersection['uuid'] = long_uuid
+
 
     original['mapbox_access_token'] = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImNrZWlnbHdycjFqNHMyem95cWFqNzhkc3IifQ.ymzd92iqviR5RZ-dd-xRIg"
 
@@ -41,7 +60,8 @@ def fix_json(original):
     return original
 
 
-original = requests.get('https://nxt3.staging.lizard.net/bootstrap/parramatta-dashboard/').json()['configuration']
+#original = requests.get('https://nxt3.staging.lizard.net/bootstrap/parramatta-dashboard/').json()['configuration']
+original = requests.get('https://parramatta.lizard.net/bootstrap/parramatta-dashboard/', auth=auth).json()['configuration']
 
 result = fix_json(original)
 print(json.dumps(result))

@@ -38,3 +38,37 @@ export interface RasterAlarm {
     value_time: string;
   }[];
 }
+
+
+export interface ObservationType {
+  url: string;
+  code: string;
+  parameter: string;
+  unit: string;
+  scale: "ratio" | "interval";
+  description: string;
+  reference_frame?: string;
+}
+
+
+export interface Raster {
+  observation_type: ObservationType;
+}
+
+// We rewrite both raster and timeseries events immediately to this format
+// after receiving them, see api/hooks.ts.
+export interface Event {timestamp: Date, value: number | null};
+export type Events = Event[];
+
+// API response types
+export type EventsResponse = {
+  success: true,
+  data: Events[]
+} | {
+  success: false,
+  data: null
+}
+
+export interface Timeseries {
+  observation_type: ObservationType
+}

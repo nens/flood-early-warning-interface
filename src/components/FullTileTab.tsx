@@ -4,7 +4,7 @@ import { useParams, Redirect, useHistory } from 'react-router';
 
 import { TileDefinition } from '../types/tiles';
 import Tile from './Tile';
-
+import TimeseriesTile from './TimeseriesTile';
 import styles from './FullTileTab.module.css';
 
 interface Props {
@@ -33,18 +33,20 @@ function FullTileTab({tiles, url}: Props) {
     <div className={styles.FullTileTab}>
       <div className={styles.Sidebar}>
         {tiles.map((tile) => (
-          <Tile key={tile.id} size="smallsquare" title={tile.shortTitle}>
-            {tile.id}
-          </Tile>
+          (tile.type === 'timeseries' ?
+           <Tile key={tile.id} size="smallsquare" title={tile.shortTitle}>
+             <TimeseriesTile tile={tile} full={false} />
+           </Tile>
+         : null)
         ))}
       </div>
       <div className={styles.FullTile}>
         <Tile size="full" title={fullTile.title} x={onClickFullTile}>
-          <p>Hmm.</p>
+          {fullTile.type === 'timeseries' ? <TimeseriesTile tile={fullTile} full={true} /> : null}
         </Tile>
       </div>
     </div>
-  );
+        );
 }
 
 export default FullTileTab;

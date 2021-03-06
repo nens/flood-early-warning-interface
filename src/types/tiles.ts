@@ -1,4 +1,5 @@
 import React from 'react';
+import { Shape } from 'plotly.js';
 
 import { Point } from 'geojson';
 
@@ -33,6 +34,12 @@ export interface LegendStyle {
     family: string;
   };
   bgcolor: string;
+  x?: number;
+  y?: number;
+  xanchor?: "auto" | "left" | "center" | "right";
+  yanchor?: "auto" | "top" | "middle" | "bottom";
+  borderwidth?: number;
+  bordercolor?: string;
 };
 
 export interface RasterIntersection {
@@ -50,7 +57,7 @@ export interface Threshold {
 export interface Timeline {
   text: string;
   color: string;
-  lineDash: string;
+  lineDash: Shape['line']['dash'];
   isRelativeTimeFromNow: boolean;
   epochTimeInMilliSeconds: number;
 }
