@@ -49,9 +49,11 @@ function AlarmsRow({ alarm, events, nowTimestamp }: RowProps) {
 
     // For the maximum we only care about future events
     const futureEvents = events.filter(event => event.timestamp.getTime() >= nowTimestamp);
+    // Round value to cm, so we don't see a max in the future that shows as the same as
+    // current value
     indexOfMax = arrayMax(
       futureEvents,
-      event => event.value !== null ? event.value : -Infinity
+      event => event.value !== null ? roundToCm(event.value) : -Infinity
     );
 
     if (indexOfMax !== -1) {
