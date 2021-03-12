@@ -1,4 +1,5 @@
 // Types for API responses
+import { Point } from 'geojson';
 
 // Utils
 
@@ -36,7 +37,9 @@ export interface RasterAlarm {
     trigger_time: string;
     value: number;
     value_time: string;
-  }[];
+    warning_level: string | null;
+  };
+  geometry: Point;
 }
 
 

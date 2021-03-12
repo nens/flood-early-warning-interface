@@ -77,7 +77,7 @@ export function useRasterAlarms() {
 export function useConfig() {
   return useQuery<Config, FetchError>(
     'config',
-    () => fetchWithError('/api/v4/clientconfigs/3/?format=json'),
+    () => fetchWithError('/api/v4/clientconfigs/8/?format=json'),
     QUERY_OPTIONS
   );
 }
