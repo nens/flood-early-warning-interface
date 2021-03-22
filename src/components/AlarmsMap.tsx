@@ -3,8 +3,8 @@ import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import { Feature, Polygon } from 'geojson';
 import { RasterAlarm } from '../types/api';
 import { BoundingBox, pointInPolygon } from '../util/bounds';
-import { useConfig } from '../api/hooks';
 import { getMapBackgrounds } from '../constants';
+import { useConfigContext } from '../providers/ConfigProvider';
 import { RectContext } from '../providers/RectProvider';
 import { RectResult } from '../util/hooks';
 
@@ -26,10 +26,8 @@ function findAlarmForFeature(alarms: RasterAlarm[], feature: Feature | undefined
 }
 
 function AlarmsMap({ alarms, hoverAlarm, setHoverAlarm }: MapProps) {
-  const configResult = useConfig();
+  const config = useConfigContext();
   const { rect } = useContext(RectContext) as {rect: RectResult};
-
-  console.log('HoverAlarm: ', hoverAlarm);
 
   const getFeatureStyle = useCallback(
     (feature: Feature | undefined) => {
@@ -67,9 +65,6 @@ function AlarmsMap({ alarms, hoverAlarm, setHoverAlarm }: MapProps) {
         });
       }
     }, [alarms, setHoverAlarm]);
-
-  if (configResult.isFetching || configResult.isError || !configResult.data) return null;
-  const config = configResult.data.clientconfig.configuration;
 
   const bounds = new BoundingBox(...config.bounding_box);
   const mapBackgrounds = getMapBackgrounds(config.mapbox_access_token);

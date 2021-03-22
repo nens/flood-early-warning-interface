@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Bootstrap } from '../types/api';
 import { useBootstrap } from '../api/hooks';
 import { WithChildren } from '../types/util';
@@ -29,6 +29,12 @@ function LizardAuthProvider({ children }: WithChildren) {
       <p>Error when loading authentication: {JSON.stringify(bootstrapResponse)}.</p>
     );
   }
+}
+
+
+// Only use in children of LizardAuthProvider
+export function useUser() {
+  return useContext(LizardAuthContext)!.bootstrap!.user;
 }
 
 export default LizardAuthProvider;

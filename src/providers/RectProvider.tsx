@@ -1,6 +1,6 @@
 // Gives result of useRect() to underlying components
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { RectResult, EMPTY_RECT } from '../util/hooks';
 import { WithChildren } from '../types/util';
 
@@ -16,6 +16,11 @@ function RectProvider({ children, rect }: WithChildren<Props>) {
       {children}
     </RectContext.Provider>
   );
+}
+
+// Use only in a component that is in a subtree of RectProvider
+export function useRectContext() {
+  return useContext(RectContext).rect;
 }
 
 export default RectProvider;

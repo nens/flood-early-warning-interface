@@ -1,22 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { BoundingBox } from '../util/bounds';
-import { useConfig } from '../api/hooks';
 import { getMapBackgrounds } from '../constants';
-import { RectContext } from '../providers/RectProvider';
-import { RectResult } from '../util/hooks';
-
+import { useConfigContext } from '../providers/ConfigProvider';
+import { useRectContext } from '../providers/RectProvider';
 
 function RainMap() {
-  const configResult = useConfig();
-  const { rect } = useContext(RectContext) as {rect: RectResult};
-  if (configResult.isFetching || configResult.isError || !configResult.data) return null;
-  const config = configResult.data.clientconfig.configuration;
-
-  const bounds = new BoundingBox(...config.bounding_box);
-  const mapBackgrounds = getMapBackgrounds(config.mapbox_access_token);
+  const { bounding_box, mapbox_access_token } = useConfigContext();
+  const rect = useRectContext();
 
   if (!rect.width || !rect.height) return null; // Too early
+
+  const bounds = new BoundingBox(...bounding_box);
+  const mapBackgrounds = getMapBackgrounds(mapbox_access_token);
 
   return (
     <MapContainer
