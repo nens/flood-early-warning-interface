@@ -284,43 +284,43 @@ function getAnnotationsAndShapes(
 
 
 function _getData(
-  rasterEventsArray: Events[],
+  eventsArray: Events[],
   observationTypes: ObservationType[],
   axes: Axes,
   colors: string[] | null,
   legendStrings: string[] | null,
   full: boolean,
 ) {
-  return rasterEventsArray.map((rasterEvents, idx) => {
+  return eventsArray.map((events, idx) => {
     const observationType = observationTypes[idx];
     const legendString = legendStrings !== null ? legendStrings[idx] : null;
     const color = _getColor(colors, idx);
 
-    const events: Partial<PlotData> = {
-      x: rasterEvents.map(event => event.timestamp),
-      y: rasterEvents.map(event => event.value),
+    const plotlyEvents: Partial<PlotData> = {
+      x: events.map(event => event.timestamp),
+      y: events.map(event => event.value),
       name: _getLegend(observationType, legendString),
     }
 
     if (axes.length > 1 && axes[1]!.url === observationType.url) {
-      events.yaxis = "y2";
+      plotlyEvents.yaxis = "y2";
     }
 
     if (observationType.scale === 'ratio') {
       // Bar plot
-      events.type = 'bar'
-      events.marker = {
+      plotlyEvents.type = 'bar'
+      plotlyEvents.marker = {
         color
       };
     } else {
       // Line plot
-      events.type = "scatter";
-      events.mode = "lines";
-      events.line = {
+      plotlyEvents.type = "scatter";
+      plotlyEvents.mode = "lines";
+      plotlyEvents.line = {
         color
       };
     }
-    return events;
+    return plotlyEvents;
   });
 }
 
@@ -457,9 +457,12 @@ function TimeseriesTile({tile, full}: Props) {
     return null; // XXX Spinner
   }
 
-  const events = (rasterEvents.data!).concat(timeseriesEvents.data!);
-  const observationTypes = rasterMetadata.data!.map(raster => raster.observation_type).concat(
-    (timeseriesMetadata.data!.map(timeseries => timeseries.observation_type)));
+  // Note: always concat timeseries first, then rasters, as config items like
+  // tile.colors and tile.legendStrings depend on that.
+  const events = (timeseriesEvents.data!).concat(rasterEvents.data!);
+  const observationTypes = timeseriesMetadata.data!.map(ts => ts.observation_type).concat(
+    (rasterMetadata.data!.map(raster => raster.observation_type)));
+
   const axes = _getAxes(observationTypes);
 
   const layout = _getLayout(

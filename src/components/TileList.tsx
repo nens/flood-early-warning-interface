@@ -3,42 +3,55 @@ import { useRouteMatch, useHistory } from 'react-router';
 import styles from './Tile.module.css';
 
 import { TileDefinition } from '../types/tiles';
+import { TileSize } from './Tile';
 
 import Tile from './Tile';
 import TimeseriesTile from './TimeseriesTile';
 
 interface TileWithCallbackProps {
   tile: TileDefinition;
+  baseUrl: string;
+  size?: TileSize;
 }
 
 interface TileListProps {
   tiles: TileDefinition[];
 }
 
-function TileWithCallback({tile}: TileWithCallbackProps) {
+export function TileWithCallback({tile, baseUrl, size="smallsquare"}: TileWithCallbackProps) {
   // Put the call to Tile in its own component instead of inside the
   // map() in TileList so that each Tile can have its own memoized
   // callback function to use in onClick.
-  const { url } = useRouteMatch();
   const routerHistory = useHistory();
   const handleOnClick = useCallback(
-    () => routerHistory.push(`${url}/${tile.id}`),
-    [routerHistory, url, tile]);
+    () => routerHistory.push(`${baseUrl}/${tile.id}`),
+    [routerHistory, baseUrl, tile]);
 
   return (
     <Tile
-      title={tile.shortTitle} key={tile.id}
+      title={tile.shortTitle}
+      key={tile.id}
       onClick={handleOnClick}
+      size={size}
     >
-      {(tile.type === 'timeseries') ? <TimeseriesTile tile={tile} full={false} /> : null}
+      {(tile.type === 'timeseries') ?
+       <TimeseriesTile tile={tile} full={false} />
+      : null}
     </Tile>
   )
 }
 
 function TileList({tiles}: TileListProps) {
+  const { url } = useRouteMatch();
+
   return (
     <div className={styles.TileList}>
-      {tiles.map(tile => <TileWithCallback key={tile.id} tile={tile} />)}
+      {tiles.map(tile =>
+        <TileWithCallback
+          key={tile.id}
+          tile={tile}
+          baseUrl={url}
+        />)}
     </div>
   );
 }

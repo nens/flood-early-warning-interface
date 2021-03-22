@@ -1,15 +1,17 @@
 // Type of the whole config
 
-import { FeatureCollection } from 'geojson';
+import { FeatureCollection, Polygon } from 'geojson';
 import { TileDefinition } from './tiles';
 
+export interface WarningAreaProperties {
+  name: string;
+  id: string;
+}
+
 export interface Config {
-  clientconfig: {
-    configuration: {
-      bounding_box: [string, string, string, string],
-      mapbox_access_token: string,
-      tiles: TileDefinition[],
-      flood_warning_areas: FeatureCollection,
-    }
-  }
+  bounding_box: [string, string, string, string],
+  operationalModel: string,
+  mapbox_access_token: string,
+  tiles: TileDefinition[],
+  flood_warning_areas: FeatureCollection<Polygon, WarningAreaProperties>,
 }

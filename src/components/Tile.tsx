@@ -6,7 +6,7 @@ import RectProvider from '../providers/RectProvider';
 
 import styles from './Tile.module.css';
 
-type TileSize = "smallsquare" | "large" | "full" | "halfheight";
+export type TileSize = "smallsquare" | "large" | "full" | "halfheight";
 
 interface Props {
   title: string;
