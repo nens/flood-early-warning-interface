@@ -15,6 +15,10 @@ body {
   --primary-color: #002B49;
   --secondary-color: #00477A;
   --white-color: #f9f9f9;
+
+  --trigger-major: #f44;
+  --trigger-moderate: #ffa544;
+  --trigger-minor: #ff4;
 }
 
 /* Style to make body 100% height */

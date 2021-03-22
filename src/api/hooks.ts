@@ -15,6 +15,7 @@ import {
 import { Config } from '../types/config';
 import { RasterIntersection } from '../types/tiles';
 import { combineUrlAndParams } from '../util/http';
+import { isGaugeAlarm } from '../util/rasterAlarms';
 
 ///// React Query helper functions
 
@@ -67,19 +68,42 @@ export function useBootstrap() {
 
 
 export function useRasterAlarms() {
-  return useQuery<Paginated<RasterAlarm>, FetchError>(
+  const response = useQuery<Paginated<RasterAlarm>, FetchError>(
     'rasteralarms',
     () => fetchWithError('/api/v4/rasteralarms/?organisation__uuid=33b32fe8-0317-4390-9ef9-259744c32cc1&page_size=1000'),
     {...QUERY_OPTIONS, refetchInterval: 300000});
+
+  if (response.status === 'success') {
+    const gauges = response.data.results.filter(isGaugeAlarm);
+
+    if (gauges.length >= 3) {
+      gauges[0].latest_trigger.warning_level = 'minor';
+      gauges[1].latest_trigger.warning_level = 'moderate';
+      gauges[2].latest_trigger.warning_level = 'major';
+    }
+  }
+
+  return response;
 }
 
 
+interface WrappedConfig {
+  clientconfig: {
+    configuration: Config;
+  };
+}
+
 export function useConfig() {
-  return useQuery<Config, FetchError>(
+  const response = useQuery<WrappedConfig, FetchError>(
     'config',
     () => fetchWithError('/api/v4/clientconfigs/8/?format=json'),
     QUERY_OPTIONS
   );
+
+  return {
+    ...response,
+    data: response.data ? response.data.clientconfig.configuration : null
+  };
 }
 
 
@@ -96,7 +120,7 @@ export function useRasterMetadata(uuids: string[]) {
     })
   );
 
-  const success = results.every(result => result.isSuccess);
+  const success = results.every(result => result.isSuccess) && results.length === uuids.length;
 
   return {
     success,
@@ -132,7 +156,7 @@ export function useRasterEvents(
     })
   );
 
-  const success = results.every(result => result.isSuccess);
+  const success = results.every(result => result.isSuccess) && results.length === intersections.length;
 
   if (success) {
     const data: Events[] = results.map(result => ((result as any).data.data).map(
@@ -168,7 +192,7 @@ export function useTimeseriesMetadata(uuids: string[]) {
     })
   );
 
-  const success = results.every(result => result.isSuccess);
+  const success = results.every(result => result.isSuccess) && results.length === uuids.length;
 
   return {
     success,
@@ -204,7 +228,7 @@ export function useTimeseriesEvents(
     })
   );
 
-  const success = results.every(result => result.isSuccess);
+  const success = results.every(result => result.isSuccess) && results.length === uuids.length;
 
   if (success) {
     const data: Events[] = results.map(result => ((result as any).data).map(

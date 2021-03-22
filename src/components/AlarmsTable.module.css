@@ -12,6 +12,22 @@
   height: 3rem;
 }
 
+.tr_major {
+  background: var(--trigger-major);
+}
+
+.tr_moderate {
+  background: var(--trigger-moderate);
+}
+
+.tr_minor {
+  background: var(--trigger-minor);
+}
+
+.tr_highlight {
+  font-weight: bold;
+}
+
 .thtd {
   display: table-cell;
   font-weight: bold;
@@ -22,6 +38,13 @@
 .tdLeft {
   display: table-cell;
   text-align: left;
+  padding: 0.2rem;
+  vertical-align: middle;
+}
+
+.tdRight {
+  display: table-cell;
+  text-align: right;
   padding: 0.2rem;
   vertical-align: middle;
 }

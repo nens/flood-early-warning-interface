@@ -5,6 +5,7 @@ import { useParams, Redirect, useHistory } from 'react-router';
 import { TileDefinition } from '../types/tiles';
 import Tile from './Tile';
 import TimeseriesTile from './TimeseriesTile';
+import { TileWithCallback } from './TileList';
 import styles from './FullTileTab.module.css';
 
 interface Props {
@@ -34,19 +35,17 @@ function FullTileTab({tiles, url}: Props) {
       <div className={styles.Sidebar}>
         {tiles.map((tile) => (
           (tile.type === 'timeseries' ?
-           <Tile key={tile.id} size="smallsquare" title={tile.shortTitle}>
-             <TimeseriesTile tile={tile} full={false} />
-           </Tile>
+           <TileWithCallback key={tile.id} size="smallsquare" tile={tile} baseUrl={url}/>
          : null)
         ))}
       </div>
-      <div className={styles.FullTile}>
+      <div className={styles.FullTile} key={fullTile.id}>
         <Tile size="full" title={fullTile.title} x={onClickFullTile}>
           {fullTile.type === 'timeseries' ? <TimeseriesTile tile={fullTile} full={true} /> : null}
         </Tile>
       </div>
     </div>
-        );
+  );
 }
 
 export default FullTileTab;

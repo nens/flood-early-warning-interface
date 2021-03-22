@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { ConfigContext } from '../providers/ConfigProvider';
+import React from 'react';
+import { useConfigContext } from '../providers/ConfigProvider';
 import Tile from '../components/Tile';
 import ImageTile from '../components/ImageTile';
 import RainMap from '../components/RainMap';
@@ -9,7 +9,7 @@ import { ExternalTile } from '../types/tiles';
 import styles from './RainfallTab.module.css';
 
 function RainfallTab() {
-  const config = useContext(ConfigContext)!.config!.clientconfig!.configuration!;
+  const config = useConfigContext();
   const imageTiles = config.tiles.filter(tile => tile.type === 'external') as ExternalTile[];
 
   return (

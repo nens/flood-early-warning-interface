@@ -28,6 +28,8 @@ def fix_json(original):
         "-33.78071682642826"
     ]
 
+    original['operationalModel'] = "e7f7e720-da7b-44dd-a44e-c921f84bacbe"
+
     for tile in (original['tiles'] + original['publicTiles']):
         if 'bbox' in tile:
             del tile['bbox']
