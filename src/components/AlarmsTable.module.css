@@ -2,9 +2,12 @@
   position: relative;
   bottom: 0;
   display: table;
-  width: 100%;
+  width: calc(100% - 1rem);
   font-size: 70%;
   font-weight: semibold;
+  border-collapse: collapse;
+  cursor: pointer;
+  margin: 0.5rem;
 }
 
 .tr {
@@ -25,7 +28,8 @@
 }
 
 .tr_highlight {
-  font-weight: bold;
+  border: solid black 2px;
+  border-collapse: collapse;
 }
 
 .thtd {

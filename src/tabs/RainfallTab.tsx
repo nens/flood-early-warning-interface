@@ -23,7 +23,7 @@ function RainfallTab() {
       </div>
 
       <div className={styles.RainfallRight}>
-        <Tile size="full" title="Map with WMS layers that haven't been defined yet">
+        <Tile size="full" title="Rainfall totals">
           <RainMap />
         </Tile>
       </div>

@@ -463,6 +463,8 @@ function TimeseriesTile({tile, full}: Props) {
   const observationTypes = timeseriesMetadata.data!.map(ts => ts.observation_type).concat(
     (rasterMetadata.data!.map(raster => raster.observation_type)));
 
+  console.log('RASTERS', rasterMetadata.data!.map(raster => raster.uuid));
+
   const axes = _getAxes(observationTypes);
 
   const layout = _getLayout(

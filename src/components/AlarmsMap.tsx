@@ -1,18 +1,17 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import { Feature, Polygon } from 'geojson';
 import { RasterAlarm } from '../types/api';
 import { BoundingBox, pointInPolygon } from '../util/bounds';
 import { getMapBackgrounds } from '../constants';
 import { useConfigContext } from '../providers/ConfigProvider';
-import { RectContext } from '../providers/RectProvider';
-import { RectResult } from '../util/hooks';
+import { useRectContext } from '../providers/RectProvider';
 
 
 interface MapProps {
   alarms: RasterAlarm[];
-  hoverAlarm: string | null,
-  setHoverAlarm: (uuid: string | null) => void
+  hoverArea: string | null,
+  setHoverArea: (uuid: string | null) => void
 }
 
 function findAlarmForFeature(alarms: RasterAlarm[], feature: Feature | undefined) {
@@ -25,22 +24,22 @@ function findAlarmForFeature(alarms: RasterAlarm[], feature: Feature | undefined
   );
 }
 
-function AlarmsMap({ alarms, hoverAlarm, setHoverAlarm }: MapProps) {
+function AlarmsMap({ alarms, hoverArea, setHoverArea }: MapProps) {
   const config = useConfigContext();
-  const { rect } = useContext(RectContext) as {rect: RectResult};
+  const rect = useRectContext();
 
   const getFeatureStyle = useCallback(
     (feature: Feature | undefined) => {
-      const alarm = findAlarmForFeature(alarms, feature);
+      if (feature === undefined || feature === null) return {};
 
-      const highlight = alarm && alarm.uuid === hoverAlarm;
+      const alarm = findAlarmForFeature(alarms, feature);
+      const highlight = feature.id === hoverArea;
 
       if (alarm) {
         const warning_level = alarm.latest_trigger.warning_level;
-        console.log("Styling alarm!");
-        if (warning_level) {
+        if (warning_level && ['Minor', 'Moderate', 'Major'].indexOf(warning_level) !== -1) {
           return {
-            color: `var(--trigger-${warning_level})`,
+            color: `var(--trigger-${warning_level.toLowerCase()})`,
             fillOpacity: highlight ? 0.7 : 0.5,
             opacity: highlight ? 1 : 0.5
           }
@@ -52,19 +51,15 @@ function AlarmsMap({ alarms, hoverAlarm, setHoverAlarm }: MapProps) {
         fillOpacity: highlight ? 0.7 : 0.5,
         opacity: highlight ? 1 : 0.5
       };
-    }, [alarms, hoverAlarm]);
+    }, [alarms, hoverArea]);
 
   const setHoverEffects = useCallback(
     (feature: Feature<Polygon>, layer) => {
-      const alarm = findAlarmForFeature(alarms, feature);
-
-      if (alarm) {
-        layer.on({
-          mouseover: () => setHoverAlarm(alarm.uuid),
-          mouseout: () => setHoverAlarm(null)
-        });
-      }
-    }, [alarms, setHoverAlarm]);
+      layer.on({
+        mouseover: () => setHoverArea(feature ? (""+feature.id) : null),
+        mouseout: () => setHoverArea(null)
+      });
+    }, [setHoverArea]);
 
   const bounds = new BoundingBox(...config.bounding_box);
   const mapBackgrounds = getMapBackgrounds(config.mapbox_access_token);
@@ -79,8 +74,8 @@ function AlarmsMap({ alarms, hoverAlarm, setHoverAlarm }: MapProps) {
     >
       <TileLayer url={mapBackgrounds[1].url} />
       <GeoJSON
-        // Key is a trick to let layer redraw when hoverAlarm changes
-        key={"warning_areas" + alarms.length + hoverAlarm}
+        // Key is a trick to let layer redraw when hoverArea changes
+        key={"warning_areas" + alarms.length + hoverArea}
         data={config.flood_warning_areas}
         style={getFeatureStyle}
         onEachFeature={setHoverEffects}

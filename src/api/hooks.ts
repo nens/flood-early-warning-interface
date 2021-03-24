@@ -77,9 +77,9 @@ export function useRasterAlarms() {
     const gauges = response.data.results.filter(isGaugeAlarm);
 
     if (gauges.length >= 3) {
-      gauges[0].latest_trigger.warning_level = 'minor';
-      gauges[1].latest_trigger.warning_level = 'moderate';
-      gauges[2].latest_trigger.warning_level = 'major';
+      gauges[0].latest_trigger.warning_level = 'Minor';
+      gauges[1].latest_trigger.warning_level = 'Moderate';
+      gauges[2].latest_trigger.warning_level = 'Major';
     }
   }
 

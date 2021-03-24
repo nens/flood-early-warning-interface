@@ -10,7 +10,7 @@ import { isGaugeAlarm } from '../util/rasterAlarms';
 function AlarmsTab() {
   const response = useRasterAlarms();
 
-  const [hoverAlarm, setHoverAlarm] = useState<string | null>(null);
+  const [hoverArea, setHoverArea] = useState<string | null>(null);
 
   if (response.status === 'success') {
     const alarms = response.data;
@@ -22,15 +22,15 @@ function AlarmsTab() {
         <Tile title="Alarms" size="large">
           <AlarmsTable
             alarms={gaugeAlarms}
-            hoverAlarm={hoverAlarm}
-            setHoverAlarm={setHoverAlarm}
+            hoverArea={hoverArea}
+            setHoverArea={setHoverArea}
           />
         </Tile>
         <Tile title="Map" size="large">
           <AlarmsMap
             alarms={gaugeAlarms}
-            hoverAlarm={hoverAlarm}
-            setHoverAlarm={setHoverAlarm}
+            hoverArea={hoverArea}
+            setHoverArea={setHoverArea}
           />
         </Tile>
       </div>

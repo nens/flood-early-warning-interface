@@ -55,7 +55,17 @@ export interface ObservationType {
 
 
 export interface Raster {
+  uuid: string;
+  url: string;
   observation_type: ObservationType;
+  last_modified: string;
+  wms_info: {
+    endpoint: string;
+    layer: string
+  };
+  options: {
+    styles: string;
+  }
 }
 
 // We rewrite both raster and timeseries events immediately to this format
