@@ -6,7 +6,7 @@
   },
   "github": {
     "release": true,
-    "assets": "dist/hittestresstool-client.zip"
+    "assets": "dist/flood-early-warning-interface.zip"
   },
   "npm": {
     "publish": false
