@@ -15,15 +15,15 @@ interface MapProps {
   setHoverDam: (uuid: string | null) => void
 }
 
-function findAlarmForFeature(alarms: RasterAlarm[], feature: Feature | undefined) {
-  if (!feature || feature.geometry.type !== 'Polygon') {
-    return null;
-  }
-
-  return alarms.find(
-    alarm => pointInPolygon(alarm.geometry, feature.geometry as any as Polygon)
-  );
-}
+/* function findAlarmForFeature(alarms: RasterAlarm[], feature: Feature | undefined) {
+ *   if (!feature || feature.geometry.type !== 'Polygon') {
+ *     return null;
+ *   }
+ *
+ *   return alarms.find(
+ *     alarm => pointInPolygon(alarm.geometry, feature.geometry as any as Polygon)
+ *   );
+ * } */
 
 function AlarmsMap({ dams, hoverDam, setHoverDam }: MapProps) {
   const config = useConfigContext();
