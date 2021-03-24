@@ -55,9 +55,9 @@ function AlarmsMap({ dams, hoverDam, setHoverDam }: MapProps) {
    *   }, [alarms, hoverDam]);
    */
   const setHoverEffects = useCallback(
-    (feature: Feature<Point>, layer) => {
+    (feature: Feature<Point, DamProperties>, layer) => {
       layer.on({
-        mouseover: () => setHoverDam(feature ? (feature.name) : null),
+        mouseover: () => setHoverDam(feature ? (feature.properties.name) : null),
         mouseout: () => setHoverDam(null)
       });
     }, [setHoverDam]);

@@ -24,6 +24,8 @@ function DamAlarmsTab() {
         <Tile title="Alarms" size="large">
           <DamAlarmsTable
             dams={dams}
+            hoverDam={hoverDam}
+            setHoverDam={setHoverDam}
           />
         </Tile>
         <Tile title="Map" size="large">
