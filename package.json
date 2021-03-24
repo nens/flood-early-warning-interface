@@ -29,9 +29,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "mkdir -p dist/ && rm -rf dist/*.zip && react-scripts build && scripts/makedist.sh",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "release": "release-it"
   },
   "eslintConfig": {
     "extends": [
@@ -53,7 +54,8 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.7",
-    "http-proxy-middleware": "^1.0.6"
+    "http-proxy-middleware": "^1.0.6",
+    "release-it": "^14.5.0"
   },
-  "homepage": "https://parramatta.lizard.net/floodsmart/"
+  "homepage": "https://parramatta.lizard.net/floodsmart2/"
 }

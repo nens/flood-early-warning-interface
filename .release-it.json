@@ -1,0 +1,17 @@
+{
+  "prompt": {
+    "src": {
+      "status": true
+    }
+  },
+  "github": {
+    "release": true,
+    "assets": "dist/hittestresstool-client.zip"
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {
+    "after:bump": "yarn run build"
+  }
+}

@@ -58,15 +58,18 @@ const tabDefinition = [{
 },]
 
 function AppWithAuthentication() {
-return (
-<Router>
-  <Header />
-  <Switch>
-    <Route path="/floodsmart/" exact={true} children={(<Redirect to={'/floodsmart/'+tabDefinition[0].url}/>)} />
-    <Route path="/floodsmart/" children={(<Tabs definition={tabDefinition} />)}/>
-  </Switch>
-</Router>
-);
+  // We have both /floodsmart/ and /floodsmart2/ here for ease of use
+  return (
+    <Router>
+      <Header />
+      <Switch>
+        <Route path="/floodsmart/" exact={true} children={(<Redirect to={'/floodsmart/'+tabDefinition[0].url}/>)} />
+        <Route path="/floodsmart/" children={(<Tabs definition={tabDefinition} />)}/>
+        <Route path="/floodsmart2/" exact={true} children={(<Redirect to={'/floodsmart2/'+tabDefinition[0].url}/>)} />
+        <Route path="/floodsmart2/" children={(<Tabs definition={tabDefinition} />)}/>
+      </Switch>
+    </Router>
+  );
 }
 
 export default App;
