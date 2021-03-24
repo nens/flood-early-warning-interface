@@ -1,6 +1,6 @@
 // Type of the whole config
 
-import { FeatureCollection, Polygon } from 'geojson';
+import { FeatureCollection, Polygon, Point } from 'geojson';
 import { TileDefinition } from './tiles';
 
 export interface WarningAreaProperties {
