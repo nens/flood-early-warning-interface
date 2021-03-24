@@ -1,0 +1,7 @@
+.CurrentTime {
+  font-size: 80%;
+  position: absolute;
+  bottom: 0.05rem;
+  right: 1rem;
+  font-style: italic;
+}

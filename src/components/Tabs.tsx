@@ -5,6 +5,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 
+import CurrentTime from './CurrentTime';
 import TabBar from './TabBar';
 import styles from './Tabs.module.css';
 
@@ -27,6 +28,7 @@ function Tabs({definition}: TabsProps) {
           <div className={styles.Tabs}>
             <TabBar tabs={tabs} current={url} path={path}/>
             <div className={styles.TabContent}>{component}</div>
+            <CurrentTime />
           </div>
         }/>
       ))}

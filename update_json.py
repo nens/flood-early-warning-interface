@@ -79,6 +79,67 @@ RAINFALL_WMS = [
     },
 ]
 
+TIMESERIES_FOR_WARNING_AREAS = {
+    'McCoy Park': 'dda9d1ae-df86-4dac-9931-e78e58a1a93f',
+    'Toongabbie Creek': 'd6ef35c8-f61a-42e0-9bd6-0f26c5123439',
+    'Lower Toongabbie and Wentworthville': '0de5c794-05cf-46cd-8ac5-00882ef371b7',
+    'Westmead and North Parramatta': '88ddb4f6-8599-4890-9bb3-72727b27f3cf',
+    'Darling Mills Creek': '1818a7e3-9994-400f-b8a4-c190f8102417',
+    'Parramatta CBD': 'ce26f2e1-34c8-4fbb-abfa-204a06282f43',
+    'Brickfields Creek': '1a7689f9-84fe-4d3a-948c-0a0540b69b2b'
+}
+
+DAMS = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": 'McCoy Park Basin',
+                "timeseries": '0f0d0957-40af-4f7e-91bd-d4af804a9af6',
+                "has_level_forecast": True,
+            },
+            "geometry": {"type": "Point", "coordinates": [150.952261633, -33.779484495, 0]},
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Lake Parramatta Dam",
+                "timeseries": '0c11bc91-5222-4e65-ab66-f593f3cdc20a',
+                "has_level_forecast": True,
+            },
+            'geometry': {"type": "Point", "coordinates": [151.006651, -33.791032, 0]},
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Loyalty Road Basin",
+                "timeseries": '937fcb8d-5d05-4803-9764-1ef55c01285e',
+                "has_level_forecast": True,
+            },
+            "geometry": {"type": "Point", "coordinates": [151.005370013, -33.775744393, 0]},
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Muirfield Golf Course Basin",
+                "timeseries": "1876ba4f-df16-4f52-8af6-7b6c50007c3f",
+                "has_level_forecast": False,
+            },
+            "geometry": {"type": "Point", "coordinates": [151.01362, -33.76836, 0]},
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Northmead Reserve Basin",
+                "timeseries": "14d126e7-0e1d-47ba-9766-ab2c83f289b7",
+                "has_level_forecast": False,
+            },
+            "geometry": {"type": "Point", "coordinates": [151.00133, -33.78144, 0]},
+        }
+    ]
+}
+
 def get_raster_uuid(short_uuid):
     # Returns actual uuid of short uuid
     if len(short_uuid) > 10:
@@ -103,6 +164,7 @@ def fix_json(original):
     }
 
     original['rainfallWmsLayers'] = RAINFALL_WMS
+    original['dams'] = DAMS
 
     for tile in (original['tiles'] + original['publicTiles']):
         if 'bbox' in tile:

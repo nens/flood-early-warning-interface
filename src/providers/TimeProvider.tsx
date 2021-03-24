@@ -20,8 +20,16 @@ export const TimeContext = createContext<Times>({
 });
 
 
+function roundDown(d: Date) {
+  const minutes = d.getMinutes();
+  d.setMilliseconds(0);
+  d.setSeconds(0);
+  d.setMinutes(minutes - (minutes % 5));
+  return d;
+}
+
 function TimeProvider({ children }: WithChildren<{}>) {
-  const [now, setNow] = useState<Date>(new Date());
+  const [now, setNow] = useState<Date>(roundDown(new Date()));
 
   const getPeriod = (d: Date) => {
     const ms = d.getTime();
@@ -33,9 +41,10 @@ function TimeProvider({ children }: WithChildren<{}>) {
 
   const [start, end] = getPeriod(now);
 
-  // Update
+  // Update, taking rounding into account
   useEffect(() => {
-    setTimeout(() => setNow(new Date()), 5 * 60 * 1000);
+    setTimeout(() =>
+      setNow(new Date()), (5 * 60 * 1000) - (new Date().getTime() - now.getTime()));
   }, [now]);
 
   return (

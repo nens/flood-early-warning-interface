@@ -8,6 +8,7 @@ import TimeProvider from './providers/TimeProvider';
 import { QUERY_OPTIONS } from './api/hooks';
 import Tabs from './components/Tabs';
 import AlarmsTab from './tabs/AlarmsTab';
+import DamAlarmsTab from './tabs/DamAlarmsTab';
 import StationsChartsTab from './tabs/StationsChartsTab';
 import FloodModelTab from './tabs/FloodModelTab';
 import RainfallTab from './tabs/RainfallTab';
@@ -33,8 +34,6 @@ function App() {
   );
 }
 
-const DamAlarms = () => null;
-
 const tabDefinition = [{
   url: 'alarms',
     title: 'FloodSmart Warnings',
@@ -42,7 +41,7 @@ const tabDefinition = [{
 }, {
   url: 'damalarms',
     title: 'Dam Alarms',
-    component: <DamAlarms />
+    component: <DamAlarmsTab />
 }, {
   url: 'waterlevel',
     title: 'Flood Model Extent and Depths',

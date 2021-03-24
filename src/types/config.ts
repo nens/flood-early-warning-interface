@@ -8,6 +8,12 @@ export interface WarningAreaProperties {
   id: string;
 }
 
+export interface DamProperties {
+  name: string;
+  timeseries: string;
+  has_level_forecast: boolean;
+}
+
 export interface Config {
   bounding_box: [string, string, string, string];
   rasters: {
@@ -21,6 +27,10 @@ export interface Config {
     wms_layers: string;
   }[];
   mapbox_access_token: string;
+  timeseriesForWarningAreas: {
+    [name: string]: string
+  };
+  dams: FeatureCollection<Point, DamProperties>;
   tiles: TileDefinition[];
   publicTiles: TileDefinition[]; // For use in iframe mode
   flood_warning_areas: FeatureCollection<Polygon, WarningAreaProperties>;
