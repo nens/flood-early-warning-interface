@@ -2,10 +2,9 @@ import React, { useContext } from 'react';
 import { FeatureCollection, Feature, Point } from 'geojson';
 import { DamProperties } from '../types/config';
 import { RasterAlarm } from '../types/api';
-import { WarningAreaProperties } from '../types/config';
 import { thresholdsByWarningLevel } from '../util/rasterAlarms';
 import { arrayMax } from '../util/functions';
-import { pointInPolygon } from '../util/bounds';
+import { isSamePoint } from '../util/bounds';
 import { useRasterEvents } from '../api/hooks';
 import { TimeContext } from '../providers/TimeProvider';
 import { useConfigContext } from '../providers/ConfigProvider';
@@ -13,6 +12,7 @@ import styles from './AlarmsTable.module.css';
 
 interface TableProps {
   dams: FeatureCollection<Point, DamProperties>;
+  damAlarms: RasterAlarm[];
   hoverDam: string | null;
   setHoverDam: (uuid: string | null) => void;
 }
@@ -88,7 +88,10 @@ function DamRow({
   const warningClass = warningLevel ? `tr_${warningLevel.toLowerCase()}` : null;
 
   const highlight = hoverDam === dam.properties.name;
-  console.log('hoverDam = ', hoverDam, 'warningArea = ', dam.properties.name, 'highlight=', highlight);
+
+
+  const dashOrNum = (value: number | null | undefined): string =>
+    (value !== null && value !== undefined) ? value.toFixed(2) : "-";
 
   return (
     <div
@@ -98,10 +101,10 @@ function DamRow({
     >
       <div className={styles.tdLeft}>{dam.properties.name}</div>
       <div className={styles.tdCenter}>
-        {valueOfNow !== null ? valueOfNow.toFixed(2) : "-"}
+        {dashOrNum(valueOfNow)}
       </div>
       <div className={styles.tdCenter}>
-        {valueOfMax !== null ? valueOfMax.toFixed(2) : "-"}
+        {dashOrNum(valueOfMax)}
       </div>
       <div className={styles.tdCenter}>
         {timeOfMax !== null ? timeDiffToString(timeOfMax.getTime(), start.getTime()) : "-"}
@@ -109,18 +112,21 @@ function DamRow({
       <div className={styles.tdCenter}>
         {warningLevel || "-"}
       </div>
-      {/* <div className={styles.tdCenter}>{thresholds.minor.toFixed(2)}</div>
-          <div className={styles.tdCenter}>{thresholds.moderate.toFixed(2)}</div>
-          <div className={styles.tdCenter}>{thresholds.major.toFixed(2)}</div> */}
+      <div className={styles.tdCenter}>{dashOrNum(thresholds.blue)}</div>
+      <div className={styles.tdCenter}>{dashOrNum(thresholds.white)}</div>
+      <div className={styles.tdCenter}>{dashOrNum(thresholds.amber)}</div>
+      <div className={styles.tdCenter}>{dashOrNum(thresholds.red)}</div>
     </div>
   );
 }
 
-function DamAlarmsTable({ dams, hoverDam, setHoverDam }: TableProps) {
+function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) {
   const config = useConfigContext();
   const {now, end} = useContext(TimeContext);
 
   const operationalModelLevel = config.rasters.operationalModelLevel;
+
+  console.log('damAlarms', damAlarms);
 
   return (
     <div className={styles.alarmsTable}>
@@ -135,18 +141,22 @@ function DamAlarmsTable({ dams, hoverDam, setHoverDam }: TableProps) {
         <div className={styles.thtd}>Amber</div>
         <div className={styles.thtd}>Red</div>
       </div>
-      {dams.features.map((feature, idx) => (
-        <DamRow
-          dam={feature}
-          alarm={undefined}
-          start={now}
-          end={end}
-          key={idx}
-          hoverDam={hoverDam}
-          setHoverDam={setHoverDam}
-          operationalModelLevel={operationalModelLevel}
-        />
-      ))}
+      {dams.features.map((feature, idx) => {
+        const alarm = damAlarms.find(alarm => isSamePoint(alarm.geometry, feature.geometry));
+
+        return (
+          <DamRow
+            dam={feature}
+            alarm={alarm}
+            start={now}
+            end={end}
+            key={idx}
+            hoverDam={hoverDam}
+            setHoverDam={setHoverDam}
+            operationalModelLevel={operationalModelLevel}
+          />
+        );
+      })}
     </div>
   );
 }

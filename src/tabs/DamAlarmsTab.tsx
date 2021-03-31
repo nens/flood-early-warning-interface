@@ -5,7 +5,7 @@ import Tile from '../components/Tile';
 import DamAlarmsMap from '../components/DamAlarmsMap';
 import DamAlarmsTable from '../components/DamAlarmsTable';
 import { useRasterAlarms } from '../api/hooks';
-import { isGaugeAlarm } from '../util/rasterAlarms';
+import { isDamAlarm } from '../util/rasterAlarms';
 import { useConfigContext } from '../providers/ConfigProvider';
 
 function DamAlarmsTab() {
@@ -17,13 +17,14 @@ function DamAlarmsTab() {
   if (response.status === 'success') {
     const alarms = response.data;
 
-    const gaugeAlarms = alarms.results.filter(isGaugeAlarm);
+    const damAlarms = alarms.results.filter(isDamAlarm);
 
     return (
       <div className={styles.TileList}>
         <Tile title="Alarms" size="large">
           <DamAlarmsTable
             dams={dams}
+            damAlarms={damAlarms}
             hoverDam={hoverDam}
             setHoverDam={setHoverDam}
           />

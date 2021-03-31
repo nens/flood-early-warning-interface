@@ -35,7 +35,7 @@ export class BoundingBox {
   }
 }
 
-export function isSamePoint(a: Geometry, b: Geometry) {
+export function isSamePoint(a: Geometry, b: Geometry, epsilon: number = 0) {
   return (
     a.type === "Point" &&
     b.type === "Point" &&
@@ -43,8 +43,8 @@ export function isSamePoint(a: Geometry, b: Geometry) {
     a.coordinates.length >= 2 &&
     b.coordinates &&
     b.coordinates.length >= 2 &&
-    a.coordinates[0] === b.coordinates[0] &&
-    a.coordinates[1] === b.coordinates[1]
+    Math.abs(a.coordinates[0] - b.coordinates[0]) <= epsilon &&
+    Math.abs(a.coordinates[1] - b.coordinates[1]) <= epsilon
   );
 }
 

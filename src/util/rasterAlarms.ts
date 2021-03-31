@@ -9,6 +9,14 @@ export function isGaugeAlarm(alarm: RasterAlarm): boolean {
 }
 
 
+export function isDamAlarm(alarm: RasterAlarm): boolean {
+  // Return true if 'minor' is in the thresholds, dam alarms
+  // use other terms
+  return alarm.thresholds && alarm.thresholds.some(
+    ({warning_level}) => (warning_level.toLowerCase() === 'blue'));
+}
+
+
 export function thresholdsByWarningLevel(alarm: RasterAlarm): {[level: string]: number} {
   const result: {[level: string]: number} = {};
 
