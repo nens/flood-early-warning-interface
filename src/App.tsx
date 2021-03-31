@@ -36,24 +36,24 @@ function App() {
 
 const tabDefinition = [{
   url: 'alarms',
-    title: 'FloodSmart Warnings',
-    component: <AlarmsTab />
+  title: 'FloodSmart Warnings',
+  component: <AlarmsTab />
 }, {
   url: 'damalarms',
-    title: 'Dam Alarms',
-    component: <DamAlarmsTab />
+  title: 'Dam Alarms',
+  component: <DamAlarmsTab />
 }, {
   url: 'waterlevel',
-    title: 'Flood Model Extent and Depths',
-    component: <FloodModelTab />
+  title: 'Flood Model Extent and Depths',
+  component: <FloodModelTab />
 }, {
   url: 'rainfall',
-    title: 'Rainfall Forecast and Totals',
-    component: <RainfallTab/>
+  title: 'Rainfall Forecast and Totals',
+  component: <RainfallTab/>
 },{
   url: 'stations',
-    title: 'Stations & Graphs',
-    component: <StationsChartsTab />
+  title: 'Stations & Graphs',
+  component: <StationsChartsTab />
 },]
 
 function AppWithAuthentication() {

@@ -1,6 +1,7 @@
 // Hooks to do backend requests
 // These use useQuery, and return a status / json tuple.
 
+import { useContext } from 'react';
 import { useQuery, useQueries } from 'react-query';
 import {
   Paginated,
@@ -15,7 +16,9 @@ import {
 import { Config } from '../types/config';
 import { RasterIntersection } from '../types/tiles';
 import { combineUrlAndParams } from '../util/http';
+import { arrayMax } from '../util/functions';
 import { isGaugeAlarm } from '../util/rasterAlarms';
+import { TimeContext } from '../providers/TimeProvider';
 
 ///// React Query helper functions
 
@@ -179,6 +182,48 @@ export function useRasterEvents(
   }
 }
 
+
+interface MaxLevel {
+  time: Date | null;
+  value: number | null;
+}
+
+
+export function useMaxForecastAtPoint(intersection: RasterIntersection|null): MaxLevel {
+  // Figure out where 'max' is in the operation model events array
+  // Only look from timestamp 'now'
+  const {now, end} = useContext(TimeContext);
+  const forecastLevels = useRasterEvents(
+    intersection ? [intersection] : [],
+    now,
+    end
+  );
+
+  let value = null;
+  let time = null;
+
+  if (forecastLevels.success && forecastLevels.data.length > 0) {
+    const events = forecastLevels.data[0];
+
+    if (events !== null && events.length > 0) {
+      // Round value to cm, so we don't see a max in the future that shows as the same as
+      // current value
+      const indexOfMax = arrayMax(
+        events,
+        event => event.value !== null ? Math.round(event.value*100)/100 : -Infinity
+      );
+
+      if (indexOfMax !== -1) {
+        time = events[indexOfMax].timestamp;
+        value = events[indexOfMax].value;
+      }
+    }
+  }
+
+  return {time, value};
+}
+
+
 export function useTimeseriesMetadata(uuids: string[]) {
   // useQueries is a way to run a variable number of fetches with
   // a single hook (otherwise it would be against the hooks rule),
@@ -200,6 +245,16 @@ export function useTimeseriesMetadata(uuids: string[]) {
   };
 }
 
+
+export function useCurrentLevelTimeseries(uuid: string) {
+  // Fetch metadata of a single timeseries and return current level.
+  const timeseriesResponse = useTimeseriesMetadata(uuid ? [uuid] : []);
+  if (timeseriesResponse.success && timeseriesResponse.data.length > 0) {
+    const timeseries = timeseriesResponse.data[0];
+    return timeseries.last_value;
+  }
+  return null;
+}
 
 export function useTimeseriesEvents(
   uuids: string[],

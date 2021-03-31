@@ -1,4 +1,3 @@
-import React from 'react';
 import { Shape } from 'plotly.js';
 
 import { Point } from 'geojson';

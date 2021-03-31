@@ -6,6 +6,7 @@ import { TileDefinition } from './tiles';
 export interface WarningAreaProperties {
   name: string;
   id: string;
+  timeseries: string;
 }
 
 export interface DamProperties {

@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
+import { useClickToTimeseries } from '../util/config';
 import { FeatureCollection, Feature, Point } from 'geojson';
 import { DamProperties } from '../types/config';
 import { RasterAlarm } from '../types/api';
 import { thresholdsByWarningLevel } from '../util/rasterAlarms';
-import { arrayMax } from '../util/functions';
 import { isSamePoint } from '../util/bounds';
-import { useRasterEvents } from '../api/hooks';
+import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from '../api/hooks';
 import { TimeContext } from '../providers/TimeProvider';
 import { useConfigContext } from '../providers/ConfigProvider';
 import styles from './AlarmsTable.module.css';
@@ -20,8 +20,7 @@ interface TableProps {
 interface RowProps {
   dam: Feature<Point, DamProperties>;
   alarm: RasterAlarm | undefined;
-  start: Date;
-  end: Date;
+  now: Date;
   hoverDam: string | null;
   setHoverDam: (uuid: string | null) => void;
   operationalModelLevel: string;
@@ -37,58 +36,27 @@ function timeDiffToString(timestamp: number, now: number) {
   return (hours > 0 ? hours+"h" : "") + minutes + "m";
 }
 
-function roundToCm(level: number) {
-  return Math.round(level * 100) / 100;
-}
-
 function DamRow({
   dam,
   alarm,
-  start,
-  end,
+  now,
   hoverDam,
   setHoverDam,
   operationalModelLevel
 }: RowProps) {
+  const rowClick = useClickToTimeseries(dam.properties.timeseries);
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
 
-  // Figure out where 'max' is in the events array
-  let valueOfNow = null;
-  let indexOfMax = null;
-  let valueOfMax = null;
-  let timeOfMax = null;
-
-  const currentLevels = useRasterEvents(
-    alarm ? [{uuid: operationalModelLevel, geometry: alarm.geometry}] : [],
-    start,
-    end
-  );
-
-  if (currentLevels.success && currentLevels.data.length > 0) {
-    const events = currentLevels.data[0];
-
-    if (events !== null && events.length > 0) {
-      valueOfNow = events[0].value;
-
-      // Round value to cm, so we don't see a max in the future that shows as the same as
-      // current value
-      indexOfMax = arrayMax(
-        events,
-        event => event.value !== null ? roundToCm(event.value) : -Infinity
-      );
-
-      if (indexOfMax !== -1) {
-        timeOfMax = events[indexOfMax].timestamp;
-        valueOfMax = events[indexOfMax].value;
-      }
-    }
-  }
+  const currentLevel = useCurrentLevelTimeseries(dam.properties.timeseries);
+  const maxForecast = useMaxForecastAtPoint(dam.properties.has_level_forecast ? {
+    uuid: operationalModelLevel,
+    geometry: dam.geometry
+  } : null);
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const warningClass = warningLevel ? `tr_${warningLevel.toLowerCase()}` : null;
 
   const highlight = hoverDam === dam.properties.name;
-
 
   const dashOrNum = (value: number | null | undefined): string =>
     (value !== null && value !== undefined) ? value.toFixed(2) : "-";
@@ -97,17 +65,18 @@ function DamRow({
     <div
       className={`${styles.tr} ${warningClass ? styles[warningClass] : ""} ${highlight ? styles.tr_highlight : ""}`}
       onMouseEnter={() => setHoverDam(dam.properties.name)}
-      onMouseLeave={() => setHoverDam(null)}
+    onMouseLeave={() => setHoverDam(null)}
+     onClick={rowClick}
     >
       <div className={styles.tdLeft}>{dam.properties.name}</div>
       <div className={styles.tdCenter}>
-        {dashOrNum(valueOfNow)}
+        {dashOrNum(currentLevel)}
       </div>
       <div className={styles.tdCenter}>
-        {dashOrNum(valueOfMax)}
+        {dashOrNum(maxForecast.value)}
       </div>
       <div className={styles.tdCenter}>
-        {timeOfMax !== null ? timeDiffToString(timeOfMax.getTime(), start.getTime()) : "-"}
+        {maxForecast.time !== null ? timeDiffToString(maxForecast.time.getTime(), now.getTime()) : "-"}
       </div>
       <div className={styles.tdCenter}>
         {warningLevel || "-"}
@@ -122,7 +91,7 @@ function DamRow({
 
 function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) {
   const config = useConfigContext();
-  const {now, end} = useContext(TimeContext);
+  const {now} = useContext(TimeContext);
 
   const operationalModelLevel = config.rasters.operationalModelLevel;
 
@@ -148,8 +117,7 @@ function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) 
           <DamRow
             dam={feature}
             alarm={alarm}
-            start={now}
-            end={end}
+            now={now}
             key={idx}
             hoverDam={hoverDam}
             setHoverDam={setHoverDam}

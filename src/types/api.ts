@@ -83,5 +83,6 @@ export type EventsResponse = {
 }
 
 export interface Timeseries {
-  observation_type: ObservationType
+  observation_type: ObservationType;
+  last_value: number;
 }

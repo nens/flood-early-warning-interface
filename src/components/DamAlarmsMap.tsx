@@ -1,9 +1,8 @@
 import React, { useCallback } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import { FeatureCollection, Feature, Point } from 'geojson';
-import { RasterAlarm } from '../types/api';
 import { DamProperties } from '../types/config';
-import { BoundingBox, pointInPolygon } from '../util/bounds';
+import { BoundingBox } from '../util/bounds';
 import { getMapBackgrounds } from '../constants';
 import { useConfigContext } from '../providers/ConfigProvider';
 import { useRectContext } from '../providers/RectProvider';

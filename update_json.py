@@ -63,16 +63,6 @@ RAINFALL_WMS = [
         "wms_layers": "v0227_parramatta_rainfall_db:v0227_last_48hr"
     },
     {
-        "title": "Rainfall last 110hrs",
-        "wms_url": "https://maps1.project.lizard.net/geoserver/v0227_parramatta_rainfall_db/wms",
-        "wms_layers": "v0227_parramatta_rainfall_db:v0227_last_110hr"
-    },
-    {
-        "title": "Rainfall last 120hrs",
-        "wms_url": "https://maps1.project.lizard.net/geoserver/v0227_parramatta_rainfall_db/wms",
-        "wms_layers": "v0227_parramatta_rainfall_db:v0227_last_120hr"
-    },
-    {
         "title": "Rainfall max 6hrs",
         "wms_url": "https://maps1.project.lizard.net/geoserver/v0227_parramatta_rainfall_db/wms",
         "wms_layers": "v0227_parramatta_rainfall_db:v0227_max6hrs"
@@ -184,6 +174,10 @@ def fix_json(original):
     original['mapbox_access_token'] = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImNrZWlnbHdycjFqNHMyem95cWFqNzhkc3IifQ.ymzd92iqviR5RZ-dd-xRIg"
 
     fwa = json.load(open('data/fwa_wgs84_1pc.json'))
+    for feature in fwa['features']:
+        name = feature['properties']['name']
+        feature['properties']['timeseries'] = TIMESERIES_FOR_WARNING_AREAS[name]
+
     # for feature in fwa['features']:
     #     for polygon in feature['geometry']['coordinates']:
     #         for subpoly in polygon:
