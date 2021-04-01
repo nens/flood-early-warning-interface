@@ -4,15 +4,25 @@ import { Polygon, Tooltip } from 'react-leaflet';
 import { WarningArea } from '../types/config';
 import { RasterAlarm } from '../types/api';
 import { TRIGGER_LEVELS } from '../constants';
+import { useClickToTimeseries } from '../util/config';
 
 interface WarningAreaPolygonProps {
   warningArea: WarningArea;
   hover: boolean;
   onHover: (id: string|null) => void;
   alarm: RasterAlarm | null;
+  clickToTimeseriesUuid?: string | null;
 }
 
-function WarningAreaPolygon({warningArea, hover, onHover, alarm}: WarningAreaPolygonProps) {
+function WarningAreaPolygon({
+  warningArea,
+  hover,
+  onHover,
+  alarm,
+  clickToTimeseriesUuid
+}: WarningAreaPolygonProps) {
+  const onClick = useClickToTimeseries(clickToTimeseriesUuid || "");
+
   const positions = warningArea.geometry.coordinates[0].map(
     point => [point[1], point[0]] as L.LatLngExpression
   );
@@ -26,10 +36,11 @@ function WarningAreaPolygon({warningArea, hover, onHover, alarm}: WarningAreaPol
   return (
     <Polygon
       positions={positions} color={trigger}
-      key={""+hover}
+      key={""+hover+triggerLevel} // Otherwise it doesn't update
       eventHandlers={{
-        mouseover: () => {console.log(warningArea.id!); onHover(""+warningArea.id!) },
-        mouseout: () => onHover(null)
+        mouseover: () => onHover(""+warningArea.id!),
+        mouseout: () => onHover(null),
+        click: onClick
       }}
       fillOpacity={hover ? 0.7 : 0.5}
       opacity={hover ? 1 : 0.5}
