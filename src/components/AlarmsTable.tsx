@@ -9,6 +9,7 @@ import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from '../api/hooks';
 import { TimeContext } from '../providers/TimeProvider';
 import { useConfigContext } from '../providers/ConfigProvider';
 import styles from './AlarmsTable.module.css';
+import TriggerHeader from './TriggerHeader';
 
 interface TableProps {
   alarms: RasterAlarm[];
@@ -102,9 +103,9 @@ function AlarmsTable({ alarms, hoverArea, setHoverArea }: TableProps) {
         <div className={styles.thtd}>Max forecast (mAHD)</div>
         <div className={styles.thtd}>Time to max</div>
         <div className={styles.thtd}>Forecast level breached</div>
-        <div className={styles.thtd}>Minor</div>
-        <div className={styles.thtd}>Moderate</div>
-        <div className={styles.thtd}>Major</div>
+        <div className={styles.thtd}><TriggerHeader level="Minor"/></div>
+        <div className={styles.thtd}><TriggerHeader level="Moderate"/></div>
+        <div className={styles.thtd}><TriggerHeader level="Major"/></div>
       </div>
       {warning_areas.features.map((feature, idx) => (
         <WarningAreaRow
