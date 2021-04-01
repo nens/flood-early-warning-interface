@@ -56,28 +56,28 @@ function WarningAreaRow({
     (value !== null && value !== undefined) ? value.toFixed(2) : "-";
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
-  const warningClass = warningLevel ? `tr_${warningLevel.toLowerCase()}` : null;
-
+  const warningClass = warningLevel ? styles[`tr_${warningLevel.toLowerCase()}`] : "";
+  const warningClassTd = warningLevel ? styles.td_warning : "";
   const highlight = hoverArea === warningArea.id;
 
   return (
     <div
-      className={`${styles.tr} ${warningClass ? styles[warningClass] : ""} ${highlight ? styles.tr_highlight : ""}`}
+      className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
       onMouseEnter={() => setHoverArea("" + warningArea.id)}
       onMouseLeave={() => setHoverArea(null)}
       onClick={rowClick}
     >
       <div className={styles.tdLeft}>{warningArea.properties.name}</div>
-      <div className={styles.tdCenter}>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {dashOrNum(currentLevel)}
       </div>
-      <div className={styles.tdCenter}>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {dashOrNum(maxForecast.value)}
       </div>
-      <div className={styles.tdCenter}>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {maxForecast.time !== null ? timeDiffToString(maxForecast.time.getTime(), now.getTime()) : "-"}
       </div>
-      <div className={styles.tdCenter}>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {warningLevel || "-"}
       </div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>

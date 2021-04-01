@@ -16,9 +16,13 @@ body {
   --secondary-color: #00477A;
   --white-color: #f9f9f9;
 
+  --trigger-major-table: #ECCBCB;
   --trigger-major: #f44;
+  --trigger-moderate-table: #ffd2a1;
   --trigger-moderate: #ffa544;
+  --trigger-minor-table: #ffffa1;
   --trigger-minor: #ff4;
+  --trigger-none: #777;
 }
 
 /* Style to make body 100% height */

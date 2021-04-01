@@ -15,16 +15,21 @@
   height: 3rem;
 }
 
+.td_warning {
+  color: red;
+  font-weight: bold;
+}
+
 .tr_major {
-  background: var(--trigger-major);
+  background: var(--trigger-major-table);
 }
 
 .tr_moderate {
-  background: var(--trigger-moderate);
+  background: var(--trigger-moderate-table);
 }
 
 .tr_minor {
-  background: var(--trigger-minor);
+  background: var(--trigger-minor-table);
 }
 
 .tr_highlight {

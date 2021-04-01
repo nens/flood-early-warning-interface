@@ -15,7 +15,7 @@ function MapCircle({position, clickToTimeseriesUuid, label, triggerLevel}: MapCi
   const onClick = useClickToTimeseries(clickToTimeseriesUuid || "");
   const trigger = (triggerLevel && TRIGGER_LEVELS.indexOf(triggerLevel.toLowerCase()) !== -1 ?
                    `var(--trigger-${triggerLevel.toLowerCase()})` :
-                   '--trigger-none');
+                   'var(--trigger-none)');
   return (
     <CircleMarker
       center={position}

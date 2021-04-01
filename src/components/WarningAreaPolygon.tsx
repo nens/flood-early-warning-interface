@@ -31,7 +31,7 @@ function WarningAreaPolygon({
 
   const trigger = (triggerLevel && TRIGGER_LEVELS.indexOf(triggerLevel.toLowerCase()) !== -1 ?
                    `var(--trigger-${triggerLevel.toLowerCase()})` :
-                   '--trigger-none');
+                   'var(--trigger-none)');
 
   return (
     <Polygon
