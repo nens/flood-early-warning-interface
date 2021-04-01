@@ -10,3 +10,14 @@ export function getMapBackgrounds(access_token: string) {
     }
   ];
 }
+
+
+export const TRIGGER_LEVELS = [
+  'minor',
+  'moderate',
+  'major',
+  'blue',
+  'white',
+  'amber',
+  'red'
+];

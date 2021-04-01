@@ -6,7 +6,7 @@ import { BoundingBox, pointInPolygon } from '../util/bounds';
 import { getMapBackgrounds } from '../constants';
 import { useConfigContext } from '../providers/ConfigProvider';
 import { useRectContext } from '../providers/RectProvider';
-
+import WarningAreaPolygon from './WarningAreaPolygon';
 
 interface MapProps {
   alarms: RasterAlarm[];
@@ -21,7 +21,7 @@ function findAlarmForFeature(alarms: RasterAlarm[], feature: Feature | undefined
 
   return alarms.find(
     alarm => pointInPolygon(alarm.geometry, feature.geometry as any as Polygon)
-  );
+  ) || null;
 }
 
 function AlarmsMap({ alarms, hoverArea, setHoverArea }: MapProps) {
@@ -53,14 +53,6 @@ function AlarmsMap({ alarms, hoverArea, setHoverArea }: MapProps) {
       };
     }, [alarms, hoverArea]);
 
-  const setHoverEffects = useCallback(
-    (feature: Feature<Polygon>, layer) => {
-      layer.on({
-        mouseover: () => setHoverArea(feature ? (""+feature.id) : null),
-        mouseout: () => setHoverArea(null)
-      });
-    }, [setHoverArea]);
-
   const bounds = new BoundingBox(...config.bounding_box);
   const mapBackgrounds = getMapBackgrounds(config.mapbox_access_token);
 
@@ -73,13 +65,15 @@ function AlarmsMap({ alarms, hoverArea, setHoverArea }: MapProps) {
       style={{height: rect.height, width: rect.width}}
     >
       <TileLayer url={mapBackgrounds[1].url} />
-      <GeoJSON
-        // Key is a trick to let layer redraw when hoverArea changes
-        key={"warning_areas" + alarms.length + hoverArea}
-        data={config.flood_warning_areas}
-        style={getFeatureStyle}
-        onEachFeature={setHoverEffects}
-      />
+      {config.flood_warning_areas.features.map((warningArea, idx) => (
+        <WarningAreaPolygon
+          key={`${idx}${warningArea.properties.id}`}
+          warningArea={warningArea}
+          hover={hoverArea === warningArea.id!}
+          onHover={setHoverArea}
+          alarm={findAlarmForFeature(alarms, warningArea)}
+        />
+      ))}
     </MapContainer>
   );
 }
