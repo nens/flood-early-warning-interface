@@ -5,6 +5,7 @@ import { WarningAreaProperties } from '../types/config';
 import { thresholdsByWarningLevel } from '../util/rasterAlarms';
 import { pointInPolygon } from '../util/bounds';
 import { useClickToTimeseries } from '../util/config';
+import { dashOrNum } from '../util/functions';
 import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from '../api/hooks';
 import { TimeContext } from '../providers/TimeProvider';
 import { useConfigContext } from '../providers/ConfigProvider';
@@ -52,9 +53,6 @@ function WarningAreaRow({
     uuid: operationalModelLevel,
     geometry: alarm.geometry
   } : null);
-
-  const dashOrNum = (value: number | null | undefined): string =>
-    (value !== null && value !== undefined) ? value.toFixed(2) : "-";
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const warningClass = warningLevel ? styles[`tr_${warningLevel.toLowerCase()}`] : "";

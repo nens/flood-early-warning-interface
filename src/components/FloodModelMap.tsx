@@ -7,6 +7,7 @@ import { useRectContext } from '../providers/RectProvider';
 import { TimeContext } from '../providers/TimeProvider';
 import { useRasterMetadata } from '../api/hooks';
 import MapSelectBox from './MapSelectBox';
+import FloodModelPopup from './FloodModelPopup';
 
 type TimePeriod = [string, number];
 
@@ -30,16 +31,18 @@ function FloodModelMap() {
   const mapBackgrounds = getMapBackgrounds(mapbox_access_token);
 
   let wmsLayer = null;
-
+  let raster = null;
   let time = now;
+
   const selectedTimePeriod = TIME_PERIODS.find(period => period[0] === currentPeriod);
   if (selectedTimePeriod) {
     time = new Date(time.getTime() + selectedTimePeriod[1]);
+  } else {
+    console.error("TIME PERIOD NOT FOUND");
   }
 
   if (rasterResponse.success && rasterResponse.data.length > 0) {
-    const raster = rasterResponse.data[0];
-
+    raster = rasterResponse.data[0];
     wmsLayer = (
       <WMSTileLayer
         url={raster.wms_info.endpoint}
@@ -56,19 +59,20 @@ function FloodModelMap() {
 
   return (
     <>
-    <MapSelectBox
-    options={TIME_PERIODS.map(period => [period[0], period[0]])}
-    currentValue={currentPeriod}
-    setValue={setCurrentPeriod}
-    />
-    <MapContainer
-      key={`${rect.width}x${rect.height}`}
-      bounds={bounds.toLeafletBounds()}
-      style={{height: rect.height, width: rect.width}}
-    >
-      <TileLayer url={mapBackgrounds[1].url} />
-      {wmsLayer}
-    </MapContainer>
+      <MapSelectBox
+        options={TIME_PERIODS.map(period => [period[0], period[0]])}
+        currentValue={currentPeriod}
+        setValue={setCurrentPeriod}
+      />
+      <MapContainer
+        key={`${rect.width}x${rect.height}${time.getTime()}`}
+        bounds={bounds.toLeafletBounds()}
+        style={{height: rect.height, width: rect.width}}
+      >
+        <TileLayer url={mapBackgrounds[1].url} />
+        {wmsLayer}
+        {raster !== null ? <FloodModelPopup raster={raster.uuid} time={time} /> : null}
+      </MapContainer>
     </>
   );
 }

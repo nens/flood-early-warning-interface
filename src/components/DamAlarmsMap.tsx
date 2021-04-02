@@ -1,66 +1,30 @@
-import React, { useCallback } from 'react';
-import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
-import { FeatureCollection, Feature, Point } from 'geojson';
-import { DamProperties } from '../types/config';
-import { BoundingBox } from '../util/bounds';
+import React from 'react';
+import { MapContainer, TileLayer } from 'react-leaflet';
+import { Dam } from '../types/config';
+import { RasterAlarm } from '../types/api';
+import { BoundingBox, isSamePoint } from '../util/bounds';
 import { getMapBackgrounds } from '../constants';
 import { useConfigContext } from '../providers/ConfigProvider';
 import { useRectContext } from '../providers/RectProvider';
+import MapCircle from './MapCircle';
 
 
 interface MapProps {
-  dams: FeatureCollection<Point, DamProperties>;
-  hoverDam: string | null,
-  setHoverDam: (uuid: string | null) => void
+  dams: Dam[];
+  alarms: RasterAlarm[];
+  hoverDam: string | null;
+  setHoverDam: (uuid: string | null) => void;
 }
 
-/* function findAlarmForFeature(alarms: RasterAlarm[], feature: Feature | undefined) {
- *   if (!feature || feature.geometry.type !== 'Polygon') {
- *     return null;
- *   }
- *
- *   return alarms.find(
- *     alarm => pointInPolygon(alarm.geometry, feature.geometry as any as Polygon)
- *   );
- * } */
+function findAlarmForFeature(alarms: RasterAlarm[], feature: Dam) {
+  return alarms.find(
+    alarm => isSamePoint(alarm.geometry, feature.geometry)
+  ) || null;
+}
 
-function AlarmsMap({ dams, hoverDam, setHoverDam }: MapProps) {
+function DamAlarmsMap({ dams, alarms, hoverDam, setHoverDam }: MapProps) {
   const config = useConfigContext();
   const rect = useRectContext();
-
-  /* const getFeatureStyle = useCallback(
-   *   (feature: Feature | undefined) => {
-   *     if (feature === undefined || feature === null) return {};
-
-   *     const alarm = findAlarmForFeature(alarms, feature);
-   *     const highlight = feature.id === hoverDam;
-
-   *     if (alarm) {
-   *       const warning_level = alarm.latest_trigger.warning_level;
-   *       if (warning_level && ['Minor', 'Moderate', 'Major'].indexOf(warning_level) !== -1) {
-   *         return {
-   *           color: `var(--trigger-${warning_level.toLowerCase()})`,
-   *           fillOpacity: highlight ? 0.7 : 0.5,
-   *           opacity: highlight ? 1 : 0.5
-   *         }
-   *       }
-   *     }
-
-   *     return {
-   *       color: "grey",
-   *       fillOpacity: highlight ? 0.7 : 0.5,
-   *       opacity: highlight ? 1 : 0.5
-   *     };
-   *   }, [alarms, hoverDam]);
-   */
-  const setHoverEffects = useCallback(
-    (feature: Feature<Point, DamProperties>, layer) => {
-      layer.on({
-        mouseover: () => setHoverDam(feature ? (feature.properties.name) : null),
-        mouseout: () => setHoverDam(null)
-      });
-    }, [setHoverDam]);
-
   const bounds = new BoundingBox(...config.bounding_box);
   const mapBackgrounds = getMapBackgrounds(config.mapbox_access_token);
 
@@ -73,15 +37,22 @@ function AlarmsMap({ dams, hoverDam, setHoverDam }: MapProps) {
       style={{height: rect.height, width: rect.width}}
     >
       <TileLayer url={mapBackgrounds[1].url} />
-      <GeoJSON
-        // Key is a trick to let layer redraw when hoverDam changes
-        key={"warning_areas" + dams.features.length + hoverDam}
-        data={dams}
-//        style={getFeatureStyle}
-        onEachFeature={setHoverEffects}
-      />
+      {dams.map(dam => {
+        const alarm = findAlarmForFeature(alarms, dam);
+        return (
+          <MapCircle
+            position={[dam.geometry.coordinates[1], dam.geometry.coordinates[0]]}
+            clickToTimeseriesUuid={dam.properties.timeseries}
+            triggerLevel={alarm ? alarm.latest_trigger.warning_level : null}
+            label={dam.properties.name}
+            onHover={setHoverDam}
+            onHoverId={dam.properties.name}
+            hover={hoverDam === dam.properties.name}
+          />
+        );
+      })}
     </MapContainer>
   );
 }
 
-export default AlarmsMap;
+export default DamAlarmsMap;

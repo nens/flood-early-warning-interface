@@ -17,6 +17,8 @@ export interface DamProperties {
   has_level_forecast: boolean;
 }
 
+export type Dam = Feature<Point, DamProperties>;
+
 export interface Config {
   bounding_box: [string, string, string, string];
   rasters: {

@@ -23,7 +23,7 @@ function DamAlarmsTab() {
       <div className={styles.TileList}>
         <Tile title="Alarms" size="large">
           <DamAlarmsTable
-            dams={dams}
+            dams={dams.features}
             damAlarms={damAlarms}
             hoverDam={hoverDam}
             setHoverDam={setHoverDam}
@@ -31,7 +31,8 @@ function DamAlarmsTab() {
         </Tile>
         <Tile title="Map" size="large">
           <DamAlarmsMap
-            dams={dams}
+            dams={dams.features}
+            alarms={damAlarms}
             hoverDam={hoverDam}
             setHoverDam={setHoverDam}
           />

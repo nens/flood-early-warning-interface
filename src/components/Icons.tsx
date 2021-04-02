@@ -1,5 +1,3 @@
-import React from "react";
-
 export function IconActiveAlarmSVG() {
   return (
     <svg height="30" width="30">

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { ExternalTile } from '../types/tiles';
 import { RectResult } from '../util/hooks';

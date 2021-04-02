@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import Plot from "react-plotly.js";
 import { PlotData, Shape, Layout } from 'plotly.js';
 

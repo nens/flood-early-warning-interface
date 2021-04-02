@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { WithChildren } from '../types/util';
 
 import styles from './Tile.module.css';

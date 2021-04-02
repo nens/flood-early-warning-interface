@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
-import { Feature, Polygon } from 'geojson';
+import { Polygon } from 'geojson';
 import { RasterAlarm } from '../types/api';
 import { BoundingBox, pointInPolygon } from '../util/bounds';
 import { getMapBackgrounds } from '../constants';

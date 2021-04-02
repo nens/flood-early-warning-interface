@@ -17,7 +17,7 @@ import { Config } from '../types/config';
 import { RasterIntersection } from '../types/tiles';
 import { combineUrlAndParams } from '../util/http';
 import { arrayMax } from '../util/functions';
-import { isGaugeAlarm } from '../util/rasterAlarms';
+import { isGaugeAlarm, isDamAlarm } from '../util/rasterAlarms';
 import { TimeContext } from '../providers/TimeProvider';
 
 ///// React Query helper functions
@@ -76,6 +76,7 @@ export function useRasterAlarms() {
     () => fetchWithError('/api/v4/rasteralarms/?organisation__uuid=33b32fe8-0317-4390-9ef9-259744c32cc1&page_size=1000'),
     {...QUERY_OPTIONS, refetchInterval: 300000});
 
+  // XXX Hacks for testing
   if (response.status === 'success') {
     const gauges = response.data.results.filter(isGaugeAlarm);
 
@@ -83,6 +84,12 @@ export function useRasterAlarms() {
       gauges[0].latest_trigger.warning_level = 'Minor';
       gauges[1].latest_trigger.warning_level = 'Moderate';
       gauges[2].latest_trigger.warning_level = 'Major';
+    }
+
+    const damGauges = response.data.results.filter(isDamAlarm);
+
+    if (damGauges.length >= 1) {
+      damGauges[0].latest_trigger.warning_level = 'Blue';
     }
   }
 
