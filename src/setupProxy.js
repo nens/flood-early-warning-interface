@@ -20,4 +20,5 @@ module.exports = function(app) {
   app.use('/api', proxyMiddleware);
   app.use('/bootstrap', proxyMiddleware);
   app.use('/wms', proxyMiddleware);
+  app.use('/proxy', proxyMiddleware);
 };

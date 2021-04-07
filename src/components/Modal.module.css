@@ -1,0 +1,50 @@
+.ModalContainer {
+  position: fixed;
+  z-index: 2000; /* Even 1000 isn't enough to be over Leaflet's zoom control */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+}
+
+.Modal {
+  background: white;
+  color: var(--primary-color);
+  padding: 3rem;
+  margin: 25vh auto;
+  padding: 20px;
+  width: 50%;
+  height: 50vh;
+  overflow: none;
+  border: solid var(--primary-color) 1px;
+  border-radius: 10px;
+}
+
+.ModalTitle {
+  font-size: 125%;
+  font-weight: bold;
+  height: 3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.ModalContent {
+  height: 40vh;
+  overflow: auto;
+}
+
+.X {
+  float: right;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 150%;
+  vertical-align: top;
+  margin-top: -0.25rem;
+}
+
+.X:hover {
+  background: var(--secondary-color);
+}

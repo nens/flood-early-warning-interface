@@ -5,6 +5,7 @@ import { getMapBackgrounds } from '../constants';
 import { useConfigContext } from '../providers/ConfigProvider';
 import { useRectContext } from '../providers/RectProvider';
 import MapSelectBox from './MapSelectBox';
+import GeoserverGetFeatureInfoPopup from './GeoserverGetFeatureInfoPopup';
 
 function RainMap() {
   const { bounding_box, mapbox_access_token, rainfallWmsLayers } = useConfigContext();
@@ -19,6 +20,7 @@ function RainMap() {
   const mapBackgrounds = getMapBackgrounds(mapbox_access_token);
 
   let wmsTileLayer = null;
+  let geoserverFeatureInfo = null;
   let wmsLayerSelect = null;
   if (rainfallWmsLayers && rainfallWmsLayers.length) {
     wmsLayerSelect = (
@@ -40,6 +42,12 @@ function RainMap() {
           key={selectedLayer.wms_layers}
         />
       );
+      geoserverFeatureInfo = (
+        <GeoserverGetFeatureInfoPopup
+          url={selectedLayer.wms_url}
+          layer={selectedLayer.wms_layers}
+        />
+      );
     }
   }
 
@@ -53,6 +61,7 @@ function RainMap() {
       >
         <TileLayer url={mapBackgrounds[1].url} />
         {wmsTileLayer}
+        {geoserverFeatureInfo}
       </MapContainer>
     </>
   );

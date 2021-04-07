@@ -130,6 +130,70 @@ DAMS = {
     ]
 }
 
+RAIN_POPUP_FIELDS = [
+    {
+        "field": "descriptio",
+        "description": "Catchment name",
+        "type": "string"
+    },
+    {
+        "field": "area",
+        "description": "Catchment area",
+        "type": "string"
+    },
+    {
+        "field": "ner_l_1hr",
+        "description": "1hr total",
+        "type": "string"
+    },
+    {
+        "field": "ner_l_3hr",
+        "description": "3hr total",
+        "type": "string"
+    },
+    {
+        "field": "ner_l_6hr",
+        "description": "6hr total",
+        "type": "string"
+    },
+    {
+        "field": "ner_l_12hr",
+        "description": "12hr total",
+        "type": "string"
+    },
+    {
+        "field": "ner_l_24hr",
+        "description": "24hr total",
+        "type": "string"
+    },
+    {
+        "field": "ner_l_48hr",
+        "description": "48hr total",
+        "type": "string"
+    },
+    {
+        "field": "ner_f_3hr",
+        "description": "Forecast 3hr total",
+        "type": "string"
+    },
+    {
+        "field": "ner_f_6hr",
+        "description": "Forecast 6hr total",
+        "type": "string"
+    },
+    {
+        "field": "ner_f_12hr",
+        "description": "Forecast 12hr total",
+        "type": "string"
+    },
+    {
+        "field": "max6hrs",
+        "description": "72hr max 6hr total",
+        "type": "string"
+    },
+
+]
+
 def get_raster_uuid(short_uuid):
     # Returns actual uuid of short uuid
     if len(short_uuid) > 10:
@@ -155,6 +219,7 @@ def fix_json(original):
 
     original['rainfallWmsLayers'] = RAINFALL_WMS
     original['dams'] = DAMS
+    original['rainPopupFields'] = RAIN_POPUP_FIELDS
 
     for tile in (original['tiles'] + original['publicTiles']):
         if 'bbox' in tile:

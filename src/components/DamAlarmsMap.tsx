@@ -37,20 +37,21 @@ function DamAlarmsMap({ dams, alarms, hoverDam, setHoverDam }: MapProps) {
       style={{height: rect.height, width: rect.width}}
     >
       <TileLayer url={mapBackgrounds[1].url} />
-      {dams.map(dam => {
-        const alarm = findAlarmForFeature(alarms, dam);
-        return (
-          <MapCircle
-            position={[dam.geometry.coordinates[1], dam.geometry.coordinates[0]]}
-            clickToTimeseriesUuid={dam.properties.timeseries}
-            triggerLevel={alarm ? alarm.latest_trigger.warning_level : null}
-            label={dam.properties.name}
-            onHover={setHoverDam}
-            onHoverId={dam.properties.name}
-            hover={hoverDam === dam.properties.name}
-          />
+      {dams.map((dam, damIdx) => {
+      const alarm = findAlarmForFeature(alarms, dam);
+      return (
+      <MapCircle
+        key={`${damIdx}${hoverDam === dam.properties.name}`}
+        position={[dam.geometry.coordinates[1], dam.geometry.coordinates[0]]}
+        clickToTimeseriesUuid={dam.properties.timeseries}
+        triggerLevel={alarm ? alarm.latest_trigger.warning_level : null}
+        label={dam.properties.name}
+        onHover={setHoverDam}
+        onHoverId={dam.properties.name}
+        hover={hoverDam === dam.properties.name}
+        />
         );
-      })}
+        })}
     </MapContainer>
   );
 }

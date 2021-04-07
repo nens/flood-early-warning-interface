@@ -33,14 +33,14 @@ export const QUERY_OPTIONS = {
 };
 
 // Error to throw if status code isn't 2xx
-class FetchError extends Error {
+export class FetchError extends Error {
   constructor(public res: Response, message?: string) {
     super(message)
   }
 }
 
 // Fetch wrapper that throws an error on bad status
-const fetchWithError = async (path: string) => {
+export const fetchWithError = async (path: string) => {
   const headers = {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -312,3 +312,12 @@ export function useTimeseriesEvents(
     }
   }
 }
+
+
+/* export function useLegend(raster: string) {
+ *   // Fetch WMS legend and return it
+ *   return useQuery<LegendData, FetchError>(
+ *     `legend-${raster}`,
+ *     () => fetchWithError('/api/v4/wms/'),
+ *     QUERY_OPTIONS
+ * } */

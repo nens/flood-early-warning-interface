@@ -12,9 +12,10 @@ function MapSelectBox({ options, currentValue, setValue }: MapSelectBoxProps) {
       name="mapSelectBox"
       onChange={(e) => setValue(e.target.value)}
       className={styles.MapSelectBox}
+      value={currentValue || undefined}
     >
       {options.map((option) => (
-        <option key={option[0]} value={option[0]} selected={currentValue === option[0]}>
+        <option key={option[0]} value={option[0]}>
           {option[1]}
         </option>
       ))}

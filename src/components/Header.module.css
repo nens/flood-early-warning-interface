@@ -1,13 +1,58 @@
-.LogoCombo {
-  margin-left: var(--tabs-margin);
-  margin-top: 10px;
+.Header {
+  height: var(--header-height);
+  width: 100%;
 }
 
 .Title {
-  width: 100%;
-  margin: auto;
-  display: block;
-  font-weight: semibold;
+  margin: 0;
+  padding: 0;
+  margin-left: var(--tabs-margin);
+  font-weight: semi-bold;
   font-size: 200%;
+  text-align: left;
+  vertical-align: middle;
+  height: var(--header-height);
+  line-height: var(--header-height);
+}
+
+.InformationIcon {
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.RightBlock {
+  position: absolute;
+  right: var(--tabs-margin);
+  top: 0;
+  height: var(--header-height);
+  line-height: 1rem;
+  clear: none;
+  display: flex;
+}
+
+ul.LastModelRun {
+  display: block;
+  clear: none;
+  flex: 1;
+  list-style: none;
+  text-align: right;
+}
+
+ul.LastModelRun li {
+  padding: 0;
+  margin: 0;
+}
+
+.LogoutButton {
+  font-size: 100%;
+  margin: 1rem 0 1rem 0.5rem;
+  background: var(--white-color);
+  color: var(--primary-color);
   text-align: center;
+  padding: 0.5rem;
+  height: 1rem;
+  line-height: 1rem;
+  clear: none;
+  width: 5rem;
+  cursor: pointer;
 }

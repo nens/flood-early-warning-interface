@@ -11,14 +11,14 @@ export function useClickToTimeseries(timeseries: string): () => void {
   const { url } = useRouteMatch();
   const history = useHistory();
 
-  const tile = config.tiles.find(tile =>
-    (timeseries &&
-     tile.type === 'timeseries' &&
-     tile.timeseries &&
-     tile.timeseries.indexOf(timeseries) > -1)
-  );
-
   return useCallback(() => {
+    const tile = config.tiles.find(tile =>
+      (timeseries &&
+       tile.type === 'timeseries' &&
+       tile.timeseries &&
+       tile.timeseries.indexOf(timeseries) > -1)
+    );
+
     if (tile) {
       // url starts with something like /floodsmart/, we don't hardcode it so it can change.
       // urlParts[0] is the empty string, use [1].
@@ -27,5 +27,5 @@ export function useClickToTimeseries(timeseries: string): () => void {
 
       history.push(newUrl);
     }
-  }, [url, timeseries]);
+  }, [history, config, url, timeseries]);
 }

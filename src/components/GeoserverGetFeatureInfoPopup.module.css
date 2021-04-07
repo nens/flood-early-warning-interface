@@ -1,0 +1,16 @@
+.PopupRow {
+  width: 300px;
+  border-bottom: solid #bbb 1px;
+}
+
+.PopupField {
+  width: 40%;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.PopupValue {
+  width: 59%;
+  display: inline-block;
+  text-align: right;
+}

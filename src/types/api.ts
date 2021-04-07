@@ -21,6 +21,7 @@ export interface Bootstrap {
   },
   sso: {
     login: string;
+    logout: string;
   }
 }
 

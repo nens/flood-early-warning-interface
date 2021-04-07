@@ -19,6 +19,12 @@ export interface DamProperties {
 
 export type Dam = Feature<Point, DamProperties>;
 
+export interface RainPopupField {
+  field: string;
+  description: string;
+  type: "string";
+}
+
 export interface Config {
   bounding_box: [string, string, string, string];
   rasters: {
@@ -31,6 +37,7 @@ export interface Config {
     wms_url: string;
     wms_layers: string;
   }[];
+  rainPopupFields: RainPopupField[];
   mapbox_access_token: string;
   timeseriesForWarningAreas: {
     [name: string]: string
