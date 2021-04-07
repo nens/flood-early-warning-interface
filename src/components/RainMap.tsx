@@ -6,6 +6,7 @@ import { useConfigContext } from '../providers/ConfigProvider';
 import { useRectContext } from '../providers/RectProvider';
 import MapSelectBox from './MapSelectBox';
 import GeoserverGetFeatureInfoPopup from './GeoserverGetFeatureInfoPopup';
+import DesignStormsButton from './DesignStormsButton';
 
 function RainMap() {
   const { bounding_box, mapbox_access_token, rainfallWmsLayers } = useConfigContext();
@@ -54,6 +55,7 @@ function RainMap() {
   return (
     <>
       {wmsLayerSelect}
+      <DesignStormsButton/>
       <MapContainer
         key={`${rect.width}x${rect.height}`}
         bounds={bounds.toLeafletBounds()}
