@@ -57,7 +57,7 @@ function DamRow({
   const warningStyle = {
     background: warningLevel ? `var(--trigger-${warningLevel.toLowerCase()}-table)` : undefined
   }
-
+  const warningClassTd = warningLevel ? styles.td_warning : "";
   const highlight = hoverDam === dam.properties.name;
 
   const dashOrNum = (value: number | null | undefined): string =>
@@ -72,16 +72,16 @@ function DamRow({
       onClick={rowClick}
     >
       <div className={styles.tdLeft}>{dam.properties.name}</div>
-      <div className={styles.tdCenter}>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {dashOrNum(currentLevel)}
       </div>
-      <div className={styles.tdCenter}>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {dashOrNum(maxForecast.value)}
       </div>
-      <div className={styles.tdCenter}>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {maxForecast.time !== null ? timeDiffToString(maxForecast.time.getTime(), now.getTime()) : "-"}
       </div>
-      <div className={styles.tdCenter}>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {warningLevel || "-"}
       </div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.blue)}</div>
@@ -112,23 +112,23 @@ function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) 
         <div className={styles.thtd}><TriggerHeader level="White"/></div>
         <div className={styles.thtd}><TriggerHeader level="Amber"/></div>
         <div className={styles.thtd}><TriggerHeader level="Red"/></div>
-        </div>
-        {dams.map((dam, idx) => {
-          const alarm = damAlarms.find(alarm => isSamePoint(alarm.geometry, dam.geometry));
+      </div>
+      {dams.map((dam, idx) => {
+        const alarm = damAlarms.find(alarm => isSamePoint(alarm.geometry, dam.geometry));
 
-          return (
-            <DamRow
-              dam={dam}
-              alarm={alarm}
-              now={now}
-              key={idx}
-              hoverDam={hoverDam}
-              setHoverDam={setHoverDam}
-              operationalModelLevel={operationalModelLevel}
-            />
-          );
-        })}
-        </div>
+        return (
+          <DamRow
+            dam={dam}
+            alarm={alarm}
+            now={now}
+            key={idx}
+            hoverDam={hoverDam}
+            setHoverDam={setHoverDam}
+            operationalModelLevel={operationalModelLevel}
+          />
+        );
+      })}
+    </div>
   );
 }
 
