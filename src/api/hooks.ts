@@ -314,10 +314,29 @@ export function useTimeseriesEvents(
 }
 
 
-/* export function useLegend(raster: string) {
- *   // Fetch WMS legend and return it
- *   return useQuery<LegendData, FetchError>(
- *     `legend-${raster}`,
- *     () => fetchWithError('/api/v4/wms/'),
- *     QUERY_OPTIONS
- * } */
+export type LegendData = {value: number, color: string}[];
+
+export function useLegend(wmsUrl: string, raster: string, styles: string): LegendData | null {
+  // Fetch WMS legend and return it
+
+  const url = combineUrlAndParams(
+    (new URL(wmsUrl)).pathname, {
+      service: 'wms',
+      request: 'getlegend',
+      layer: raster,
+      steps: '10',
+      style: styles
+    });
+
+  const response = useQuery<{legend: LegendData}, FetchError>(
+    `legend-${raster}-${styles}`,
+    () => fetchWithError(url),
+    QUERY_OPTIONS
+  );
+
+  if (response.status === 'success') {
+    return response.data.legend;
+  } else {
+    return null;
+  }
+}

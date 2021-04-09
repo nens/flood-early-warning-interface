@@ -8,6 +8,7 @@ import { TimeContext } from '../providers/TimeProvider';
 import { useRasterMetadata } from '../api/hooks';
 import MapSelectBox from './MapSelectBox';
 import FloodModelPopup from './FloodModelPopup';
+import Legend from './Legend';
 
 type TimePeriod = [string, number];
 
@@ -31,6 +32,7 @@ function FloodModelMap() {
   const mapBackgrounds = getMapBackgrounds(mapbox_access_token);
 
   let wmsLayer = null;
+  let legend = null;
   let raster = null;
   let time = now;
 
@@ -55,6 +57,14 @@ function FloodModelMap() {
         }}
       />
     );
+
+    legend = (
+      <Legend
+        url={raster.wms_info.endpoint}
+        layer={raster.wms_info.layer}
+        styles={raster.options.styles}
+      />
+    );
   }
 
   return (
@@ -64,6 +74,7 @@ function FloodModelMap() {
         currentValue={currentPeriod}
         setValue={setCurrentPeriod}
       />
+      {legend}
       <MapContainer
         key={`${rect.width}x${rect.height}${time.getTime()}`}
         bounds={bounds.toLeafletBounds()}
