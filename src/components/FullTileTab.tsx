@@ -40,8 +40,13 @@ function FullTileTab({tiles, url}: Props) {
         ))}
       </div>
       <div className={styles.FullTile} key={fullTile.id}>
-        <Tile size="full" title={fullTile.title} x={onClickFullTile}>
-          {fullTile.type === 'timeseries' ? <TimeseriesTile tile={fullTile} full={true} /> : null}
+        <Tile
+          size="full"
+          title={fullTile.title}
+          x={onClickFullTile}
+          viewInLizardLink={fullTile.viewInLizardLink}
+        >
+          {fullTile.type === 'timeseries' ? <TimeseriesTile tile={fullTile} full /> : null}
         </Tile>
       </div>
     </div>

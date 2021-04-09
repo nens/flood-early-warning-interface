@@ -22,7 +22,7 @@ import {
 
 interface Props {
   tile: ChartTile;
-  full: boolean;
+  full?: boolean;
 }
 
 type Axes = [] | [ObservationType] | [ObservationType, ObservationType];
@@ -47,13 +47,14 @@ function getYAxis(observationType: ObservationType, side: "left"|"right") {
   return {
     title: observationType.unit || observationType.reference_frame,
     type: "linear" as const,
-    rangemode: isRatio ? "tozero" as const : "normal" as const,
+    rangemode: (isRatio ? "tozero" as const : "normal" as const),
     side: side,
-    overlaying: side === 'right' ? "y" as const : undefined,
+    overlaying: side === 'right' ? ("y" as const) : undefined,
     ticks: "outside" as const,
     tick0: isRatio ? 0 : undefined,
     showgrid: side === 'left',
-    zeroline: isRatio
+    zeroline: isRatio,
+    range: observationType.unit === 'mm' ? [0, 15] : undefined
   };
 }
 
@@ -131,10 +132,15 @@ function backgroundColorBetweenTwoX(
      This function creates a shape between 2 x values (with times in epoch)
      that will be used to show a different background color between these 2
      x values.
-
-     TODO: translate colors to Lizard colors?
    */
 
+  // Note we use layer 'below' to draw these *under* everything else. This is
+  // also not perfect perhaps, but at least they aren't in front of the data.
+  // If you (future me or someeone else) are going to work on this problem again,
+  // see this excellent blog post:
+  // https://medium.com/@tbarrasso/plotly-tip-2-svg-z-index-16c8a5125054
+  // In short things are drawn in the order they appear in the source; but we
+  // don't control much of that using React-Plotly.
   return {
     type: "rect" as const,
     xref: "x" as const,
@@ -147,7 +153,8 @@ function backgroundColorBetweenTwoX(
     opacity: opacity,
     line: {
       width: 0
-    }
+    },
+    layer: 'below'
   };
 }
 
@@ -300,6 +307,10 @@ function _getData(
       x: events.map(event => event.timestamp),
       y: events.map(event => event.value),
       name: _getLegend(observationType, legendString),
+      hoverinfo: full ? "x+y+name": "none",
+      hoverlabel: {
+        namelength: -1
+      }
     }
 
     if (axes.length > 1 && axes[1]!.url === observationType.url) {
@@ -420,18 +431,14 @@ function _getLayout(
   if (axes.length >= 1) {
     layout.yaxis = {
       ...getYAxis(axes[0]!, "left"),
-      // No longer be able to zoom on yaxis on isFull, but keep pointer
-      // cursor when isFull is false.
-      fixedrange: full,
+      fixedrange: true,
       visible: showAxis
     };
   }
   if (axes.length >= 2) {
     layout.yaxis2 = {
       ...getYAxis(axes[1]!, "right"),
-      // No longer be able to zoom on second yaxis on isFull, but keep
-      // pointer cursor when isFull is false.
-      fixedrange: full,
+      fixedrange: true,
       visible: showAxis
     };
   }
@@ -440,7 +447,8 @@ function _getLayout(
 }
 
 
-function TimeseriesTile({tile, full}: Props) {
+function TimeseriesTile({tile, full=false}: Props) {
+  console.log(tile);
   const { now, start, end } = useContext(TimeContext);
   const { rect } = useContext(RectContext) as {rect: RectResult};
 
@@ -462,8 +470,6 @@ function TimeseriesTile({tile, full}: Props) {
   const events = (timeseriesEvents.data!).concat(rasterEvents.data!);
   const observationTypes = timeseriesMetadata.data!.map(ts => ts.observation_type).concat(
     (rasterMetadata.data!.map(raster => raster.observation_type)));
-
-  console.log('RASTERS', rasterMetadata.data!.map(raster => raster.uuid));
 
   const axes = _getAxes(observationTypes);
 
@@ -495,7 +501,7 @@ function TimeseriesTile({tile, full}: Props) {
       className="fullPlot"
       data={data}
       layout={layout}
-      config={{displayModeBar: true}}
+      config={{displayModeBar: full}}
     />
   );
 }

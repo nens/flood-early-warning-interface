@@ -29,13 +29,13 @@ export function TileWithCallback({tile, baseUrl, size="smallsquare"}: TileWithCa
 
   return (
     <Tile
-      title={tile.shortTitle}
+      title={size === "full" ? tile.title : tile.shortTitle}
       key={tile.id}
       onClick={handleOnClick}
       size={size}
     >
       {(tile.type === 'timeseries') ?
-       <TimeseriesTile tile={tile} full={false} />
+       <TimeseriesTile tile={tile} />
       : null}
     </Tile>
   )
