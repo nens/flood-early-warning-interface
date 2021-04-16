@@ -35,6 +35,7 @@ function DesignStormsButton() {
                 </tr>
               </tbody>
             </table>
+            <p>Bureau of Meteorology ARR2016 design rainfall values taken in a central Parramatta catchment. Each catchment has a slightly different set of values. For more accuracy, please visit <a href="http://www.bom.gov.au/water/designRainfalls/revised-ifd/" target="_blank" title="Link to http://www.bom.gov.au/water/designRainfalls/revised-ifd/" rel="noreferrer">http://www.bom.gov.au/water/designRainfalls/revised-ifd/</a>.</p>
           </div>
         </Modal>
       ) : null}
