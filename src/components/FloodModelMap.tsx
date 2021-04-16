@@ -8,7 +8,7 @@ import { TimeContext } from '../providers/TimeProvider';
 import { useRasterMetadata } from '../api/hooks';
 import MapSelectBox from './MapSelectBox';
 import FloodModelPopup from './FloodModelPopup';
-import Legend from './Legend';
+import LizardRasterLegend from './LizardRasterLegend';
 
 type TimePeriod = [string, number];
 
@@ -20,7 +20,7 @@ const TIME_PERIODS: TimePeriod[] = [
 ];
 
 function FloodModelMap() {
-  const { bounding_box, mapbox_access_token, rasters } = useConfigContext();
+  const { boundingBoxes, mapbox_access_token, rasters, wmsLayers } = useConfigContext();
   const rect = useRectContext();
   const rasterResponse = useRasterMetadata([rasters.operationalModelDepth]);
   const { now } = useContext(TimeContext);
@@ -28,10 +28,11 @@ function FloodModelMap() {
 
   if (!rect.width || !rect.height) return null; // Too early
 
-  const bounds = new BoundingBox(...bounding_box);
+  const bounds = new BoundingBox(...(boundingBoxes.floodModelMap || boundingBoxes.default));
   const mapBackgrounds = getMapBackgrounds(mapbox_access_token);
 
   let wmsLayer = null;
+  let buildingsLayer = null;
   let legend = null;
   let raster = null;
   let time = now;
@@ -59,10 +60,24 @@ function FloodModelMap() {
     );
 
     legend = (
-      <Legend
+      <LizardRasterLegend
         url={raster.wms_info.endpoint}
         layer={raster.wms_info.layer}
         styles={raster.options.styles}
+      />
+    );
+  }
+
+  if (wmsLayers && wmsLayers.buildingsForFloodMap) {
+    const layer = wmsLayers.buildingsForFloodMap;
+
+    buildingsLayer = (
+      <WMSTileLayer
+        url={layer.wms}
+        layers={layer.layer}
+        styles={layer.styles}
+        format="image/png"
+        transparent
       />
     );
   }
@@ -81,6 +96,7 @@ function FloodModelMap() {
         style={{height: rect.height, width: rect.width}}
       >
         <TileLayer url={mapBackgrounds[1].url} />
+        {buildingsLayer}
         {wmsLayer}
         {raster !== null ? <FloodModelPopup raster={raster.uuid} time={time} /> : null}
       </MapContainer>

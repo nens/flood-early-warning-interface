@@ -5,10 +5,20 @@ import { useRasterMetadata } from '../api/hooks';
 
 import styles from './Header.module.css';
 
+const MONTHS = [
+  "January", "February", "March",
+  "April", "May", "June",
+  "July", "August", "September",
+  "October", "November", "December"
+];
+
 function _toTimeStr(d: Date) {
+  const day = d.getDate();
+  const month = MONTHS[d.getMonth()].substr(0, 3);
+
   const hours = d.getHours().toString().padStart(2, "0");
   const minutes = d.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
+  return `${day} ${month} ${hours}:${minutes}`;
 }
 
 function LastUpdate() {
@@ -26,7 +36,7 @@ function LastUpdate() {
   return (
     <ul className={styles.LastModelRun}>
       <li>last model run {lastModelRun}</li>
-      <li>current dashboard time {_toTimeStr(now)}</li>
+      <li>last dashboard refresh {_toTimeStr(now)}</li>
     </ul>
   );
 }

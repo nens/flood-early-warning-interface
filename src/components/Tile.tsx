@@ -16,6 +16,7 @@ interface Props {
   onClick?: () => void;
   x?: () => void;
   viewInLizardLink?: string;
+  rightText?: string;
 }
 
 function Tile({
@@ -24,7 +25,8 @@ function Tile({
   onClick,
   x,
   viewInLizardLink,
-  size="smallsquare"
+  size="smallsquare",
+  rightText
 }: WithChildren<Props>) {
   // We compute the size of the content div and supply it in a context to children
   const contentDivRef = useRef<HTMLDivElement>(null);
@@ -49,6 +51,7 @@ function Tile({
            className={styles.LizardIcon}
            onClick={() => window.open(viewInLizardLink, "_blank")}
          /> : null}
+        {rightText ? <span className={styles.RightText}>{rightText}</span> : null}
       </div>
       <RectProvider rect={rect}>
         <div ref={contentDivRef} className={styles.Content}>

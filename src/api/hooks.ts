@@ -89,7 +89,7 @@ export function useRasterAlarms() {
     const damGauges = response.data.results.filter(isDamAlarm);
 
     if (damGauges.length >= 1) {
-      damGauges[0].latest_trigger.warning_level = 'Blue';
+      damGauges[0].latest_trigger.warning_level = 'Monitor';
     }
   }
 

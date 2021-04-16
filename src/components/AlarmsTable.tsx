@@ -34,7 +34,7 @@ function timeDiffToString(timestamp: number, now: number) {
   const minutes = diffMinutes % 60;
   const hours = (diffMinutes - minutes) / 60;
 
-  return (hours > 0 ? hours+"h" : "") + minutes + "m";
+  return (hours > 0 ? hours+"h" : "") + minutes + "min";
 }
 
 function WarningAreaRow({

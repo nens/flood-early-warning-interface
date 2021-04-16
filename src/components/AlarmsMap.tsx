@@ -37,7 +37,8 @@ function findFeatureForAlarm(alarm: RasterAlarm, features: WarningArea[]) {
 function AlarmsMap({ alarms, hoverArea, setHoverArea }: MapProps) {
   const config = useConfigContext();
   const rect = useRectContext();
-  const bounds = new BoundingBox(...config.bounding_box);
+  const boundingBoxes = config.boundingBoxes;
+  const bounds = new BoundingBox(...(boundingBoxes.warningAreas || boundingBoxes.default));
   const mapBackgrounds = getMapBackgrounds(config.mapbox_access_token);
 
   if (!rect.width || !rect.height) return null; // Too early

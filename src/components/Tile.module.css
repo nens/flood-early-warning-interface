@@ -76,6 +76,10 @@
   background: var(--primary-color);
 }
 
+.RightText {
+  float: right;
+}
+
 .Content {
   position: relative;
   margin: 0;

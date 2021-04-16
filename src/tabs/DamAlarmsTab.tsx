@@ -21,7 +21,7 @@ function DamAlarmsTab() {
 
     return (
       <div className={styles.TileList}>
-        <Tile title="Alarms" size="large">
+        <Tile title="Alarms" size="large" rightText="DSEP triggers (mAHD)">
           <DamAlarmsTable
             dams={dams.features}
             damAlarms={damAlarms}

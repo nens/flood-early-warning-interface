@@ -33,7 +33,7 @@ function timeDiffToString(timestamp: number, now: number) {
   const minutes = diffMinutes % 60;
   const hours = (diffMinutes - minutes) / 60;
 
-  return (hours > 0 ? hours+"h" : "") + minutes + "m";
+  return (hours > 0 ? hours+"h" : "") + minutes + "min";
 }
 
 function DamRow({
@@ -84,7 +84,7 @@ function DamRow({
       <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {warningLevel || "-"}
       </div>
-      <div className={styles.tdCenter}>{dashOrNum(thresholds.blue)}</div>
+      <div className={styles.tdCenter}>{dashOrNum(thresholds.monitor)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.white)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.amber)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.red)}</div>
@@ -108,7 +108,7 @@ function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) 
         <div className={styles.thtd}>Max forecast (mAHD)</div>
         <div className={styles.thtd}>Time to max</div>
         <div className={styles.thtd}>Forecast level breached</div>
-        <div className={styles.thtd}><TriggerHeader level="Blue"/></div>
+        <div className={styles.thtd}><TriggerHeader level="Monitor"/></div>
         <div className={styles.thtd}><TriggerHeader level="White"/></div>
         <div className={styles.thtd}><TriggerHeader level="Amber"/></div>
         <div className={styles.thtd}><TriggerHeader level="Red"/></div>

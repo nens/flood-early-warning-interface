@@ -25,13 +25,30 @@ export interface RainPopupField {
   type: "string";
 }
 
+export interface WMSLayer {
+  wms: string;
+  layer: string;
+  styles: string;
+}
+
+export type BoundingBox = [string, string, string, string];
 export interface Config {
-  bounding_box: [string, string, string, string];
+  boundingBoxes: {
+    default: BoundingBox;
+    rainMap?: BoundingBox;
+    floodModelMap?: BoundingBox;
+    warningAreas?: BoundingBox;
+    dams?: BoundingBox;
+  },
   rasters: {
     operationalModelLevel: string;
     operationalModelDepth: string;
     rainForecast: string;
   };
+  wmsLayers?: {
+    [name: string]: WMSLayer
+  },
+  rainLegend: [string, string][],
   rainfallWmsLayers?: {
     title: string;
     wms_url: string;

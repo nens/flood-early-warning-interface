@@ -16,7 +16,7 @@ export const TRIGGER_LEVELS = [
   'minor',
   'moderate',
   'major',
-  'blue',
+  'monitor',
   'white',
   'amber',
   'red'

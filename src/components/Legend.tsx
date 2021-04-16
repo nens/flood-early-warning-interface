@@ -1,11 +1,7 @@
-import { useLegend } from '../api/hooks';
-
 import cssStyles from './Legend.module.css';
 
 interface LegendProps {
-  url: string;
-  layer: string;
-  styles: string;
+  steps: [string, string][];
 }
 
 function hexToR(h: string) {
@@ -37,29 +33,24 @@ function getCorrectTextColor(hex: string) {
   }
 }
 
-function Legend({ url, layer, styles}: LegendProps) {
-  const legend = useLegend(url, layer, styles);
-
-
+function Legend({ steps }: LegendProps) {
   return (
     <div className={cssStyles.Legend}>
     <span className={cssStyles.LegendTitle}>Legend</span>
-      {legend !== null ? (
         <ul className={cssStyles.LegendUl}>
-        {legend.slice(0).reverse().map(({value, color}, idx) => (
+        {steps.map(([value, color], idx) => (
           <li
             className={cssStyles.LegendStep}
-            key={color}
+            key={`${color}${idx}`}
             style={{
               background: color,
               color: getCorrectTextColor(color)
             }}
           >
-            {idx === 0 ? `> ${value}m` : `${Math.round(value*10)/10}m`}
+          {value}
           </li>
         ))}
         </ul>
-      ) : null}
     </div>
   );
 }

@@ -23,6 +23,11 @@ function Header() {
       </div>
       {showModal ? (
         <Modal close={() => setShowModal(false)} title="About this dashboard">
+          <img
+            alt="Logos of contributing organizations"
+            style={{display: 'block', margin: 'auto'}}
+            src="static/logo-combo.png"
+          />
           <h4>Terms &amp; Conditions</h4>
           <p>
             Use of the FloodSmart Parramatta System is subject to the terms and
@@ -113,11 +118,6 @@ function Header() {
               not expressly outlined in these conditions.
             </li>
           </ol>
-          <img
-            alt="Logos of contributing organizations"
-            style={{display: 'block', margin: 'auto'}}
-            src="static/logo-combo.png"
-          />
         </Modal>
       ) : null}
     </div>

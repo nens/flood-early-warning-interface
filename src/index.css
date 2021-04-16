@@ -22,8 +22,8 @@ body {
   --trigger-moderate: #ffa544;
   --trigger-minor-table: #ffffa1;
   --trigger-minor: #ff4;
-  --trigger-blue-table: #8090ff;
-  --trigger-blue: #00477A;
+  --trigger-monitor-table: #8090ff;
+  --trigger-monitor: #00477A;
   --trigger-white-table: #fff;
   --trigger-white: #fff;
   --trigger-amber-table: #ffd2a1;
@@ -49,11 +49,11 @@ body,
 
 @media only screen and (max-width: 815px) {
   html {
-    font-size: 7px;
+    font-size: 9px;
   }
 }
 
-@media only screen and (max-width: 1229px) {
+@media only screen and (max-width: 1229px) and (min-width: 816px) {
   html {
     font-size: 14px;
   }

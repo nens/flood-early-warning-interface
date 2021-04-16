@@ -10,7 +10,7 @@
   bottom: 1rem;
   position: absolute;
   text-align: center;
-  width: 6rem;
+  width: 8rem;
 }
 
 .LegendTitle {
@@ -33,7 +33,6 @@
   width: calc(100% - 1rem);
   margin-left: 0.5rem;
   height: 1.25rem;
-  text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }

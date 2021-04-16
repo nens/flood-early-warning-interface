@@ -7,9 +7,10 @@ import { useRectContext } from '../providers/RectProvider';
 import MapSelectBox from './MapSelectBox';
 import GeoserverGetFeatureInfoPopup from './GeoserverGetFeatureInfoPopup';
 import DesignStormsButton from './DesignStormsButton';
+import Legend from './Legend';
 
 function RainMap() {
-  const { bounding_box, mapbox_access_token, rainfallWmsLayers } = useConfigContext();
+  const { boundingBoxes, mapbox_access_token, rainfallWmsLayers, rainLegend } = useConfigContext();
   const rect = useRectContext();
   const [currentLayer, setCurrentLayer] = useState<string>(
     rainfallWmsLayers && rainfallWmsLayers.length ? rainfallWmsLayers[0].wms_layers : ""
@@ -17,7 +18,7 @@ function RainMap() {
 
   if (!rect.width || !rect.height) return null; // Too early
 
-  const bounds = new BoundingBox(...bounding_box);
+  const bounds = new BoundingBox(...(boundingBoxes.rainMap || boundingBoxes.default));
   const mapBackgrounds = getMapBackgrounds(mapbox_access_token);
 
   let wmsTileLayer = null;
@@ -39,8 +40,9 @@ function RainMap() {
         <WMSTileLayer
           url={selectedLayer.wms_url}
           layers={selectedLayer.wms_layers}
-          opacity={0.5}
           key={selectedLayer.wms_layers}
+          format={'image/png'}
+          transparent={true}
         />
       );
       geoserverFeatureInfo = (
@@ -56,6 +58,7 @@ function RainMap() {
     <>
       {wmsLayerSelect}
       <DesignStormsButton/>
+      <Legend steps={rainLegend} />
       <MapContainer
         key={`${rect.width}x${rect.height}`}
         bounds={bounds.toLeafletBounds()}

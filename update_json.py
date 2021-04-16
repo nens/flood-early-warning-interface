@@ -79,6 +79,18 @@ TIMESERIES_FOR_WARNING_AREAS = {
     'Brickfields Creek': '1a7689f9-84fe-4d3a-948c-0a0540b69b2b'
 }
 
+RAIN_LEGEND = [
+    ['<10 mm', '#FFFFFF'],
+    ['10-20 mm', '#7DAED0'],
+    ['20-30 mm', '#499ED7'],
+    ['30-50 mm', '#2F82B3'],
+    ['50-100 mm', '#BDB23B'],
+    ['100-200 mm', '#EEA819'],
+    ['200-300 mm', '#E75339'],
+    ['300-500 mm', '#BE527D'],
+    ['>500 mm', '#9B59B6']
+]
+
 DAMS = {
     "type": "FeatureCollection",
     "features": [
@@ -103,7 +115,7 @@ DAMS = {
         {
             "type": "Feature",
             "properties": {
-                "name": "Loyalty Road Basin",
+                "name": "Loyalty Road Basin (owned by Local Land Services)",
                 "timeseries": '937fcb8d-5d05-4803-9764-1ef55c01285e',
                 "has_level_forecast": True,
             },
@@ -204,12 +216,14 @@ def get_raster_uuid(short_uuid):
 
 
 def fix_json(original):
-    original['bounding_box'] = [
-        "150.96240520477298",
-        "-33.81217200269498",
-        "151.03141307830813",
-        "-33.78071682642826"
-    ]
+    original['boundingBoxes'] = {
+        'default': [
+            "150.96240520477298",
+            "-33.81217200269498",
+            "151.03141307830813",
+            "-33.78071682642826"
+        ],
+    }
 
     original['rasters'] = {
         'operationalModelLevel': "e7f7e720-da7b-44dd-a44e-c921f84bacbe",
@@ -217,9 +231,18 @@ def fix_json(original):
         'rainForecast': "6ccb42ce-4e97-4376-b010-1b76a57b5253"
     }
 
+    original['wmsLayers'] = {
+        'buildingsForFloodMap': {
+            'wms': 'https://geoserver9.lizard.net/geoserver/parramatta/wms',
+            'layer': 'cadaster',
+            'styles': ''
+        }
+    }
+
     original['rainfallWmsLayers'] = RAINFALL_WMS
     original['dams'] = DAMS
     original['rainPopupFields'] = RAIN_POPUP_FIELDS
+    original['rainLegend'] = RAIN_LEGEND
 
     for tile in (original['tiles'] + original['publicTiles']):
         if 'bbox' in tile:

@@ -19,7 +19,7 @@ function AlarmsTab() {
 
     return (
       <div className={styles.TileList}>
-        <Tile title="Alarms" size="large">
+        <Tile title="Alarms" size="large" rightText="Trigger levels (mAHD)">
           <AlarmsTable
             alarms={gaugeAlarms}
             hoverArea={hoverArea}
