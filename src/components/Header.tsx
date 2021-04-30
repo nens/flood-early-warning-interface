@@ -25,8 +25,12 @@ function Header() {
         <Modal close={() => setShowModal(false)} title="About this dashboard">
           <img
             alt="Logos of contributing organizations"
-            style={{display: 'block', margin: 'auto'}}
-            src="static/logo-combo.png"
+            style={{
+              display: 'block',
+              margin: 'auto',
+              width: "90%",
+            }}
+            src="static/logos-parramatta.png"
           />
           <h4>Terms &amp; Conditions</h4>
           <p>

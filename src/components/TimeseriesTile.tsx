@@ -9,12 +9,14 @@ import {
   Threshold,
   Timeline
 } from '../types/tiles';
-import { ObservationType, Events } from '../types/api';
+import { ObservationType, Events, RasterAlarm } from '../types/api';
 import { RectResult } from '../util/hooks';
+import { isSamePoint } from '../util/bounds';
 import { RectContext } from '../providers/RectProvider';
 import { TimeContext } from '../providers/TimeProvider';
 import {
   useRasterMetadata,
+  useRasterAlarms,
   useRasterEvents,
   useTimeseriesMetadata,
   useTimeseriesEvents
@@ -27,6 +29,16 @@ interface Props {
 
 type Axes = [] | [ObservationType] | [ObservationType, ObservationType];
 
+
+const TRIGGER_LEVEL_TO_COLOR: {[key: string]: string} = {
+  major: "#f44",
+  moderate: "#ffa544",
+  minor: "#ff4",
+  monitor: "#00477A",
+  white: "#999",
+  amber: "#ffa544",
+  red: "#f44"
+};
 
 function _getAxes(observationTypes: ObservationType[]): Axes {
   const first: ObservationType = observationTypes[0];
@@ -175,6 +187,32 @@ function getThresholdLine(threshold: Threshold, yref: string) {
   };
 }
 
+function getAlarmLines(alarm: RasterAlarm, yref: string) {
+  return alarm.thresholds.map(threshold => {
+    const color = (
+      alarm.latest_trigger.warning_level === threshold.warning_level ?
+      TRIGGER_LEVEL_TO_COLOR[threshold.warning_level!.toLowerCase()] :
+      "#888"
+    ) || "#888";
+
+    return {
+      type: "line",
+      layer: "above",
+      xref: "paper",
+      x0: 0,
+      x1: 1,
+      yref,
+      y0: threshold.value,
+      y1: threshold.value,
+      line: {
+        dash: "dot",
+        color,
+        width: 2
+      }
+    };
+  });
+}
+
 function getThresholdAnnotation(threshold: Threshold, yref: string) {
   return {
     text: " " + threshold.label + " ",
@@ -189,10 +227,38 @@ function getThresholdAnnotation(threshold: Threshold, yref: string) {
   };
 }
 
+function getAlarmAnnotations(alarm: RasterAlarm, yref: string) {
+  return alarm.thresholds.map(threshold => {
+    let active = "";
+    let label = "";
+
+    if (
+      alarm.latest_trigger.warning_level === threshold.warning_level
+    ) {
+      const time = new Date(alarm.latest_trigger.value_time);
+      active = `, active since ${time.toLocaleString()}`;
+    }
+
+    label = `${threshold.warning_level}${active}`;
+
+    return {
+      text: label,
+      xref: "paper",
+      x: 0,
+      xanchor: "left",
+      yref: yref,
+      y: threshold.value,
+      yanchor: "bottom",
+      showarrow: false
+    };
+  });
+}
+
 function getAnnotationsAndShapes(
   axes: Axes,
   now: Date,
   thresholds: Threshold[],
+  rasterAlarms: RasterObsType[],
   timelines: Timeline[],
   backgroundColorShapes: BackgroundColorShape[],
   full: boolean
@@ -207,6 +273,10 @@ function getAnnotationsAndShapes(
     getThresholdLine(th, (axes.length === 2 && axes[1].unit === th.unitReference) ? "y2" : "y")
   );
 
+  const rasterAlarmLines = rasterAlarms.map(alarm =>
+    getAlarmLines(alarm.alarm, (axes.length === 2 && axes[1].unit === alarm.observationType.unit) ? "y2" : "y")
+  ).flat();
+
   thresholdAnnotations = thresholds.map(th =>
     getThresholdAnnotation(
       th,
@@ -214,22 +284,26 @@ function getAnnotationsAndShapes(
     )
   );
 
+  const rasterAlarmAnnotations = rasterAlarms.map(alarm =>
+    getAlarmAnnotations(alarm.alarm,  (axes.length === 2 && axes[1].unit === alarm.observationType.unit) ? "y2" : "y")
+  ).flat();
+
   /* if (alarmReferenceLines) {
-   *   shapes = alarmReferenceLines.shapes;
-   *   annotations = alarmReferenceLines.annotations;
-   * } */
+     *   shapes = alarmReferenceLines.shapes;
+     *   annotations = alarmReferenceLines.annotations;
+     * } */
 
-  // Return lines for alarms, ts thresholds and timelines
+    // Return lines for alarms, ts thresholds and timelines
 
-  // Timelines with annotation
-  // Always show nowline
-  const nowLine = createVerticalLine(
-    0,
-    "#C0392B", // red in Lizard colors
-    "dot",
-    full,
-    true,
-    now.getTime()
+    // Timelines with annotation
+    // Always show nowline
+    const nowLine = createVerticalLine(
+      0,
+      "#C0392B", // red in Lizard colors
+      "dot",
+      full,
+      true,
+      now.getTime()
   );
 
   shapes.push(nowLine);
@@ -281,9 +355,11 @@ function getAnnotationsAndShapes(
     thresholdLines.forEach(thLine => {
       shapes.push(thLine);
     });
+    rasterAlarmLines.forEach(line => shapes.push(line));
     thresholdAnnotations.forEach(thAnnot => {
       annotations.push(thAnnot);
     });
+    rasterAlarmAnnotations.forEach(annot => annotations.push(annot));
   }
 
   return { annotations, shapes };
@@ -336,21 +412,27 @@ function _getData(
 }
 
 
+interface RasterObsType {
+  alarm: RasterAlarm;
+  observationType: ObservationType
+}
+
 function _getLayout(
-  now: Date,
-  start: Date,
-  end: Date,
-  full: boolean,
-  showAxis: boolean,
-  showLegend: boolean,
-  width: number,
-  height: number,
-  axes: Axes,
-  thresholds: Threshold[],
-  timelines: Timeline[],
-  backgroundColorShapes: BackgroundColorShape[],
-  tileLegend?: LegendStyle
-) {
+    now: Date,
+    start: Date,
+    end: Date,
+    full: boolean,
+    showAxis: boolean,
+    showLegend: boolean,
+    width: number,
+    height: number,
+    axes: Axes,
+    thresholds: Threshold[],
+    timelines: Timeline[],
+    rasterAlarms: RasterObsType[],
+    backgroundColorShapes: BackgroundColorShape[],
+    tileLegend?: LegendStyle
+  ) {
   // We have a bunch of lines with labels, the labels are annotations and
   // the lines are shapes, that's why we have one function to make them.
   // Only full mode shows the labels.
@@ -358,6 +440,7 @@ function _getLayout(
     axes,
     now,
     thresholds,
+    rasterAlarms,
     timelines,
     backgroundColorShapes,
     full
@@ -448,7 +531,6 @@ function _getLayout(
 
 
 function TimeseriesTile({tile, full=false}: Props) {
-  console.log(tile);
   const { now, start, end } = useContext(TimeContext);
   const { rect } = useContext(RectContext) as {rect: RectResult};
 
@@ -459,11 +541,33 @@ function TimeseriesTile({tile, full=false}: Props) {
 
   const rasterEvents = useRasterEvents((tile.rasterIntersections || []), start, end);
   const timeseriesEvents = useTimeseriesEvents(tile.timeseries || [], start, end);
+  const rasterAlarmsResponse = useRasterAlarms();
 
   if (![rasterMetadata, timeseriesMetadata, rasterEvents, timeseriesEvents].every(
-    response => response.success)) {
+    response => response.success) || rasterAlarmsResponse.status !== 'success') {
     return null; // XXX Spinner
   }
+
+  // Find the raster alarms that are on the same point as one of the raster
+  // intersections.
+  const rasterAlarms = (full && tile.rasterIntersections ? (
+    rasterAlarmsResponse.data!.results.map(alarm => {
+      const intersection = tile.rasterIntersections!.find(
+        rasterIntersection => isSamePoint(rasterIntersection.geometry, alarm.geometry)
+      );
+      if (!intersection) return null;
+
+      const raster = rasterMetadata.data.find(
+        raster => raster.uuid === intersection.uuid
+      );
+
+      if (!raster) return null;
+
+      return {
+        observationType: raster.observation_type,
+        alarm
+      };
+    })) : []).filter(r => r !== null) as RasterObsType[];
 
   // Note: always concat timeseries first, then rasters, as config items like
   // tile.colors and tile.legendStrings depend on that.
@@ -485,6 +589,7 @@ function TimeseriesTile({tile, full=false}: Props) {
     axes,
     tile.thresholds || [],
     tile.timelines || [],
+    rasterAlarms,
     tile.backgroundColorShapes || []
   );
 
