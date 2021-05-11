@@ -11,12 +11,14 @@ import {
   Event,
   Events,
   EventsResponse,
+  Organisation,
   Timeseries
 } from '../types/api';
 import { Config } from '../types/config';
 import { RasterIntersection } from '../types/tiles';
 import { combineUrlAndParams } from '../util/http';
 import { arrayMax } from '../util/functions';
+import { useOrganisation } from '../providers/ConfigProvider';
 import { TimeContext } from '../providers/TimeProvider';
 
 ///// React Query helper functions
@@ -70,9 +72,11 @@ export function useBootstrap() {
 
 
 export function useRasterAlarms() {
+  const organisation = useOrganisation();
+
   const response = useQuery<Paginated<RasterAlarm>, FetchError>(
     'rasteralarms',
-    () => fetchWithError('/api/v4/rasteralarms/?organisation__uuid=33b32fe8-0317-4390-9ef9-259744c32cc1&page_size=1000'),
+    () => fetchWithError(`/api/v4/rasteralarms/?organisation__uuid=${organisation.uuid}&page_size=1000`),
     {...QUERY_OPTIONS, refetchInterval: 300000});
 
   return response;
@@ -82,19 +86,22 @@ export function useRasterAlarms() {
 interface WrappedConfig {
   clientconfig: {
     configuration: Config;
+    organisation: Organisation;
   };
 }
 
-export function useConfig() {
-  const response = useQuery<WrappedConfig, FetchError>(
-    'config',
-    () => fetchWithError('/api/v4/clientconfigs/8/?format=json'),
+export function useConfig(slug: string) {
+  const response = useQuery<Paginated<WrappedConfig>, FetchError>(
+    `config-${slug}`,
+    () => fetchWithError(`/api/v4/clientconfigs/?format=json&client=flood-early-warning-interface&slug=${slug}`),
     QUERY_OPTIONS
   );
 
   return {
     ...response,
-    data: response.data ? response.data.clientconfig.configuration : null
+    config: (
+      response.data && response.data.results && response.data.results.length ?
+        response.data.results[0].clientconfig : null)
   };
 }
 

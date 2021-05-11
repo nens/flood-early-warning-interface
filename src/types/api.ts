@@ -13,6 +13,12 @@ export type Paginated<T> = {
 // Endpoints. Note that if a field is not in here, that means we don't use it
 
 
+export interface Organisation {
+  url: string;
+  uuid: string;
+  name: string;
+}
+
 export interface Bootstrap {
   user: {
     authenticated: boolean;
