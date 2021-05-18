@@ -1,0 +1,44 @@
+.warningsTable {
+  position: relative;
+  bottom: 0;
+  display: table;
+  width: calc(100% - 1rem);
+  font-weight: semibold;
+  border-collapse: collapse;
+  margin: 0.5rem;
+}
+
+.tr {
+  display: table-row;
+  height: 2rem;
+}
+
+
+.thtd {
+  display: table-cell;
+  font-weight: bold;
+  text-align: left;
+  padding: 0.2rem;
+  cursor: pointer;
+}
+
+.tdLeft {
+  display: table-cell;
+  text-align: left;
+  padding: 0.2rem 2rem 0.2rem 0.2rem;
+  vertical-align: middle;
+}
+
+.tdRight {
+  display: table-cell;
+  text-align: right;
+  padding: 0.2rem;
+  vertical-align: middle;
+}
+
+.tdCenter {
+  display: table-cell;
+  text-align: center;
+  padding: 0.2rem;
+  vertical-align: middle;
+}

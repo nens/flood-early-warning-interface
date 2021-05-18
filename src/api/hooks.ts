@@ -2,11 +2,12 @@
 // These use useQuery, and return a status / json tuple.
 
 import { useContext } from 'react';
-import { useQuery, useQueries } from 'react-query';
+import { useQuery, useQueries, QueryObserverResult } from 'react-query';
 import {
   Paginated,
   Bootstrap,
   RasterAlarm,
+  Trigger,
   Raster,
   Event,
   Events,
@@ -81,12 +82,58 @@ export function useRasterAlarms() {
     {...QUERY_OPTIONS, refetchInterval: 300000, enabled: !fakeData});
 
   if (fakeData) {
-    return fakeData.rasterAlarms as Paginated<RasterAlarm>;
+    return {
+      status: 'success',
+      data: fakeData.rasterAlarms as Paginated<RasterAlarm>
+    }
   }
 
-  return response;
+  return {
+    status: response.status,
+    data: response.data
+  };
 }
 
+
+export function useRasterAlarmTriggers() {
+  const alarmsResponse = useRasterAlarms();
+
+  const triggersResponse = useQueries(
+    (alarmsResponse.status === 'success' ? alarmsResponse.data?.results || [] : []).map(alarm => {
+      return {
+        queryKey: ['rastertriggers', alarm.uuid],
+        queryFn: () => fetchWithError(`/api/v4/rasteralarms/${alarm.uuid}/triggers/?page_size=100&`)
+      };
+    })
+  ) as QueryObserverResult<Paginated<Trigger>, FetchError>[];
+
+  if (alarmsResponse.status !== 'success') {
+    return [];
+  }
+
+  if (!triggersResponse.every(response => response.isSuccess) ||
+      !(triggersResponse.length) || triggersResponse.length !== alarmsResponse.data!.results.length) {
+    return [];
+  }
+
+  const triggers: {alarm: RasterAlarm, trigger: Trigger}[] = [];
+
+  for (let i=0; i < triggersResponse.length; i++) {
+    const alarm = alarmsResponse.data!.results[i]!;
+
+    for (const trigger of (triggersResponse[i].data!.results) as Trigger[]) {
+      triggers.push({
+        alarm,
+        trigger
+      });
+    }
+  }
+
+  // Sort on trigger id, highest first -- so latest first
+  triggers.sort((trig1, trig2) => (trig2.trigger.id - trig1.trigger.id));
+
+  return triggers;
+}
 
 interface WrappedConfig {
   clientconfig: {
@@ -265,7 +312,7 @@ export function useCurrentLevelTimeseries(uuid: string) {
   const timeseriesResponse = useTimeseriesMetadata(uuid && !fakeData ? [uuid] : []);
 
   if (fakeData) {
-    const metadata = fakeData[`timeseries-metadata-${uuid}`];
+    const metadata = fakeData[`timeseries-metadata-${uuid}`] as unknown as Timeseries;
     return metadata ? metadata.last_value : null;
   }
 
@@ -284,7 +331,7 @@ export function useTimeseriesEvents(
 ): EventsResponse {
   const fakeData = useFakeData();
 
-  let results = useQueries(
+  let results: any = useQueries(
     fakeData ? [] : uuids.map((uuid: string) => {
       let parameters: {[key: string]: any} = {};
 
@@ -314,10 +361,10 @@ export function useTimeseriesEvents(
     });
   }
 
-  const success = results.every(result => result.isSuccess) && results.length === uuids.length;
+  const success = results.every((result: any) => result.isSuccess) && results.length === uuids.length;
 
   if (success) {
-    const data: Events[] = results.map(result => ((result as any).data).map(
+    const data: Events[] = results.map((result: any) => result.data.map(
       (dataPoint: {timestamp: number, max?: number | null, sum: number | null}) => {
         return {
           timestamp: new Date(dataPoint.timestamp),

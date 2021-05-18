@@ -99,3 +99,13 @@ input, select {
   margin-bottom: 0.5rem;
   cursor: pointer;
 }
+
+input[type=button] {
+  font-weight: bold;
+}
+
+input:disabled {
+  cursor: auto;
+  background: grey;
+  font-weight: semibold;
+}

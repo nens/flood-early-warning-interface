@@ -10,6 +10,7 @@ import Tabs from './components/Tabs';
 import AlarmsTab from './tabs/AlarmsTab';
 import DamAlarmsTab from './tabs/DamAlarmsTab';
 import StationsChartsTab from './tabs/StationsChartsTab';
+import IssuedWarningsTab from './tabs/IssuedWarningsTab';
 import FloodModelTab from './tabs/FloodModelTab';
 import RainfallTab from './tabs/RainfallTab';
 import Header from './components/Header';
@@ -54,7 +55,12 @@ const tabDefinition = [{
   url: 'stations',
   title: 'Stations & Graphs',
   component: <StationsChartsTab />
-},]
+}, {
+  url: 'issuedwarnings',
+  title: 'Issued Warnings',
+  component: <IssuedWarningsTab />
+}
+]
 
 function AppWithAuthentication() {
   // We have both /floodsmart/ and /floodsmart2/ here for ease of use

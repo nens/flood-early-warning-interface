@@ -49,6 +49,16 @@ export interface RasterAlarm {
   geometry: Point;
 }
 
+export interface Trigger {
+  id: number;
+  trigger_time: string; // ISO timestamp
+  value: number;
+  value_time: string; // ISO timestamp
+  warning_level: string | null;
+  threshold_value: number | null;
+  threshold_time: string | null; // ISO timestamp
+  // Also 'first_time' (?) and 'message_sent', but we don't use them anyway
+}
 
 export interface ObservationType {
   url: string;

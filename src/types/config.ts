@@ -1,7 +1,7 @@
 // Type of the whole config
 
 import { Feature, FeatureCollection, Polygon, Point } from 'geojson';
-import { Timeseries } from './api';
+import { Timeseries, Paginated, RasterAlarm } from './api';
 import { TileDefinition } from './tiles';
 
 export interface WarningAreaProperties {
@@ -38,11 +38,8 @@ export interface TrainingDashboard {
 }
 
 interface FakeData {
-  [key1: string]: Timeseries
-  [key2: string]: Event[]
+  [key: string]: Timeseries | Event[] | Paginated<RasterAlarm>;
 }
-
-export type FakeData = FakeTimeseries | FakeEvents;
 
 export type BoundingBox = [string, string, string, string];
 

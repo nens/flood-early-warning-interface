@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import styles from '../components/Tile.module.css';
 import Tile from '../components/Tile';
@@ -13,7 +13,7 @@ function AlarmsTab() {
   const [hoverArea, setHoverArea] = useState<string | null>(null);
 
   if (response.status === 'success') {
-    const alarms = response.data;
+    const alarms = response.data!;
 
     const gaugeAlarms = alarms.results.filter(isGaugeAlarm);
 

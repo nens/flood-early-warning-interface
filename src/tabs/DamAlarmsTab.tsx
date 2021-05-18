@@ -15,7 +15,7 @@ function DamAlarmsTab() {
   const [hoverDam, setHoverDam] = useState<string | null>(null);
 
   if (response.status === 'success') {
-    const alarms = response.data;
+    const alarms = response.data!;
 
     const damAlarms = alarms.results.filter(isDamAlarm);
 
