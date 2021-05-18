@@ -56,3 +56,16 @@ ul.LastModelRun li {
   width: 5rem;
   cursor: pointer;
 }
+
+.SettingsButton {
+  font-size: 150%;
+  margin: 1rem 0 1rem 0.5rem;
+  background: var(--white-color);
+  color: var(--primary-color);
+  text-align: center;
+  padding: 0.5rem;
+  height: 1rem;
+  line-height: 1rem;
+  clear: none;
+  cursor: pointer;
+}

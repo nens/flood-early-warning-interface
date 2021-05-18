@@ -70,5 +70,14 @@ export function useConfigContext(): Config {
 export function useOrganisation(): Organisation {
   return useContext(ConfigContext)!.organisation!;
 }
+export function useFakeData() {
+  const configContext = useContext(ConfigContext);
+
+  if (configContext.isTraining && configContext.config && configContext.config.fakeData) {
+    return configContext.config.fakeData;
+  }
+
+  return null;
+}
 
 export default ConfigProvider;

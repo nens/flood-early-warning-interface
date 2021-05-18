@@ -2,13 +2,17 @@
 
 import React, { useState, useEffect, createContext } from 'react';
 import { WithChildren } from '../types/util';
+import { useConfigContext } from './ConfigProvider';
 
 const HOUR_IN_MS = 60 * 60 * 1000;
 
 interface Times {
-  start: Date,
-  now: Date,
-  end: Date
+  start: Date;
+  now: Date;
+  end: Date;
+  isDateEdited: boolean;
+  setEditedNow?: (d: Date) => void;
+  resetEditedNow?: () => void;
 }
 
 // Note that this default value is never used, we provide the actual
@@ -16,7 +20,8 @@ interface Times {
 export const TimeContext = createContext<Times>({
   start: new Date(),
   now: new Date(),
-  end: new Date()
+  end: new Date(),
+  isDateEdited: false
 });
 
 
@@ -29,7 +34,14 @@ function roundDown(d: Date) {
 }
 
 function TimeProvider({ children }: WithChildren<{}>) {
+  const config = useConfigContext();
+
+  const configuredNow = config.nowDateTimeUTC ? new Date(config.nowDateTimeUTC) : null;
+
+  // Now is real time, updated every 5 minutes
   const [now, setNow] = useState<Date>(roundDown(new Date()));
+  // "Edited now" is set by the user, takes precedence if set
+  const [editedNow, setEditedNow] = useState<Date|null>(null);
 
   const getPeriod = (d: Date) => {
     const ms = d.getTime();
@@ -39,7 +51,9 @@ function TimeProvider({ children }: WithChildren<{}>) {
     ];
   };
 
-  const [start, end] = getPeriod(now);
+  const isDateEdited = editedNow !== null;
+  const usedNow = configuredNow ?? editedNow ?? now;
+  const [start, end] = getPeriod(usedNow);
 
   // Update, taking rounding into account
   useEffect(() => {
@@ -48,7 +62,14 @@ function TimeProvider({ children }: WithChildren<{}>) {
   }, [now]);
 
   return (
-    <TimeContext.Provider value={{now, start, end}}>
+    <TimeContext.Provider value={{
+      now: usedNow,
+      start,
+      end,
+      isDateEdited,
+      setEditedNow,
+      resetEditedNow: () => setEditedNow(null)
+    }}>
       {children}
     </TimeContext.Provider>
   );

@@ -1,6 +1,7 @@
 // Type of the whole config
 
 import { Feature, FeatureCollection, Polygon, Point } from 'geojson';
+import { Timeseries } from './api';
 import { TileDefinition } from './tiles';
 
 export interface WarningAreaProperties {
@@ -31,7 +32,20 @@ export interface WMSLayer {
   styles: string;
 }
 
+export interface TrainingDashboard {
+  url: string;
+  name: string;
+}
+
+interface FakeData {
+  [key1: string]: Timeseries
+  [key2: string]: Event[]
+}
+
+export type FakeData = FakeTimeseries | FakeEvents;
+
 export type BoundingBox = [string, string, string, string];
+
 export interface Config {
   boundingBoxes: {
     default: BoundingBox;
@@ -65,5 +79,7 @@ export interface Config {
   flood_warning_areas: FeatureCollection<Polygon, WarningAreaProperties>;
   iframeBaseTileId: number; // XXX
   referenceLevels: {[assetId: number]: string};
-  trainingDashboards: any; // XXX
+  trainingDashboards?: TrainingDashboard[]; // XXX
+  nowDateTimeUTC?: string;
+  fakeData?: FakeData;
 }

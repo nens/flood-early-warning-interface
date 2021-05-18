@@ -3,6 +3,12 @@ import requests
 from requests.auth import HTTPBasicAuth
 import json
 import os
+import sys
+
+if len(sys.argv) <= 1:
+    SLUG = 'parramatta-dashboard'
+else:
+    SLUG = sys.argv[1]
 
 auth = HTTPBasicAuth(os.environ['PROXY_USERNAME'], os.environ['PROXY_PASSWORD'])
 
@@ -277,11 +283,41 @@ def fix_json(original):
 
     original['flood_warning_areas'] = fwa
 
+    if 'fakeData' in original:
+        new_fake = dict()
+        for key, value in original['fakeData'].items():
+            if key.startswith('timeseries'):
+                metadata = value['results'][0]
+                uuid = key[len('timeseries-'):]
+                # They re-used the same uuid everywhere...
+                metadata['uuid'] = uuid
+
+                # Events are now separate
+                events = metadata['events']
+                del metadata['events']
+
+                last_value = metadata['last_value']
+                try:
+                    last_value = float(last_value)
+                    metadata['last_value'] = last_value
+                except ValueError:
+                    pass
+
+                # Save metadata and events separately, with events in v4 format
+                new_fake['timeseries-metadata-' + metadata['uuid']] = metadata
+                new_fake['timeseries-events-' + metadata['uuid']] = [
+                    {'timestamp': event['timestamp'],
+                     'max': float(event['max']) if event['max'] else None} for event in events
+                ]
+            else:
+                new_fake[key] = value
+        original['fakeData'] = new_fake
+
     return original
 
 
 #original = requests.get('https://nxt3.staging.lizard.net/bootstrap/parramatta-dashboard/').json()['configuration']
-original = requests.get('https://parramatta.lizard.net/bootstrap/parramatta-dashboard/', auth=auth).json()['configuration']
+original = requests.get('https://parramatta.lizard.net/bootstrap/'+SLUG+'/', auth=auth).json()['configuration']
 
 result = fix_json(original)
 print(json.dumps(result))

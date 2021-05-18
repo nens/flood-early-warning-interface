@@ -82,3 +82,20 @@ body,
     font-size: 24px;
   }
 }
+
+/* Default components */
+
+input, select {
+  background: var(--primary-color);
+  color: var(--white-color);
+  text-align: center;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  line-height: 1rem;
+  padding: 0 1rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}

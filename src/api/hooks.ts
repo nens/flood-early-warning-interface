@@ -18,7 +18,7 @@ import { Config } from '../types/config';
 import { RasterIntersection } from '../types/tiles';
 import { combineUrlAndParams } from '../util/http';
 import { arrayMax } from '../util/functions';
-import { useOrganisation } from '../providers/ConfigProvider';
+import { useOrganisation, useFakeData } from '../providers/ConfigProvider';
 import { TimeContext } from '../providers/TimeProvider';
 
 ///// React Query helper functions
@@ -72,12 +72,17 @@ export function useBootstrap() {
 
 
 export function useRasterAlarms() {
+  const fakeData = useFakeData();
   const organisation = useOrganisation();
 
   const response = useQuery<Paginated<RasterAlarm>, FetchError>(
     'rasteralarms',
     () => fetchWithError(`/api/v4/rasteralarms/?organisation__uuid=${organisation.uuid}&page_size=1000`),
-    {...QUERY_OPTIONS, refetchInterval: 300000});
+    {...QUERY_OPTIONS, refetchInterval: 300000, enabled: !fakeData});
+
+  if (fakeData) {
+    return fakeData.rasterAlarms as Paginated<RasterAlarm>;
+  }
 
   return response;
 }
@@ -158,7 +163,7 @@ export function useRasterEvents(
   const success = results.every(result => result.isSuccess) && results.length === intersections.length;
 
   if (success) {
-    const data: Events[] = results.map(result => ((result as any).data.data).map(
+    const data: Events[] = results.map(result => ((result as any).data.data || []).map(
       (dataPoint: [number, number | null]) => {
         return {
           timestamp: new Date(dataPoint[0]),
@@ -221,10 +226,13 @@ export function useMaxForecastAtPoint(intersection: RasterIntersection|null): Ma
 
 
 export function useTimeseriesMetadata(uuids: string[]) {
+  const fakeData = useFakeData();
+
   // useQueries is a way to run a variable number of fetches with
   // a single hook (otherwise it would be against the hooks rule),
   // while also storing the result of each fetch under its own key.
   const results = useQueries(
+    fakeData ? [] :
     uuids.map(uuid => {
       return {
         queryKey: ['timeseries', uuid],
@@ -232,6 +240,14 @@ export function useTimeseriesMetadata(uuids: string[]) {
       };
     })
   );
+
+  if (fakeData) {
+    return {
+      success: true,
+      data: uuids.map(uuid => fakeData[`timeseries-metadata-${uuid}`] as Timeseries) || [] as Timeseries[]
+    };
+  }
+
 
   const success = results.every(result => result.isSuccess) && results.length === uuids.length;
 
@@ -244,7 +260,15 @@ export function useTimeseriesMetadata(uuids: string[]) {
 
 export function useCurrentLevelTimeseries(uuid: string) {
   // Fetch metadata of a single timeseries and return current level.
-  const timeseriesResponse = useTimeseriesMetadata(uuid ? [uuid] : []);
+  const fakeData = useFakeData();
+
+  const timeseriesResponse = useTimeseriesMetadata(uuid && !fakeData ? [uuid] : []);
+
+  if (fakeData) {
+    const metadata = fakeData[`timeseries-metadata-${uuid}`];
+    return metadata ? metadata.last_value : null;
+  }
+
   if (timeseriesResponse.success && timeseriesResponse.data.length > 0) {
     const timeseries = timeseriesResponse.data[0];
     return timeseries.last_value;
@@ -258,8 +282,10 @@ export function useTimeseriesEvents(
   end: Date,
   params={}
 ): EventsResponse {
-  const results = useQueries(
-    uuids.map((uuid: string) => {
+  const fakeData = useFakeData();
+
+  let results = useQueries(
+    fakeData ? [] : uuids.map((uuid: string) => {
       let parameters: {[key: string]: any} = {};
 
       if (params) {
@@ -278,6 +304,15 @@ export function useTimeseriesEvents(
       }
     })
   );
+
+  if (fakeData) {
+    results = uuids.map((uuid) => {
+      return {
+        isSuccess: !!fakeData[`timeseries-events-${uuid}`],
+        data: fakeData[`timeseries-events-${uuid}`]
+      };
+    });
+  }
 
   const success = results.every(result => result.isSuccess) && results.length === uuids.length;
 
