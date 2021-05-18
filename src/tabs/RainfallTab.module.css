@@ -1,12 +1,13 @@
 .RainfallTab {
   background: var(--white-color);
-  height: 100%;
+  height: calc(100% - 2rem);
   display: flex;
+  padding: 1rem;
 }
 
 .RainfallLeft {
   flex: 25%;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .RainfallLeft img {
@@ -16,5 +17,5 @@
 
 .RainfallRight {
   flex: 75%;
-  padding: 1rem;
+  padding: 0.5rem;
 }

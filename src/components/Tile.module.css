@@ -30,8 +30,9 @@
 
 .TileFull {
   position: relative;
-  width: calc(100% - 2px);
+  width: calc(100% - 1rem);
   height: calc(100% - 2px);
+  margin: auto;
 }
 
 .TileHalfHeight {
