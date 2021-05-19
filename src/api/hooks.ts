@@ -102,7 +102,7 @@ export function useRasterAlarmTriggers() {
     (alarmsResponse.status === 'success' ? alarmsResponse.data?.results || [] : []).map(alarm => {
       return {
         queryKey: ['rastertriggers', alarm.uuid],
-        queryFn: () => fetchWithError(`/api/v4/rasteralarms/${alarm.uuid}/triggers/?page_size=100&`)
+        queryFn: () => fetchWithError(`/api/v4/rasteralarms/${alarm.uuid}/triggers/?page_size=1000`)
       };
     })
   ) as QueryObserverResult<Paginated<Trigger>, FetchError>[];
