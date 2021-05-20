@@ -13,6 +13,7 @@ import StationsChartsTab from './tabs/StationsChartsTab';
 import IssuedWarningsTab from './tabs/IssuedWarningsTab';
 import FloodModelTab from './tabs/FloodModelTab';
 import RainfallTab from './tabs/RainfallTab';
+import IframeScreen from './tabs/IframeScreen';
 import Header from './components/Header';
 
 const queryClient = new QueryClient({
@@ -24,13 +25,35 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <LizardAuthProvider>
-        <ConfigProvider>
-          <TimeProvider>
-            <AppWithAuthentication />
-          </TimeProvider>
-        </ConfigProvider>
-      </LizardAuthProvider>
+      <Router>
+        <Switch>
+          <Route path="/floodsmart/iframe" children={(
+            // No Auth needed
+            <ConfigProvider>
+              <TimeProvider>
+                <IframeScreen />
+              </TimeProvider>
+            </ConfigProvider>
+          )} />
+          <Route path="/floodsmart2/iframe" children={(
+            // No Auth needed
+            <ConfigProvider>
+              <TimeProvider>
+                <IframeScreen />
+              </TimeProvider>
+            </ConfigProvider>
+          )} />
+          <Route path="/" children={(
+            <LizardAuthProvider>
+              <ConfigProvider>
+                <TimeProvider>
+                  <AppWithAuthentication />
+                </TimeProvider>
+              </ConfigProvider>
+            </LizardAuthProvider>
+          )} />
+        </Switch>
+      </Router>
     </QueryClientProvider>
   );
 }
@@ -66,12 +89,23 @@ function AppWithAuthentication() {
   // We have both /floodsmart/ and /floodsmart2/ here for ease of use
   return (
     <Router>
-      <Header />
       <Switch>
         <Route path="/floodsmart/" exact={true} children={(<Redirect to={'/floodsmart/'+tabDefinition[0].url}/>)} />
-        <Route path="/floodsmart/" children={(<Tabs definition={tabDefinition} />)}/>
+        <Route path="/floodsmart/" children={(
+          <>
+            <Header/>
+            <Tabs definition={tabDefinition} />
+          </>
+        )}/>
+
         <Route path="/floodsmart2/" exact={true} children={(<Redirect to={'/floodsmart2/'+tabDefinition[0].url}/>)} />
-        <Route path="/floodsmart2/" children={(<Tabs definition={tabDefinition} />)}/>
+
+        <Route path="/floodsmart2/" children={(
+          <>
+            <Header/>
+            <Tabs definition={tabDefinition} />
+          </>
+        )}/>
       </Switch>
     </Router>
   );

@@ -19,6 +19,16 @@ export interface Organisation {
   name: string;
 }
 
+export interface MeasuringStation {
+  geometry: Point;
+  url: string;
+  id: number;
+  organisation: Organisation;
+  last_modified: string;
+  name: string;
+  timeseries: Timeseries[];
+}
+
 export interface Bootstrap {
   user: {
     authenticated: boolean;
@@ -102,4 +112,8 @@ export type EventsResponse = {
 export interface Timeseries {
   observation_type: ObservationType;
   last_value: number;
+  parameter: string;
+  reference_frame: string;
+  name: string;
+  uuid: string;
 }

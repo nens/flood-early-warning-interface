@@ -10,7 +10,8 @@
 
 .tr {
   display: table-row;
-  height: 2rem;
+  height: 1.5rem;
+  font-size: 70%;
 }
 
 
@@ -41,4 +42,8 @@
   text-align: center;
   padding: 0.2rem;
   vertical-align: middle;
+}
+
+p.numWarnings {
+  font-size: 70%;
 }

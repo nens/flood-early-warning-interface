@@ -10,7 +10,7 @@ interface AlarmTrigger  {
   trigger: Trigger
 };
 
-const TRIGGERS_PER_PAGE = 10;
+const TRIGGERS_PER_PAGE = 15;
 
 const MONTHS = [
   "January", "February", "March",
@@ -155,12 +155,12 @@ function IssuedWarningsTable() {
           <div className={styles.tr}>
             <div className={styles.tdLeft}>{_toTimeStr(new Date(trigger.trigger_time))}</div>
             <div className={styles.tdLeft}>{alarm.name}</div>
-            <div className={styles.tdLeft}>{trigger.warning_level || "NFA"}</div>
+            <div className={styles.tdLeft}>{trigger.warning_level || "No further impact"}</div>
             <div className={styles.tdLeft}>{`${dashOrNum(trigger.value)} mAHD`}</div>
           </div>
         ))}
       </div>
-      <p>Showing warnings {firstIndex + 1} to {lastIndex} of {numTriggers}.</p>
+      <p className={styles.numWarnings}>Showing warnings {firstIndex + 1} to {lastIndex} of {numTriggers}.</p>
       <input type="button" disabled={!previousEnabled} value="<" onClick={() => previousEnabled && setPage(page-1)} />
       <input type="button" disabled={!nextEnabled} value=">" onClick={() => nextEnabled && setPage(page+1)} />
     </div>

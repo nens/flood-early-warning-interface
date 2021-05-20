@@ -12,6 +12,7 @@ import {
   Event,
   Events,
   EventsResponse,
+  MeasuringStation,
   Organisation,
   Timeseries
 } from '../types/api';
@@ -71,6 +72,16 @@ export function useBootstrap() {
   );
 }
 
+
+export function useMeasuringStations() {
+  return useQuery<Paginated<MeasuringStation>, FetchError>(
+    'measuringstations',
+    () => fetchWithError(
+      // Hardcoded! XXX
+      '/api/v3/measuringstations/?format=json&in_bbox=150.86%2C-33.84%2C151.05%2C-33.73&page_size=1000'
+    ), QUERY_OPTIONS
+  );
+}
 
 export function useRasterAlarms() {
   const fakeData = useFakeData();
@@ -295,7 +306,6 @@ export function useTimeseriesMetadata(uuids: string[]) {
     };
   }
 
-
   const success = results.every(result => result.isSuccess) && results.length === uuids.length;
 
   return {
@@ -303,7 +313,6 @@ export function useTimeseriesMetadata(uuids: string[]) {
     data: success ? results.map(result => result.data as Timeseries) : [] as Timeseries[]
   };
 }
-
 
 export function useCurrentLevelTimeseries(uuid: string) {
   // Fetch metadata of a single timeseries and return current level.
