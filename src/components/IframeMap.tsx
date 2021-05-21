@@ -11,16 +11,24 @@ import styles from './IframeMap.module.css';
 import { dashOrNum } from '../util/functions';
 import { useClickToTimeseries, useIsTimeseriesClickable } from '../util/config';
 
-function StationPopup(props: {station: MeasuringStation, onClose: () => void}) {
-  const { station, onClose } = props;
-  const metadataResponse = useTimeseriesMetadata(station.timeseries.map(ts => ts.uuid));
+interface PopupProps {
+  station: MeasuringStation;
+  onClose: () => void;
+  setClickedStation: (station: MeasuringStation|null) => void;
+}
 
-  const clickable = useIsTimeseriesClickable(station.timeseries);
-  const onClick = useClickToTimeseries(clickable ? clickable.uuid : '' , true);
+function StationPopup(props: PopupProps) {
+  const { station, onClose, setClickedStation } = props;
+  const metadataResponse = useTimeseriesMetadata(station.timeseries.map(ts => ts.uuid));
 
   if (!metadataResponse.success) {
     return null;
   }
+
+  const onClick = (
+    station.timeseries.length ?
+    (() => setClickedStation(station)) :
+    () => {});
 
   return (
     <Popup
@@ -52,12 +60,14 @@ function StationPopup(props: {station: MeasuringStation, onClose: () => void}) {
           ))}
         </tbody>
       </table>
-      <p>{clickable && <input type="button" value="View in chart" onClick={onClick} />}</p>
+      <p>{station.timeseries.length > 0 && <input type="button" value="View in chart" onClick={onClick} />}</p>
     </Popup>
   );
 }
 
-function IframeMap() {
+function IframeMap(props: {setClickedStation: (station: MeasuringStation|null) => void}) {
+  const { setClickedStation } = props;
+
   const config = useConfigContext();
   const rect = useRectContext();
   const [station, setStation] = useState<MeasuringStation | null>(null);
@@ -109,7 +119,13 @@ function IframeMap() {
           </CircleMarker>
         );
       })}
-      {station !== null && <StationPopup station={station} onClose={() => setStation(null)}/>}
+      {station !== null &&
+       <StationPopup
+         station={station}
+         onClose={() => setStation(null)}
+         setClickedStation={setClickedStation}
+       />
+      }
     </MapContainer>
   );
 }
