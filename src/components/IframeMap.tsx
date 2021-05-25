@@ -9,7 +9,6 @@ import { useMeasuringStations, useTimeseriesMetadata } from '../api/hooks';
 
 import styles from './IframeMap.module.css';
 import { dashOrNum } from '../util/functions';
-import { useClickToTimeseries, useIsTimeseriesClickable } from '../util/config';
 
 interface PopupProps {
   station: MeasuringStation;
