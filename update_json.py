@@ -267,10 +267,10 @@ def fix_json(original):
 
     original['mapbox_access_token'] = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImNrZWlnbHdycjFqNHMyem95cWFqNzhkc3IifQ.ymzd92iqviR5RZ-dd-xRIg"
 
-    fwa = json.load(open('data/fwa_wgs84_1pc.json'))
-    for feature in fwa['features']:
-        name = feature['properties']['name']
-        feature['properties']['timeseries'] = TIMESERIES_FOR_WARNING_AREAS[name]
+    fwa = json.load(open('data/fwa_productie.json'))
+    # for feature in fwa['features']:
+    #     name = feature['properties']['name']
+    #     feature['properties']['timeseries'] = TIMESERIES_FOR_WARNING_AREAS[name]
 
     # for feature in fwa['features']:
     #     for polygon in feature['geometry']['coordinates']:
