@@ -212,6 +212,38 @@ RAIN_POPUP_FIELDS = [
 
 ]
 
+RASTERS = {
+    'trainingscenario1': {
+        'operationalModelDepth': "8f4b8e95-39ba-4822-95ec-f26da215636a",
+        'rainForecast': "6ccb42ce-4e97-4376-b010-1b76a57b5253",
+    },
+    # 'trainingscenario2': {
+    #     'operationalModelLevel': ,
+    #     'operationalModelDepth': ,
+    #     'rainForecast':
+    # },
+    # 'trainingscenario3': {
+    #     'operationalModelLevel': ,
+    #     'operationalModelDepth': ,
+    #     'rainForecast':
+    # },
+    # 'trainingscenario4': {
+    #     'operationalModelLevel': ,
+    #     'operationalModelDepth': ,
+    #     'rainForecast':
+    # },
+    # 'trainingscenario5': {
+    #     'operationalModelLevel': ,
+    #     'operationalModelDepth': ,
+    #     'rainForecast':
+    # },
+    # 'trainingscenario6': {
+    #     'operationalModelLevel': ,
+    #     'operationalModelDepth': ,
+    #     'rainForecast':
+    # },
+}
+
 def get_raster_uuid(short_uuid):
     # Returns actual uuid of short uuid
     if len(short_uuid) > 10:
@@ -236,6 +268,9 @@ def fix_json(original):
         'operationalModelDepth': "091af242-27da-42a8-8771-cc729476cec7",
         'rainForecast': "6ccb42ce-4e97-4376-b010-1b76a57b5253"
     }
+
+    if SLUG in RASTERS:
+        original['rasters'].update(RASTERS[SLUG])
 
     original['wmsLayers'] = {
         'buildingsForFloodMap': {
@@ -309,6 +344,16 @@ def fix_json(original):
                     {'timestamp': event['timestamp'],
                      'max': float(event['max']) if event['max'] else None} for event in events
                 ]
+            elif key == 'rasterAlarms':
+                for alarm in value['results']:
+                    alarm['geometry'] = alarm['intersection']['geometry']
+                    alarm['latest_trigger'] = {
+                        "warning_level": alarm['warning_threshold'].get('warning_level') if alarm['warning_threshold'] else None,
+                        "value": alarm.get('warning_value'),
+                        'threshold_value': alarm.get('warning_value')
+                    }
+
+                new_fake[key] = value
             else:
                 new_fake[key] = value
         original['fakeData'] = new_fake
@@ -316,7 +361,6 @@ def fix_json(original):
     return original
 
 
-#original = requests.get('https://nxt3.staging.lizard.net/bootstrap/parramatta-dashboard/').json()['configuration']
 original = requests.get('https://parramatta.lizard.net/bootstrap/'+SLUG+'/', auth=auth).json()['configuration']
 
 result = fix_json(original)

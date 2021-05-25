@@ -32,6 +32,10 @@ export function arrayMin<T>(array: T[], valueFunc: ValueFunc<T>): number {
   return arrayMax(array, (a) => -valueFunc(a));
 }
 
-export function dashOrNum(value: number | null | undefined): string {
+export function dashOrNum(value: number | string | null | undefined): string {
+  if (typeof value === 'string') {
+    value = parseFloat(value);
+  }
+
   return (value !== null && value !== undefined) ? value.toFixed(2) : "-";
 }
