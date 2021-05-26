@@ -29,6 +29,10 @@ interface Props {
 
 type Axes = [] | [ObservationType] | [ObservationType, ObservationType];
 
+interface ObservationTypeHistorical {
+  observationType: ObservationType;
+  historical: boolean;
+}
 
 const TRIGGER_LEVEL_TO_COLOR: {[key: string]: string} = {
   major: "#f44",
@@ -40,14 +44,17 @@ const TRIGGER_LEVEL_TO_COLOR: {[key: string]: string} = {
   red: "#f44"
 };
 
-function _getAxes(observationTypes: ObservationType[]): Axes {
-  const first: ObservationType = observationTypes[0];
+function _getAxes(observationTypes: ObservationTypeHistorical[]): Axes {
+  // Only use normal types for deciding axes
+  const types = observationTypes.filter(obsType => !obsType.historical).map(obsType => obsType.observationType);
+
+  const first: ObservationType = types[0];
 
   if (!first) return [];
 
-  for (let i=1; i < observationTypes.length; i++) {
-    if (first.url !== observationTypes[i].url) {
-      return [first, observationTypes[i]];
+  for (let i=1; i < types.length; i++) {
+    if (first.url !== types[i].url) {
+      return [first, types[i]];
     }
   }
   return [first];
@@ -87,6 +94,23 @@ function _getColor(colors: string[] | null, idx: number): string {
   } else {
     return ["#26A7F1", "#000058", "#99f"][idx % 3]; // Some shades of blue
   }
+}
+
+function _getHistoricalColor(idx: number, amount: number) {
+  // Most recent historical forecast (idx 0) should be dark grey (#606060),
+  // least recent (idx amount-1) should be light gray (#eeeeee).
+  // #60 = 96, #ee = 239.
+  if (amount < 2) {
+    return '#606060'; // There is only one, used darkest
+  }
+  if (idx >= amount) {
+    return '#eeeeee'; // Should never happen
+  }
+
+  const value = Math.round(96 + (239-96) * (idx / (amount-1)));
+  const hex = value.toString(16); // Should always be length 2
+
+  return `#${hex}${hex}${hex}`;
 }
 
 function createVerticalLine(
@@ -368,22 +392,29 @@ function getAnnotationsAndShapes(
 
 function _getData(
   eventsArray: Events[],
-  observationTypes: ObservationType[],
+  observationTypes: ObservationTypeHistorical[],
+  numHistoricalTimeseries: number,
   axes: Axes,
   colors: string[] | null,
   legendStrings: string[] | null,
   full: boolean,
 ) {
+  const normalEvents = eventsArray.length - numHistoricalTimeseries;
+
   return eventsArray.map((events, idx) => {
-    const observationType = observationTypes[idx];
-    const legendString = legendStrings !== null ? legendStrings[idx] : null;
-    const color = _getColor(colors, idx);
+    const { observationType, historical } = observationTypes[idx];
+    const legendString = (legendStrings !== null ? legendStrings[idx] : null);
+    const color = (
+      historical ?
+      _getHistoricalColor(idx - normalEvents, numHistoricalTimeseries) :
+      _getColor(colors, idx));
 
     const plotlyEvents: Partial<PlotData> = {
       x: events.map(event => event.timestamp),
       y: events.map(event => event.value),
-      name: _getLegend(observationType, legendString),
-      hoverinfo: full ? "x+y+name": "none",
+      name: historical ? undefined : _getLegend(observationType, legendString),
+      showlegend: !historical,
+      hoverinfo: full && !historical ? "x+y+name": "none",
       hoverlabel: {
         namelength: -1
       }
@@ -538,12 +569,17 @@ function TimeseriesTile({tile, full=false}: Props) {
     (tile.rasterIntersections || []).map(intersection => intersection.uuid)
   );
   const timeseriesMetadata = useTimeseriesMetadata(tile.timeseries || []);
+  const historicalTimeseriesMetadata = useTimeseriesMetadata(
+    full && tile.historicalTimeseries ? tile.historicalTimeseries : []);
 
   const rasterEvents = useRasterEvents((tile.rasterIntersections || []), start, end);
   const timeseriesEvents = useTimeseriesEvents(tile.timeseries || [], start, end);
+  const historicalTimeseriesEvents = useTimeseriesEvents(
+    full && tile.historicalTimeseries ? tile.historicalTimeseries : [], start, end);
   const rasterAlarmsResponse = useRasterAlarms();
 
-  if (![rasterMetadata, timeseriesMetadata, rasterEvents, timeseriesEvents].every(
+  if (![rasterMetadata, timeseriesMetadata, historicalTimeseriesMetadata,
+        rasterEvents, timeseriesEvents, historicalTimeseriesEvents].every(
     response => response.success) || rasterAlarmsResponse.status !== 'success') {
     return null; // XXX Spinner
   }
@@ -571,9 +607,29 @@ function TimeseriesTile({tile, full=false}: Props) {
 
   // Note: always concat timeseries first, then rasters, as config items like
   // tile.colors and tile.legendStrings depend on that.
-  const events = (timeseriesEvents.data!).concat(rasterEvents.data!);
-  const observationTypes = timeseriesMetadata.data!.map(ts => ts.observation_type).concat(
-    (rasterMetadata.data!.map(raster => raster.observation_type)));
+  const events = (timeseriesEvents.data!).concat(rasterEvents.data!).concat(historicalTimeseriesEvents.data!);
+
+  const tsObservationTypes = timeseriesMetadata.data!.map(ts => {
+    return {
+      observationType: ts.observation_type,
+      historical: false
+    };
+  });
+  const historicalTsObservationTypes = historicalTimeseriesMetadata.data!.map(ts => {
+    return {
+      observationType: ts.observation_type,
+      historical: true
+    };
+  });
+  const numHistoricalTimeseries = historicalTsObservationTypes.length;
+
+  const rasterObservationTypes = rasterMetadata.data!.map(raster => {
+    return {
+      observationType: raster.observation_type,
+      historical: false
+    };
+  });
+  const observationTypes = tsObservationTypes.concat(rasterObservationTypes).concat(historicalTsObservationTypes);
 
   const axes = _getAxes(observationTypes);
 
@@ -596,6 +652,7 @@ function TimeseriesTile({tile, full=false}: Props) {
   const data = _getData(
     events,
     observationTypes,
+    numHistoricalTimeseries,
     axes,
     tile.colors || null,
     tile.legendStrings || null,

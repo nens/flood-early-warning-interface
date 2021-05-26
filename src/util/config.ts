@@ -49,5 +49,5 @@ export function useClickToTimeseries(timeseries: string, iframe: boolean = false
 
       history.push(newUrl);
     }
-  }, [history, config, url, timeseries]);
+  }, [history, config, url, timeseries, iframe]);
 }

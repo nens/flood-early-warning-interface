@@ -69,6 +69,7 @@ export interface ChartTile extends BaseTileProps {
   legend?: LegendStyle;
   rasterIntersections?: RasterIntersection[];
   timeseries?: string[];
+  historicalTimeseries?: string[];
   thresholds?: Threshold[];
   timelines?: Timeline[];
 }
