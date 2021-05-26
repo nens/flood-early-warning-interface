@@ -400,6 +400,7 @@ function _getData(
   full: boolean,
 ) {
   const normalEvents = eventsArray.length - numHistoricalTimeseries;
+  let shownHistoricalLegend = false;
 
   return eventsArray.map((events, idx) => {
     const { observationType, historical } = observationTypes[idx];
@@ -411,13 +412,17 @@ function _getData(
 
     const plotlyEvents: Partial<PlotData> = {
       x: events.map(event => event.timestamp),
-      y: events.map(event => event.value),
-      name: historical ? undefined : _getLegend(observationType, legendString),
-      showlegend: !historical,
+      y: events.map(event => (typeof event.value === 'number' ? Math.round(event.value*100)/100 : event.value)),
+      name: historical ? 'Historical forecasts' : _getLegend(observationType, legendString),
+      showlegend: !historical || !shownHistoricalLegend,
       hoverinfo: full && !historical ? "x+y+name": "none",
       hoverlabel: {
         namelength: -1
       }
+    }
+
+    if (historical) {
+      shownHistoricalLegend = true;
     }
 
     if (axes.length > 1 && axes[1]!.url === observationType.url) {
