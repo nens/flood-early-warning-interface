@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { dashOrNum } from '../util/functions';
 import { useClickToTimeseries } from '../util/config';
 import { Dam } from '../types/config';
 import { RasterAlarm } from '../types/api';
@@ -59,9 +60,6 @@ function DamRow({
   }
   const warningClassTd = warningLevel ? styles.td_warning : "";
   const highlight = hoverDam === dam.properties.name;
-
-  const dashOrNum = (value: number | null | undefined): string =>
-    (value !== null && value !== undefined) ? value.toFixed(2) : "-";
 
   return (
     <div
