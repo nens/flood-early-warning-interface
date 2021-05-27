@@ -37,7 +37,7 @@ function GetFeatureInfoSubComponent({
   return (
     <Popup position={click.position} onClose={close}>
       {config.rainPopupFields.map((field) => (
-        <div className={styles.PopupRow}>
+        <div className={styles.PopupRow} key={field.description}>
           <div className={styles.PopupField}>{field.description}</div>
           <div className={styles.PopupValue}>{featureInfo[field.field]}</div>
         </div>
@@ -51,17 +51,19 @@ function GeoserverGetFeatureInfoPopup({url, layer}: GeoserverGetFeatureInfoPopup
   const [click, setClick] = useState<ClickProps | null>(null);
 
   const map = useMapEvent('click', (event) => {
-    const {x, y} = event.layerPoint;
+    const {x, y} = event.containerPoint;
     const {x: width, y: height} = map.getSize();
 
-    setClick({
+    const click = {
       bbox: map.getBounds().toBBoxString(),
       position: event.latlng,
       width: Math.round(width),
       height: Math.round(height),
       x: Math.round(x),
       y: Math.round(y)
-    });
+    };
+
+    setClick(click);
   });
 
   if (click === null) return null;
