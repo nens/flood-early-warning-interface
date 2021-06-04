@@ -49,10 +49,10 @@ function WarningAreaRow({
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
 
   const currentLevel = useCurrentLevelTimeseries(warningArea.properties.timeseries);
-  const maxForecast = useMaxForecastAtPoint(alarm ? {
-    uuid: operationalModelLevel,
-    geometry: alarm.geometry
-  } : null);
+  const maxForecast = useMaxForecastAtPoint(
+    operationalModelLevel,
+    alarm || null
+  );
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const warningClass = warningLevel ? styles[`tr_${warningLevel.toLowerCase()}`] : "";

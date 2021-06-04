@@ -402,8 +402,10 @@ function _getData(
   const normalEvents = eventsArray.length - numHistoricalTimeseries;
   let shownHistoricalLegend = false;
 
+
   return eventsArray.map((events, idx) => {
     const { observationType, historical } = observationTypes[idx];
+
     const legendString = (legendStrings !== null ? legendStrings[idx] : null);
     const color = (
       historical ?
@@ -443,6 +445,7 @@ function _getData(
         color
       };
     }
+
     return plotlyEvents;
   });
 }
@@ -574,18 +577,23 @@ function TimeseriesTile({tile, full=false}: Props) {
     (tile.rasterIntersections || []).map(intersection => intersection.uuid)
   );
   const timeseriesMetadata = useTimeseriesMetadata(tile.timeseries || []);
-  const historicalTimeseriesMetadata = useTimeseriesMetadata(
-    full && tile.historicalTimeseries ? tile.historicalTimeseries : []);
 
   const rasterEvents = useRasterEvents((tile.rasterIntersections || []), start, end);
   const timeseriesEvents = useTimeseriesEvents(tile.timeseries || [], start, end);
-  const historicalTimeseriesEvents = useTimeseriesEvents(
-    full && tile.historicalTimeseries ? tile.historicalTimeseries : [], start, end);
+
   const rasterAlarmsResponse = useRasterAlarms();
+
+  // Reverse these historical timeseries so they show in the right order in the chart
+  const historicalTimeseries =
+    (tile.historicalTimeseries ?
+     tile.historicalTimeseries.slice().reverse() :
+     []);
+  const historicalTimeseriesMetadata = useTimeseriesMetadata(historicalTimeseries);
+  const historicalTimeseriesEvents = useTimeseriesEvents(historicalTimeseries, start, end);
 
   if (![rasterMetadata, timeseriesMetadata, historicalTimeseriesMetadata,
         rasterEvents, timeseriesEvents, historicalTimeseriesEvents].every(
-    response => response.success) || rasterAlarmsResponse.status !== 'success') {
+          response => response.success) || rasterAlarmsResponse.status !== 'success') {
     return null; // XXX Spinner
   }
 

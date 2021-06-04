@@ -37,8 +37,15 @@ export interface TrainingDashboard {
   name: string;
 }
 
+export interface MaxForecast {
+  [uuid: string]: {
+    value: number;
+    timeToMax: number;
+  }
+}
+
 interface FakeData {
-  [key: string]: Timeseries | Event[] | Paginated<RasterAlarm>;
+  [key: string]: Timeseries | Event[] | MaxForecast | Paginated<RasterAlarm>;
 }
 
 export type BoundingBox = [string, string, string, string];

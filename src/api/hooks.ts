@@ -16,7 +16,7 @@ import {
   Organisation,
   Timeseries
 } from '../types/api';
-import { Config } from '../types/config';
+import { Config, MaxForecast } from '../types/config';
 import { RasterIntersection } from '../types/tiles';
 import { combineUrlAndParams } from '../util/http';
 import { arrayMax } from '../util/functions';
@@ -248,20 +248,42 @@ interface MaxLevel {
 }
 
 
-export function useMaxForecastAtPoint(intersection: RasterIntersection|null): MaxLevel {
+export function useMaxForecastAtPoint(
+  rasterUuid: string,
+  alarm: RasterAlarm | null
+): MaxLevel {
+  const fakeData = useFakeData();
+  const {now, end} = useContext(TimeContext);
+
+  let fake = false;
+  let value = null;
+  let time: Date | null = null;
+
+  const uuid: string | null = (alarm && alarm.uuid ? alarm.uuid : null);
+
+  if (fakeData && fakeData.fakeMaxForecast) {
+    fake = true;
+    const forecast = fakeData.fakeMaxForecast as MaxForecast;
+    if (uuid && forecast[uuid]) {
+      value = forecast[uuid].value;
+      time = new Date(now.getTime() + forecast[uuid].timeToMax * 1000);
+    }
+  }
+
+  const intersection: RasterIntersection | null = alarm && alarm.geometry ? {
+    uuid: rasterUuid,
+    geometry: alarm.geometry
+  } : null;
+
   // Figure out where 'max' is in the operation model events array
   // Only look from timestamp 'now'
-  const {now, end} = useContext(TimeContext);
   const forecastLevels = useRasterEvents(
-    intersection ? [intersection] : [],
+    intersection && !fake ? [intersection] : [],
     now,
     end
   );
 
-  let value = null;
-  let time = null;
-
-  if (forecastLevels.success && forecastLevels.data.length > 0) {
+  if (!fake && forecastLevels.success && forecastLevels.data.length > 0) {
     const events = forecastLevels.data[0];
 
     if (events !== null && events.length > 0) {

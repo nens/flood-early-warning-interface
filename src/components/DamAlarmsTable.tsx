@@ -49,10 +49,10 @@ function DamRow({
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
 
   const currentLevel = useCurrentLevelTimeseries(dam.properties.timeseries);
-  const maxForecast = useMaxForecastAtPoint(dam.properties.has_level_forecast ? {
-    uuid: operationalModelLevel,
-    geometry: dam.geometry
-  } : null);
+  const maxForecast = useMaxForecastAtPoint(
+    operationalModelLevel,
+    dam.properties.has_level_forecast && alarm ? alarm : null
+  );
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const warningStyle = {
@@ -95,8 +95,6 @@ function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) 
   const {now} = useContext(TimeContext);
 
   const operationalModelLevel = config.rasters.operationalModelLevel;
-
-  console.log('damAlarms', damAlarms);
 
   return (
     <div className={styles.alarmsTable}>
