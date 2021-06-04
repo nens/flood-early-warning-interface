@@ -97,8 +97,8 @@ function _getColor(colors: string[] | null, idx: number): string {
 }
 
 function _getHistoricalColor(idx: number, amount: number) {
-  // Most recent historical forecast (idx 0) should be dark grey (#606060),
-  // least recent (idx amount-1) should be light gray (#eeeeee).
+  // Most recent historical forecast (idx amount-1) should be dark grey (#606060),
+  // least recent (idx 0) should be light gray (#eeeeee).
   // #60 = 96, #ee = 239.
   if (amount < 2) {
     return '#606060'; // There is only one, used darkest
@@ -107,7 +107,7 @@ function _getHistoricalColor(idx: number, amount: number) {
     return '#eeeeee'; // Should never happen
   }
 
-  const value = Math.round(96 + (239-96) * (idx / (amount-1)));
+  const value = Math.round(239 + (96 - 239) * (idx / (amount-1)));
   const hex = value.toString(16); // Should always be length 2
 
   return `#${hex}${hex}${hex}`;
