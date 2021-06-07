@@ -402,8 +402,7 @@ function _getData(
   const normalEvents = eventsArray.length - numHistoricalTimeseries;
   let shownHistoricalLegend = false;
 
-
-  return eventsArray.map((events, idx) => {
+  const data = eventsArray.map((events, idx) => {
     const { observationType, historical } = observationTypes[idx];
 
     const legendString = (legendStrings !== null ? legendStrings[idx] : null);
@@ -448,6 +447,9 @@ function _getData(
 
     return plotlyEvents;
   });
+
+  // Put historical events before normal events
+  return data.slice(normalEvents).concat(data.slice(0, normalEvents));
 }
 
 
