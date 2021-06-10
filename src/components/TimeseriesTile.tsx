@@ -609,10 +609,6 @@ function TimeseriesTile({tile, full=false}: Props) {
       return alarm;
     })) : []).filter(r => r !== null) as RasterAlarm[];
 
-  if (full) {
-    console.log('rasterAlarms', rasterAlarms);
-  }
-
   // Note: always concat timeseries first, then rasters, as config items like
   // tile.colors and tile.legendStrings depend on that.
   const events = (timeseriesEvents.data!).concat(rasterEvents.data!).concat(historicalTimeseriesEvents.data!);
