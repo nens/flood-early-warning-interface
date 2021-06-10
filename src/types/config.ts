@@ -78,6 +78,7 @@ export interface Config {
     [name: string]: string
   };
   dams: FeatureCollection<Point, DamProperties>;
+  dashboardTitle?: string;
   tiles: TileDefinition[];
   publicTiles: TileDefinition[]; // For use in iframe mode
   flood_warning_areas: FeatureCollection<Polygon, WarningAreaProperties>;

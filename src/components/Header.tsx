@@ -20,12 +20,14 @@ function Header() {
 
   const dashboards = config!.trainingDashboards || [];
 
+  const title = config!.dashboardTitle ?? "FloodSmart Parramatta Dashboard";
+
   return (
     <div className={styles.Header}>
       <div className={styles.Title} style={{color: isTraining ? "red" : undefined}}
-        title={`FloodSmart Parramatta Dashboard ${isTraining ? "TRAINING MODE" : ""}`}
+           title={`${title} ${isTraining ? "TRAINING MODE" : ""}`}
       >
-        FloodSmart Parramatta Dashboard
+        {title}
         <span
           className={styles.InformationIcon}
           onClick={() => setShowingModal(INFO_MODAL)}
