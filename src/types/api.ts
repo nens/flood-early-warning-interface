@@ -49,6 +49,9 @@ export interface RasterAlarm {
     value: number;
     warning_level: string;
   }[];
+  intersection: {
+    raster: string; // Note: that is the raster's *URL*, not it's uuid
+  };
   timeseries: string;
   latest_trigger: {
     trigger_time: string;

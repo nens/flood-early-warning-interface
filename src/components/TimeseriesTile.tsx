@@ -226,8 +226,8 @@ function getAlarmLines(alarm: RasterAlarm, yref: string) {
       x0: 0,
       x1: 1,
       yref,
-      y0: threshold.value,
-      y1: threshold.value,
+      y0: typeof threshold.value === 'string' ? parseFloat(threshold.value) : threshold.value,
+      y1: typeof threshold.value === 'string' ? parseFloat(threshold.value) : threshold.value,
       line: {
         dash: "dot",
         color,
@@ -282,7 +282,7 @@ function getAnnotationsAndShapes(
   axes: Axes,
   now: Date,
   thresholds: Threshold[],
-  rasterAlarms: RasterObsType[],
+  rasterAlarms: RasterAlarm[],
   timelines: Timeline[],
   backgroundColorShapes: BackgroundColorShape[],
   full: boolean
@@ -298,7 +298,7 @@ function getAnnotationsAndShapes(
   );
 
   const rasterAlarmLines = rasterAlarms.map(alarm =>
-    getAlarmLines(alarm.alarm, (axes.length === 2 && axes[1].unit === alarm.observationType.unit) ? "y2" : "y")
+    getAlarmLines(alarm, (axes.length === 2 && axes[1].unit === "mAHD") ? "y2" : "y")
   ).flat();
 
   thresholdAnnotations = thresholds.map(th =>
@@ -309,7 +309,7 @@ function getAnnotationsAndShapes(
   );
 
   const rasterAlarmAnnotations = rasterAlarms.map(alarm =>
-    getAlarmAnnotations(alarm.alarm,  (axes.length === 2 && axes[1].unit === alarm.observationType.unit) ? "y2" : "y")
+    getAlarmAnnotations(alarm,  (axes.length === 2 && axes[1].unit === "mAHD") ? "y2" : "y")
   ).flat();
 
   /* if (alarmReferenceLines) {
@@ -379,12 +379,13 @@ function getAnnotationsAndShapes(
     thresholdLines.forEach(thLine => {
       shapes.push(thLine);
     });
-    rasterAlarmLines.forEach(line => shapes.push(line));
+
     thresholdAnnotations.forEach(thAnnot => {
       annotations.push(thAnnot);
     });
-    rasterAlarmAnnotations.forEach(annot => annotations.push(annot));
   }
+  rasterAlarmLines.forEach(line => shapes.push(line));
+  rasterAlarmAnnotations.forEach(annot => annotations.push(annot));
 
   return { annotations, shapes };
 }
@@ -453,11 +454,6 @@ function _getData(
 }
 
 
-interface RasterObsType {
-  alarm: RasterAlarm;
-  observationType: ObservationType
-}
-
 function _getLayout(
     now: Date,
     start: Date,
@@ -470,7 +466,7 @@ function _getLayout(
     axes: Axes,
     thresholds: Threshold[],
     timelines: Timeline[],
-    rasterAlarms: RasterObsType[],
+    rasterAlarms: RasterAlarm[],
     backgroundColorShapes: BackgroundColorShape[],
     tileLegend?: LegendStyle
   ) {
@@ -587,7 +583,7 @@ function TimeseriesTile({tile, full=false}: Props) {
 
   // Reverse these historical timeseries so they show in the right order in the chart
   const historicalTimeseries =
-    (tile.historicalTimeseries ?
+    (tile.historicalTimeseries && full ?
      tile.historicalTimeseries.slice().reverse() :
      []);
   const historicalTimeseriesMetadata = useTimeseriesMetadata(historicalTimeseries);
@@ -604,21 +600,18 @@ function TimeseriesTile({tile, full=false}: Props) {
   const rasterAlarms = (full && tile.rasterIntersections ? (
     rasterAlarmsResponse.data!.results.map(alarm => {
       const intersection = tile.rasterIntersections!.find(
-        rasterIntersection => isSamePoint(rasterIntersection.geometry, alarm.geometry)
+        rasterIntersection => (
+          isSamePoint(rasterIntersection.geometry, alarm.geometry)
+        )
       );
       if (!intersection) return null;
 
-      const raster = rasterMetadata.data.find(
-        raster => raster.uuid === intersection.uuid
-      );
+      return alarm;
+    })) : []).filter(r => r !== null) as RasterAlarm[];
 
-      if (!raster) return null;
-
-      return {
-        observationType: raster.observation_type,
-        alarm
-      };
-    })) : []).filter(r => r !== null) as RasterObsType[];
+  if (full) {
+    console.log('rasterAlarms', rasterAlarms);
+  }
 
   // Note: always concat timeseries first, then rasters, as config items like
   // tile.colors and tile.legendStrings depend on that.
