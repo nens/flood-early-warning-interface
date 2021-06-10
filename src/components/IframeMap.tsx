@@ -92,17 +92,24 @@ function IframeMap(props: {setClickedStation: (station: MeasuringStation|null) =
       <TileLayer url={mapBackgrounds[1].url} />
       <WMSTileLayer
         url="https://geoserver9.lizard.net/geoserver/parramatta/wms?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1"
-        layers="creeks"
-        format="image/png"
-        transparent={true}
-        zIndex={100}
-      />
-      <WMSTileLayer
-        url="https://geoserver9.lizard.net/geoserver/parramatta/wms?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1"
         layers="gauges"
         format="image/png"
         transparent={true}
         zIndex={5000}
+      />
+      <WMSTileLayer
+        url="https://maps1.project.lizard.net/geoserver/v0227_parramatta_rainfall_db/wms?service=WMS&request=GetMap"
+        layers="v0227_parramatta_rainfall_db:v0227_parramatta_river"
+        format="image/png"
+        transparent={true}
+        zIndex={10}
+      />
+      <WMSTileLayer
+        url="https://maps1.project.lizard.net/geoserver/v0227_parramatta_rainfall_db/wms?service=WMS&request=GetMap"
+        layers="v0227_parramatta_rainfall_db:v0227_parramatta_creeks"
+        format="image/png"
+        transparent={true}
+        zIndex={10}
       />
       {stations.map(station => {
         return (
