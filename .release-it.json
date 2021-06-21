@@ -12,6 +12,6 @@
     "publish": false
   },
   "hooks": {
-    "after:bump": "npm run build"
+    "after:version:bump": "npm run build"
   }
 }
