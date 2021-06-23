@@ -111,6 +111,13 @@ function IframeMap(props: {setClickedStation: (station: MeasuringStation|null) =
         transparent={true}
         zIndex={10}
       />
+      <WMSTileLayer
+        url="https://geoserver9.lizard.net/geoserver/parramatta/wms?service=WMS&request=GetMap"
+        layers="lga_parra"
+        format="image/png"
+        transparent={true}
+        zIndex={10}
+      />
       {stations.map(station => {
         return (
           <CircleMarker
