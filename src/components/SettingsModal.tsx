@@ -13,7 +13,11 @@ interface SettingsModalProps {
 function SettingsModal(props: SettingsModalProps) {
   const { closeFunction, trainingDashboards } = props;
 
-  const [dashboardUrl, setDashboardUrl] = useState<string>(trainingDashboards[0].url);
+  const [dashboardUrl, setDashboardUrl] = useState<string>(
+    trainingDashboards && trainingDashboards[0] ?
+    trainingDashboards[0].url : ""
+  );
+
   const {
     isTraining,
     setCurrentConfigSlug,
@@ -27,12 +31,16 @@ function SettingsModal(props: SettingsModalProps) {
   } = useContext(TimeContext);
 
   const confirmTrainingDashboard = () => {
-    setCurrentConfigSlug(dashboardUrl);
+    if (!dashboardUrl) {
+      resetConfigSlug();
+    } else {
+      setCurrentConfigSlug(dashboardUrl);
+    }
   }
 
   return (
     <Modal close={closeFunction} title="Settings">
-      {!isTraining && !isDateEdited ? (
+      {!isDateEdited ? (
         <>
           <p><strong>Historical data</strong></p>
           <p>Currently showing local time. Select a new date and time to view historical data:</p>
@@ -44,17 +52,14 @@ function SettingsModal(props: SettingsModalProps) {
             value={dashboardUrl}
             onChange={(event) => setDashboardUrl(event.target.value)}
           >
+            {isTraining ? (
+            <option value="">Return to live dashboard</option>
+            ) : null}
             {trainingDashboards.map(({url, name}) => (
               <option value={url}>{name}</option>
             ))}
           </select>
           <input type="button" value="Choose" onClick={confirmTrainingDashboard} />
-        </>
-
-      ) : isTraining ? (
-        <>
-          <p><strong>Training mode</strong></p>
-          <p><input type="button" value="Leave training mode" onClick={resetConfigSlug}/></p>
         </>
       ) : (
         <>
