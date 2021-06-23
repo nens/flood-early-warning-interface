@@ -7,6 +7,7 @@ import SettingsButton from './SettingsButton';
 
 import styles from './Header.module.css';
 import { ConfigContext } from '../providers/ConfigProvider';
+import packageJson from '../../package.json';
 
 const INFO_MODAL = 'info_modal';
 const SETTINGS_MODAL = 'settings_modal';
@@ -25,7 +26,7 @@ function Header() {
   return (
     <div className={styles.Header}>
       <div className={styles.Title} style={{color: isTraining ? "red" : undefined}}
-           title={`${title} ${isTraining ? "TRAINING MODE" : ""}`}
+           title={`${title}${isTraining ? " TRAINING MODE" : ""}, ${"client-version: " +packageJson.version}`}
       >
         {title}
         <span
