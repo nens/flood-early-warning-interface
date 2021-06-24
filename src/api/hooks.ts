@@ -83,6 +83,15 @@ export function useMeasuringStations() {
   );
 }
 
+export function useAssetTypes(assetTypes: string[]) {
+  return useQueries(assetTypes.map((assetType) => {
+    return {
+      queryKey: ['assetType', assetType],
+      queryFn: () => fetchWithError(`/api/v3/${assetType}/?format=json&in_bbox=150.86%2C-33.84%2C151.05%2C-33.73&page_size=1000`)
+    };
+  }));
+}
+
 export function useRasterAlarms() {
   const fakeData = useFakeData();
   const organisation = useOrganisation();

@@ -11,8 +11,17 @@ interface BaseTileProps {
 
 /* Map */
 
+export interface WmsLayer {
+  url: string;
+  layers: string;
+  zindex?: number; // 10
+  transparent?: boolean; // true
+}
+
 export interface MapTile extends BaseTileProps {
-  type: "map"
+  type: "map";
+  assetTypes?: string[];
+  wmsLayers?: WmsLayer[];
 }
 
 /* Timeseries */

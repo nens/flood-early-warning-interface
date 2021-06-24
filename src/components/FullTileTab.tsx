@@ -5,6 +5,7 @@ import { useParams, Redirect, useHistory } from 'react-router';
 import { TileDefinition } from '../types/tiles';
 import Tile from './Tile';
 import TimeseriesTile from './TimeseriesTile';
+import MapTile from './MapTile';
 import { TileWithCallback } from './TileList';
 import styles from './FullTileTab.module.css';
 
@@ -47,6 +48,7 @@ function FullTileTab({tiles, url}: Props) {
           viewInLizardLink={fullTile.viewInLizardLink}
         >
           {fullTile.type === 'timeseries' ? <TimeseriesTile tile={fullTile} full /> : null}
+          {fullTile.type === 'map' ? <MapTile tile={fullTile} full /> : null}
         </Tile>
       </div>
     </div>

@@ -40,8 +40,6 @@ function FloodModelMap() {
   const selectedTimePeriod = TIME_PERIODS.find(period => period[0] === currentPeriod);
   if (selectedTimePeriod) {
     time = new Date(time.getTime() + selectedTimePeriod[1]);
-  } else {
-    console.error("TIME PERIOD NOT FOUND");
   }
 
   if (rasterResponse.success && rasterResponse.data.length > 0) {

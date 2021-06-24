@@ -21,7 +21,7 @@ export function useIsTimeseriesClickable(timeseries: Timeseries[]) {
   return null;
 }
 
-export function useClickToTimeseries(timeseries: string, iframe: boolean = false): () => void {
+export function useClickToTimeseries(timeseries: string, iframe: boolean = false): (() => void) | null {
   // Hook that returns a memoized callback function that sends the user to the
   // correct timeseries chart. Returns a function that does nothing if there
   // is no such chart.
@@ -29,17 +29,17 @@ export function useClickToTimeseries(timeseries: string, iframe: boolean = false
   const { url } = useRouteMatch();
   const history = useHistory();
 
-  return useCallback(() => {
-    const tile = config.tiles.find(tile =>
-      (timeseries &&
-       tile.type === 'timeseries' &&
-       tile.timeseries &&
-       tile.timeseries.indexOf(timeseries) > -1)
-    );
+  const tile = config.tiles.find(tile =>
+    (timeseries &&
+     tile.type === 'timeseries' &&
+     tile.timeseries &&
+     tile.timeseries.indexOf(timeseries) > -1)
+  );
 
+  const callback = useCallback(() => {
+    // url starts with something like /floodsmart/, we don't hardcode it so it can change.
+    // urlParts[0] is the empty string, use [1].
     if (tile) {
-      // url starts with something like /floodsmart/, we don't hardcode it so it can change.
-      // urlParts[0] is the empty string, use [1].
       const urlParts = url.split('/');
       const newUrl = (
         iframe ?
@@ -49,5 +49,7 @@ export function useClickToTimeseries(timeseries: string, iframe: boolean = false
 
       history.push(newUrl);
     }
-  }, [history, config, url, timeseries, iframe]);
+  }, [history, url, iframe, tile]);
+
+  return tile ? callback : null;
 }

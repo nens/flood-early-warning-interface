@@ -64,7 +64,7 @@ function WarningAreaRow({
       className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
       onMouseEnter={() => setHoverArea("" + warningArea.id)}
       onMouseLeave={() => setHoverArea(null)}
-      onClick={rowClick}
+      onClick={rowClick ?? undefined}
     >
       <div className={styles.tdLeft}>{warningArea.properties.name}</div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>

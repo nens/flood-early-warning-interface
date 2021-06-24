@@ -12,12 +12,10 @@ interface FloodModelPopupProps {
 }
 
 function FloodModelPopup({raster, time}: FloodModelPopupProps) {
-  console.log('time:', time);
   const [clickLocation, setClickLocation] = useState<LatLng | null>(null);
   const { now, end } = useContext(TimeContext);
   useMapEvents({
     click: (event) => {
-      console.log(event);
       setClickLocation(event.latlng);
     }
   });

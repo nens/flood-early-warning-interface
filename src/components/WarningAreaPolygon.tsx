@@ -40,7 +40,7 @@ function WarningAreaPolygon({
       eventHandlers={{
         mouseover: () => onHover(""+warningArea.id!),
         mouseout: () => onHover(null),
-        click: onClick
+        click: onClick ?? undefined
       }}
       fillOpacity={hover ? 0.7 : 0.5}
       opacity={hover ? 1 : 0.5}

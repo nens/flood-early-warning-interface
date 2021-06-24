@@ -7,6 +7,7 @@ import { TileSize } from './Tile';
 
 import Tile from './Tile';
 import TimeseriesTile from './TimeseriesTile';
+import MapTile from './MapTile';
 
 interface TileWithCallbackProps {
   tile: TileDefinition;
@@ -29,13 +30,16 @@ export function TileWithCallback({tile, baseUrl, size="smallsquare"}: TileWithCa
 
   return (
     <Tile
-      title={size === "full" ? tile.title : tile.shortTitle}
+      title={size === "full" ? tile.title : (tile.shortTitle ?? tile.title)}
       key={tile.id}
       onClick={handleOnClick}
       size={size}
     >
       {(tile.type === 'timeseries') ?
        <TimeseriesTile tile={tile} />
+      : null}
+      {(tile.type === 'map') ?
+       <MapTile tile={tile} />
       : null}
     </Tile>
   )

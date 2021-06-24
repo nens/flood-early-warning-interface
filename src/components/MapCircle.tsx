@@ -28,7 +28,7 @@ function MapCircle({
                    `var(--trigger-${triggerLevel.toLowerCase()})` :
                    'var(--trigger-none)');
 
-  const eventHandlers: L.LeafletEventHandlerFnMap = {click: onClick};
+  const eventHandlers: L.LeafletEventHandlerFnMap = onClick ? {click: onClick} : {};
 
   if (onHover && onHoverId) {
     eventHandlers.mouseover = () => onHover(onHoverId);

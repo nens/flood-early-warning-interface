@@ -1,68 +1,12 @@
 import { useState } from 'react';
-import { MapContainer, TileLayer, WMSTileLayer, CircleMarker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, WMSTileLayer, CircleMarker } from 'react-leaflet';
 import { MeasuringStation } from '../types/api';
 import { BoundingBox } from '../util/bounds';
 import { getMapBackgrounds } from '../constants';
 import { useConfigContext } from '../providers/ConfigProvider';
 import { useRectContext } from '../providers/RectProvider';
-import { useMeasuringStations, useTimeseriesMetadata } from '../api/hooks';
-
-import styles from './IframeMap.module.css';
-import { dashOrNum } from '../util/functions';
-
-interface PopupProps {
-  station: MeasuringStation;
-  onClose: () => void;
-  setClickedStation: (station: MeasuringStation|null) => void;
-}
-
-function StationPopup(props: PopupProps) {
-  const { station, onClose, setClickedStation } = props;
-  const metadataResponse = useTimeseriesMetadata(station.timeseries.map(ts => ts.uuid));
-
-  if (!metadataResponse.success) {
-    return null;
-  }
-
-  const onClick = (
-    station.timeseries.length ?
-    (() => setClickedStation(station)) :
-    () => {});
-
-  return (
-    <Popup
-      position={[station.geometry.coordinates[1], station.geometry.coordinates[0]]}
-      onClose={onClose}
-    >
-      <h3>{station.name}</h3>
-      <table className={styles.PopupTable}>
-        <thead>
-          <tr>
-            <td>
-              <strong>Timeseries name</strong>
-            </td>
-            <td>
-              <strong>Last value</strong>
-            </td>
-            <td>
-              <strong>Unit</strong>
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-          {metadataResponse.data!.map((ts) => (
-            <tr key={ts.uuid}>
-              <td>{ts.name}</td>
-              <td>{dashOrNum(ts.last_value)}</td>
-              <td>{ts.observation_type.unit ?? ""}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p>{station.timeseries.length > 0 && <input type="button" value="View in chart" onClick={onClick} />}</p>
-    </Popup>
-  );
-}
+import { useMeasuringStations } from '../api/hooks';
+import StationPopup from './StationPopup';
 
 function IframeMap(props: {setClickedStation: (station: MeasuringStation|null) => void}) {
   const { setClickedStation } = props;

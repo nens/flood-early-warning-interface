@@ -10,7 +10,9 @@ function StationChartsTab() {
   const config = useConfigContext();
 
   // Keep the tiles that are timeseries
-  const tiles = config.tiles.filter(tile => tile.type === 'timeseries');
+  const tiles = config.tiles.filter(
+    tile => tile.type === 'timeseries' || tile.type === 'map'
+  );
 
   return (
     <Switch>

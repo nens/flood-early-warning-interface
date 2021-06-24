@@ -30,8 +30,6 @@ function _toTimeStr(d: Date) {
 }
 
 function sortTriggers(triggers: AlarmTrigger[], ordering: string) {
-  console.log(ordering);
-
   const reverse = ordering[0] === '-';
   if (reverse) ordering = ordering.slice(1);
 
@@ -82,9 +80,8 @@ function IssuedWarningsTable() {
   });
 
   let triggers = filter ? response.filter(trigger => trigger.alarm.uuid === filter) : response;
-  console.log('triggers 1', triggers);
   sortTriggers(triggers, ordering);
-  console.log('triggers 2', triggers);
+
   const numTriggers = triggers.length;
   const previousEnabled = page > 0;
   const nextEnabled = triggers.length > (page + 1) * TRIGGERS_PER_PAGE;

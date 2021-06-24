@@ -67,7 +67,7 @@ function DamRow({
       style={warningStyle}
       onMouseEnter={() => setHoverDam(dam.properties.name)}
       onMouseLeave={() => setHoverDam(null)}
-      onClick={rowClick}
+      onClick={rowClick ?? undefined}
     >
       <div className={styles.tdLeft}>{dam.properties.name}</div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>
