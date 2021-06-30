@@ -12,7 +12,7 @@ function LizardAuthProvider({ children }: WithChildren) {
     const bootstrap = bootstrapResponse.data;
 
     if (!bootstrap.user.authenticated) {
-      window.location.href = bootstrap.sso.login + '&next=/floodsmart2/';
+      window.location.href = bootstrap.sso.login + '&next=/floodsmart/';
     }
 
     return (

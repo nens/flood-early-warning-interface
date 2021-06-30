@@ -35,14 +35,6 @@ function App() {
               </TimeProvider>
             </ConfigProvider>
           )} />
-          <Route path="/floodsmart2/iframe" children={(
-            // No Auth needed
-            <ConfigProvider>
-              <TimeProvider>
-                <IframeScreen />
-              </TimeProvider>
-            </ConfigProvider>
-          )} />
           <Route path="/" children={(
             <LizardAuthProvider>
               <ConfigProvider>
@@ -86,21 +78,11 @@ const tabDefinition = [{
 ]
 
 function AppWithAuthentication() {
-  // We have both /floodsmart/ and /floodsmart2/ here for ease of use
   return (
     <Router>
       <Switch>
         <Route path="/floodsmart/" exact={true} children={(<Redirect to={'/floodsmart/'+tabDefinition[0].url}/>)} />
         <Route path="/floodsmart/" children={(
-          <>
-            <Header/>
-            <Tabs definition={tabDefinition} />
-          </>
-        )}/>
-
-        <Route path="/floodsmart2/" exact={true} children={(<Redirect to={'/floodsmart2/'+tabDefinition[0].url}/>)} />
-
-        <Route path="/floodsmart2/" children={(
           <>
             <Header/>
             <Tabs definition={tabDefinition} />
