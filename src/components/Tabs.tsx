@@ -1,34 +1,34 @@
-import React from 'react';
-import {
-  Switch,
-  Route,
-  useRouteMatch,
-} from "react-router-dom";
+import React from "react";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
 
-import TabBar from './TabBar';
-import styles from './Tabs.module.css';
+import TabBar from "./TabBar";
+import styles from "./Tabs.module.css";
 
 interface TabsProps {
   definition: {
     url: string;
     title: string;
-    component: React.ReactNode
+    component: React.ReactNode;
   }[];
 }
 
-function Tabs({definition}: TabsProps) {
-  const tabs = definition.map(({url, title}) => ({url, title}));
+function Tabs({ definition }: TabsProps) {
+  const tabs = definition.map(({ url, title }) => ({ url, title }));
   let { path } = useRouteMatch();
 
   return (
     <Switch>
-      {definition.map(({url, component}) => (
-        <Route path={`${path}${url}`} key={url} children={
-          <div className={styles.Tabs}>
-            <TabBar tabs={tabs} current={url} path={path}/>
-            <div className={styles.TabContent}>{component}</div>
-          </div>
-        }/>
+      {definition.map(({ url, component }) => (
+        <Route
+          path={`${path}${url}`}
+          key={url}
+          children={
+            <div className={styles.Tabs}>
+              <TabBar tabs={tabs} current={url} path={path} />
+              <div className={styles.TabContent}>{component}</div>
+            </div>
+          }
+        />
       ))}
     </Switch>
   );

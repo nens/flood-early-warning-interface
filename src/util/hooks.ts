@@ -1,6 +1,5 @@
 import { useLayoutEffect, useCallback, useState } from "react";
 
-
 // useRect -- hook to get size of an element referred to by ref
 // source: https://gist.github.com/morajabi/523d7a642d8c0a2f71fcfa0d8b3d2846
 export type RectResult = {
@@ -12,14 +11,13 @@ export type RectResult = {
   width: number;
 };
 
-
 export const EMPTY_RECT: RectResult = {
   bottom: 0,
   height: 0,
   left: 0,
   right: 0,
   top: 0,
-  width: 0
+  width: 0,
 };
 
 function getRect<T extends HTMLElement>(element?: T): RectResult {
@@ -28,9 +26,7 @@ function getRect<T extends HTMLElement>(element?: T): RectResult {
   return rect;
 }
 
-export function useRect<T extends HTMLElement>(
-  ref: React.RefObject<T>
-): RectResult {
+export function useRect<T extends HTMLElement>(ref: React.RefObject<T>): RectResult {
   const [rect, setRect] = useState<RectResult>(
     ref && ref.current ? getRect(ref.current) : getRect()
   );

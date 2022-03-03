@@ -1,10 +1,9 @@
-import React from 'react';
+import React from "react";
 
-import styles from '../components/Tile.module.css';
+import styles from "../components/Tile.module.css";
 
-import Tile from '../components/Tile';
-import FloodModelMap from '../components/FloodModelMap';
-
+import Tile from "../components/Tile";
+import FloodModelMap from "../components/FloodModelMap";
 
 function FloodModelTab() {
   return (

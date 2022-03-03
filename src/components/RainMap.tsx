@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { MapContainer, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { BoundingBox } from '../util/bounds';
-import { getMapBackgrounds } from '../constants';
-import { useConfigContext } from '../providers/ConfigProvider';
-import { useRectContext } from '../providers/RectProvider';
-import MapSelectBox from './MapSelectBox';
-import GeoserverGetFeatureInfoPopup from './GeoserverGetFeatureInfoPopup';
-import DesignStormsButton from './DesignStormsButton';
-import Legend from './Legend';
+import React, { useState } from "react";
+import { MapContainer, TileLayer, WMSTileLayer } from "react-leaflet";
+import { BoundingBox } from "../util/bounds";
+import { getMapBackgrounds } from "../constants";
+import { useConfigContext } from "../providers/ConfigProvider";
+import { useRectContext } from "../providers/RectProvider";
+import MapSelectBox from "./MapSelectBox";
+import GeoserverGetFeatureInfoPopup from "./GeoserverGetFeatureInfoPopup";
+import DesignStormsButton from "./DesignStormsButton";
+import Legend from "./Legend";
 
 function RainMap() {
   const { boundingBoxes, mapbox_access_token, rainfallWmsLayers, rainLegend } = useConfigContext();
@@ -27,13 +27,13 @@ function RainMap() {
   if (rainfallWmsLayers && rainfallWmsLayers.length) {
     wmsLayerSelect = (
       <MapSelectBox
-        options={rainfallWmsLayers.map(layer => [layer.wms_layers, layer.title])}
+        options={rainfallWmsLayers.map((layer) => [layer.wms_layers, layer.title])}
         currentValue={currentLayer}
         setValue={setCurrentLayer}
       />
     );
 
-    const selectedLayer = rainfallWmsLayers.find(layer => layer.wms_layers === currentLayer);
+    const selectedLayer = rainfallWmsLayers.find((layer) => layer.wms_layers === currentLayer);
 
     if (selectedLayer) {
       wmsTileLayer = (
@@ -41,7 +41,7 @@ function RainMap() {
           url={selectedLayer.wms_url}
           layers={selectedLayer.wms_layers}
           key={selectedLayer.wms_layers}
-          format={'image/png'}
+          format={"image/png"}
           transparent={true}
         />
       );
@@ -57,12 +57,12 @@ function RainMap() {
   return (
     <>
       {wmsLayerSelect}
-      <DesignStormsButton/>
+      <DesignStormsButton />
       <Legend steps={rainLegend} />
       <MapContainer
         key={`${rect.width}x${rect.height}`}
         bounds={bounds.toLeafletBounds()}
-        style={{height: rect.height, width: rect.width}}
+        style={{ height: rect.height, width: rect.width }}
       >
         <TileLayer url={mapBackgrounds[1].url} />
         {wmsTileLayer}

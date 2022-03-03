@@ -1,6 +1,6 @@
-import { Shape } from 'plotly.js';
+import { Shape } from "plotly.js";
 
-import { Point } from 'geojson';
+import { Point } from "geojson";
 
 interface BaseTileProps {
   title: string;
@@ -48,7 +48,7 @@ export interface LegendStyle {
   yanchor?: "auto" | "top" | "middle" | "bottom";
   borderwidth?: number;
   bordercolor?: string;
-};
+}
 
 export interface RasterIntersection {
   uuid: string;
@@ -65,7 +65,7 @@ export interface Threshold {
 export interface Timeline {
   text: string;
   color: string;
-  lineDash: Shape['line']['dash'];
+  lineDash: Shape["line"]["dash"];
   isRelativeTimeFromNow: boolean;
   epochTimeInMilliSeconds: number;
 }
@@ -82,7 +82,6 @@ export interface ChartTile extends BaseTileProps {
   thresholds?: Threshold[];
   timelines?: Timeline[];
 }
-
 
 /* External (mostly single images) */
 

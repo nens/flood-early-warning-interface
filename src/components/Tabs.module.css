@@ -1,7 +1,7 @@
 div.Tabs {
-  width: calc(100% - 2*var(--tabs-margin));
+  width: calc(100% - 2 * var(--tabs-margin));
   background: var(--primary-color);
-  height: calc(100vh - var(--header-height) - 2*var(--tabs-margin));
+  height: calc(100vh - var(--header-height) - 2 * var(--tabs-margin));
   margin: var(--tabs-margin);
   overflow: none;
 }

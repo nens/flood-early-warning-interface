@@ -1,14 +1,14 @@
-import React, { useContext, useState } from 'react';
-import { MapContainer, TileLayer, WMSTileLayer } from 'react-leaflet';
-import { BoundingBox } from '../util/bounds';
-import { getMapBackgrounds } from '../constants';
-import { useConfigContext } from '../providers/ConfigProvider';
-import { useRectContext } from '../providers/RectProvider';
-import { TimeContext } from '../providers/TimeProvider';
-import { useRasterMetadata } from '../api/hooks';
-import MapSelectBox from './MapSelectBox';
-import FloodModelPopup from './FloodModelPopup';
-import LizardRasterLegend from './LizardRasterLegend';
+import React, { useContext, useState } from "react";
+import { MapContainer, TileLayer, WMSTileLayer } from "react-leaflet";
+import { BoundingBox } from "../util/bounds";
+import { getMapBackgrounds } from "../constants";
+import { useConfigContext } from "../providers/ConfigProvider";
+import { useRectContext } from "../providers/RectProvider";
+import { TimeContext } from "../providers/TimeProvider";
+import { useRasterMetadata } from "../api/hooks";
+import MapSelectBox from "./MapSelectBox";
+import FloodModelPopup from "./FloodModelPopup";
+import LizardRasterLegend from "./LizardRasterLegend";
 
 type TimePeriod = [string, number];
 
@@ -16,7 +16,7 @@ const TIME_PERIODS: TimePeriod[] = [
   ["T0", 0],
   ["T0 + 4h", 4 * 60 * 60 * 1000],
   ["T0 + 8h", 8 * 60 * 60 * 1000],
-  ["T0 + 12h", 12 * 60 * 60 * 1000]
+  ["T0 + 12h", 12 * 60 * 60 * 1000],
 ];
 
 function FloodModelMap() {
@@ -37,7 +37,7 @@ function FloodModelMap() {
   let raster = null;
   let time = now;
 
-  const selectedTimePeriod = TIME_PERIODS.find(period => period[0] === currentPeriod);
+  const selectedTimePeriod = TIME_PERIODS.find((period) => period[0] === currentPeriod);
   if (selectedTimePeriod) {
     time = new Date(time.getTime() + selectedTimePeriod[1]);
   }
@@ -52,7 +52,7 @@ function FloodModelMap() {
           styles: raster.options.styles,
           // @ts-ignore -- TS definitions don't know time parameter
           time: time.toISOString(),
-          opacity: 0.8
+          opacity: 0.8,
         }}
       />
     );
@@ -83,7 +83,7 @@ function FloodModelMap() {
   return (
     <>
       <MapSelectBox
-        options={TIME_PERIODS.map(period => [period[0], period[0]])}
+        options={TIME_PERIODS.map((period) => [period[0], period[0]])}
         currentValue={currentPeriod}
         setValue={setCurrentPeriod}
       />
@@ -91,7 +91,7 @@ function FloodModelMap() {
       <MapContainer
         key={`${rect.width}x${rect.height}${time.getTime()}`}
         bounds={bounds.toLeafletBounds()}
-        style={{height: rect.height, width: rect.width}}
+        style={{ height: rect.height, width: rect.width }}
       >
         <TileLayer url={mapBackgrounds[1].url} />
         {buildingsLayer}

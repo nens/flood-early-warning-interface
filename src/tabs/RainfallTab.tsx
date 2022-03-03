@@ -1,21 +1,21 @@
-import React from 'react';
-import { useConfigContext } from '../providers/ConfigProvider';
-import Tile from '../components/Tile';
-import ImageTile from '../components/ImageTile';
-import RainMap from '../components/RainMap';
+import React from "react";
+import { useConfigContext } from "../providers/ConfigProvider";
+import Tile from "../components/Tile";
+import ImageTile from "../components/ImageTile";
+import RainMap from "../components/RainMap";
 
-import { ExternalTile } from '../types/tiles';
+import { ExternalTile } from "../types/tiles";
 
-import styles from './RainfallTab.module.css';
+import styles from "./RainfallTab.module.css";
 
 function RainfallTab() {
   const config = useConfigContext();
-  const imageTiles = config.tiles.filter(tile => tile.type === 'external') as ExternalTile[];
+  const imageTiles = config.tiles.filter((tile) => tile.type === "external") as ExternalTile[];
 
   return (
     <div className={styles.RainfallTab}>
       <div className={styles.RainfallLeft}>
-        {imageTiles.map(tile => (
+        {imageTiles.map((tile) => (
           <Tile key={tile.id} title={tile.title} size="halfheight">
             <ImageTile tile={tile} />
           </Tile>

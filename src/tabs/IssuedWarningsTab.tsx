@@ -1,6 +1,6 @@
-import IssuedWarningsTable from '../components/IssuedWarningsTable';
-import Tile from '../components/Tile';
-import styles from '../components/Tile.module.css';
+import IssuedWarningsTable from "../components/IssuedWarningsTable";
+import Tile from "../components/Tile";
+import styles from "../components/Tile.module.css";
 
 function IssuedWarningsTab() {
   return (

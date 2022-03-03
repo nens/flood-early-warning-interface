@@ -1,32 +1,28 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 
-import { useParams, Redirect, useHistory } from 'react-router';
+import { useParams, Redirect, useHistory } from "react-router";
 
-import { TileDefinition } from '../types/tiles';
-import Tile from './Tile';
-import TimeseriesTile from './TimeseriesTile';
-import MapTile from './MapTile';
-import { TileWithCallback } from './TileList';
-import styles from './FullTileTab.module.css';
+import { TileDefinition } from "../types/tiles";
+import Tile from "./Tile";
+import TimeseriesTile from "./TimeseriesTile";
+import MapTile from "./MapTile";
+import { TileWithCallback } from "./TileList";
+import styles from "./FullTileTab.module.css";
 
 interface Props {
   tiles: TileDefinition[];
   url: string;
 }
 
-function FullTileTab({tiles, url}: Props) {
-  const { tileId } = useParams<{tileId: string}>();
+function FullTileTab({ tiles, url }: Props) {
+  const { tileId } = useParams<{ tileId: string }>();
   const routerHistory = useHistory();
-  const onClickFullTile = useCallback(
-    () => routerHistory.push(url),
-    [routerHistory, url]);
+  const onClickFullTile = useCallback(() => routerHistory.push(url), [routerHistory, url]);
 
-  const tilesWithId = tiles.filter(t => (""+t.id) === tileId);
+  const tilesWithId = tiles.filter((t) => "" + t.id === tileId);
 
   if (tilesWithId.length !== 1) {
-    return (
-      <Redirect to={url} />
-    );
+    return <Redirect to={url} />;
   }
 
   const fullTile = tilesWithId[0];
@@ -34,11 +30,11 @@ function FullTileTab({tiles, url}: Props) {
   return (
     <div className={styles.FullTileTab}>
       <div className={styles.Sidebar}>
-        {tiles.map((tile) => (
-          (tile.type === 'timeseries' ?
-           <TileWithCallback key={tile.id} size="smallsquare" tile={tile} baseUrl={url}/>
-         : null)
-        ))}
+        {tiles.map((tile) =>
+          tile.type === "timeseries" ? (
+            <TileWithCallback key={tile.id} size="smallsquare" tile={tile} baseUrl={url} />
+          ) : null
+        )}
       </div>
       <div className={styles.FullTile} key={fullTile.id}>
         <Tile
@@ -47,8 +43,8 @@ function FullTileTab({tiles, url}: Props) {
           x={onClickFullTile}
           viewInLizardLink={fullTile.viewInLizardLink}
         >
-          {fullTile.type === 'timeseries' ? <TimeseriesTile tile={fullTile} full /> : null}
-          {fullTile.type === 'map' ? <MapTile tile={fullTile} full /> : null}
+          {fullTile.type === "timeseries" ? <TimeseriesTile tile={fullTile} full /> : null}
+          {fullTile.type === "map" ? <MapTile tile={fullTile} full /> : null}
         </Tile>
       </div>
     </div>

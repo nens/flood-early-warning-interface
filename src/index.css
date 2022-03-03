@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: 'Parramatta', sans-serif;
+  font-family: "Parramatta", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -12,23 +12,23 @@ body {
   --tabs-margin: 1rem;
   --square-tile-size: 18rem;
   --sidebar-left: 20rem;
-  --primary-color: #002B49;
-  --secondary-color: #00477A;
+  --primary-color: #002b49;
+  --secondary-color: #00477a;
   --white-color: #f9f9f9;
 
-  --trigger-major-table: #ECCBCB;
+  --trigger-major-table: #eccbcb;
   --trigger-major: #f44;
   --trigger-moderate-table: #ffd2a1;
   --trigger-moderate: #ffa544;
   --trigger-minor-table: #ffffa1;
   --trigger-minor: #ff4;
   --trigger-monitor-table: #8090ff;
-  --trigger-monitor: #00477A;
+  --trigger-monitor: #00477a;
   --trigger-white-table: #fff;
   --trigger-white: #fff;
   --trigger-amber-table: #ffd2a1;
   --trigger-amber: #ffa544;
-  --trigger-red-table: #ECCBCB;
+  --trigger-red-table: #eccbcb;
   --trigger-red: #f44;
   --trigger-none: #777;
 }
@@ -43,7 +43,6 @@ body,
   background: var(--primary-color);
   color: var(--white-color);
 }
-
 
 /* For scaling, other sizes are all in rem */
 
@@ -85,7 +84,8 @@ body,
 
 /* Default components */
 
-input, select {
+input,
+select {
   background: var(--primary-color);
   color: var(--white-color);
   text-align: center;
@@ -100,7 +100,7 @@ input, select {
   cursor: pointer;
 }
 
-input[type=button] {
+input[type="button"] {
   font-weight: bold;
 }
 

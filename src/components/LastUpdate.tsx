@@ -1,15 +1,23 @@
-import { useContext } from 'react';
-import { useConfigContext } from '../providers/ConfigProvider';
-import { TimeContext } from '../providers/TimeProvider';
-import { useRasterMetadata } from '../api/hooks';
+import { useContext } from "react";
+import { useConfigContext } from "../providers/ConfigProvider";
+import { TimeContext } from "../providers/TimeProvider";
+import { useRasterMetadata } from "../api/hooks";
 
-import styles from './Header.module.css';
+import styles from "./Header.module.css";
 
 const MONTHS = [
-  "January", "February", "March",
-  "April", "May", "June",
-  "July", "August", "September",
-  "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 function _toTimeStr(d: Date) {
@@ -26,10 +34,10 @@ function LastUpdate() {
   const { now } = useContext(TimeContext);
   const rasterResponse = useRasterMetadata([rasters.operationalModelDepth]);
 
-  let lastModelRun = '-';
+  let lastModelRun = "-";
   if (rasterResponse.success && rasterResponse.data.length > 0) {
     const raster = rasterResponse.data[0];
-    const lastModified = new Date(raster.last_modified)
+    const lastModified = new Date(raster.last_modified);
     lastModelRun = _toTimeStr(lastModified);
   }
 

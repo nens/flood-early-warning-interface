@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { MapContainer, TileLayer, WMSTileLayer, CircleMarker } from 'react-leaflet';
-import { MeasuringStation } from '../types/api';
-import { BoundingBox } from '../util/bounds';
-import { getMapBackgrounds } from '../constants';
-import { useConfigContext } from '../providers/ConfigProvider';
-import { useRectContext } from '../providers/RectProvider';
-import { useMeasuringStations } from '../api/hooks';
-import StationPopup from './StationPopup';
+import { useState } from "react";
+import { MapContainer, TileLayer, WMSTileLayer, CircleMarker } from "react-leaflet";
+import { MeasuringStation } from "../types/api";
+import { BoundingBox } from "../util/bounds";
+import { getMapBackgrounds } from "../constants";
+import { useConfigContext } from "../providers/ConfigProvider";
+import { useRectContext } from "../providers/RectProvider";
+import { useMeasuringStations } from "../api/hooks";
+import StationPopup from "./StationPopup";
 
-function IframeMap(props: {setClickedStation: (station: MeasuringStation|null) => void}) {
+function IframeMap(props: { setClickedStation: (station: MeasuringStation | null) => void }) {
   const { setClickedStation } = props;
 
   const config = useConfigContext();
@@ -21,7 +21,7 @@ function IframeMap(props: {setClickedStation: (station: MeasuringStation|null) =
 
   const measuringStations = useMeasuringStations();
 
-  if (measuringStations.status !== 'success') {
+  if (measuringStations.status !== "success") {
     return null;
   }
 
@@ -31,7 +31,7 @@ function IframeMap(props: {setClickedStation: (station: MeasuringStation|null) =
     <MapContainer
       key={`${rect.width}x${rect.height}`}
       bounds={bounds.toLeafletBounds()}
-      style={{height: rect.height, width: rect.width}}
+      style={{ height: rect.height, width: rect.width }}
     >
       <TileLayer url={mapBackgrounds[1].url} />
       <WMSTileLayer
@@ -62,7 +62,7 @@ function IframeMap(props: {setClickedStation: (station: MeasuringStation|null) =
         transparent={true}
         zIndex={10}
       />
-      {stations.map(station => {
+      {stations.map((station) => {
         return (
           <CircleMarker
             center={[station.geometry.coordinates[1], station.geometry.coordinates[0]]}
@@ -70,19 +70,18 @@ function IframeMap(props: {setClickedStation: (station: MeasuringStation|null) =
             color="blue"
             key={station.id}
             eventHandlers={{
-              click: () => setStation(station)
+              click: () => setStation(station),
             }}
-          >
-          </CircleMarker>
+          ></CircleMarker>
         );
       })}
-      {station !== null &&
-       <StationPopup
-         station={station}
-         onClose={() => setStation(null)}
-         setClickedStation={setClickedStation}
-       />
-      }
+      {station !== null && (
+        <StationPopup
+          station={station}
+          onClose={() => setStation(null)}
+          setClickedStation={setClickedStation}
+        />
+      )}
     </MapContainer>
   );
 }

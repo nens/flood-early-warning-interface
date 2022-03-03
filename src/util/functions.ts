@@ -6,7 +6,6 @@ export function withDefault<T>(value: T | null | undefined, defaultValue: string
   }
 }
 
-
 type ValueFunc<T> = (a: T) => number;
 
 export function arrayMax<T>(array: T[], valueFunc: ValueFunc<T>): number {
@@ -22,7 +21,7 @@ export function arrayMax<T>(array: T[], valueFunc: ValueFunc<T>): number {
     const value = valueFunc(array[i]);
     if (valueOfMax < valueFunc(array[i])) {
       indexOfMax = i;
-      valueOfMax = value
+      valueOfMax = value;
     }
   }
   return indexOfMax;
@@ -33,9 +32,9 @@ export function arrayMin<T>(array: T[], valueFunc: ValueFunc<T>): number {
 }
 
 export function dashOrNum(value: number | string | null | undefined): string {
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     value = parseFloat(value);
   }
 
-  return (value !== null && value !== undefined) ? value.toFixed(2) : "-";
+  return value !== null && value !== undefined ? value.toFixed(2) : "-";
 }

@@ -1,8 +1,8 @@
-import { useContext } from 'react';
+import { useContext } from "react";
 
-import { TimeContext } from '../providers/TimeProvider';
+import { TimeContext } from "../providers/TimeProvider";
 
-import styles from './CurrentTime.module.css';
+import styles from "./CurrentTime.module.css";
 
 function CurrentTime() {
   const { now } = useContext(TimeContext);

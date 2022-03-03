@@ -1,8 +1,8 @@
 // Type of the whole config
 
-import { Feature, FeatureCollection, Polygon, Point } from 'geojson';
-import { Timeseries, Paginated, RasterAlarm } from './api';
-import { TileDefinition } from './tiles';
+import { Feature, FeatureCollection, Polygon, Point } from "geojson";
+import { Timeseries, Paginated, RasterAlarm } from "./api";
+import { TileDefinition } from "./tiles";
 
 export interface WarningAreaProperties {
   name: string;
@@ -41,7 +41,7 @@ export interface MaxForecast {
   [uuid: string]: {
     value: number;
     timeToMax: number;
-  }
+  };
 }
 
 interface FakeData {
@@ -57,16 +57,16 @@ export interface Config {
     floodModelMap?: BoundingBox;
     warningAreas?: BoundingBox;
     dams?: BoundingBox;
-  },
+  };
   rasters: {
     operationalModelLevel: string;
     operationalModelDepth: string;
     rainForecast: string;
   };
   wmsLayers?: {
-    [name: string]: WMSLayer
-  },
-  rainLegend: [string, string][],
+    [name: string]: WMSLayer;
+  };
+  rainLegend: [string, string][];
   rainfallWmsLayers?: {
     title: string;
     wms_url: string;
@@ -75,7 +75,7 @@ export interface Config {
   rainPopupFields: RainPopupField[];
   mapbox_access_token: string;
   timeseriesForWarningAreas: {
-    [name: string]: string
+    [name: string]: string;
   };
   dams: FeatureCollection<Point, DamProperties>;
   dashboardTitle?: string;
@@ -83,7 +83,7 @@ export interface Config {
   publicTiles: TileDefinition[]; // For use in iframe mode
   flood_warning_areas: FeatureCollection<Polygon, WarningAreaProperties>;
   iframeBaseTileId: number; // XXX
-  referenceLevels: {[assetId: number]: string};
+  referenceLevels: { [assetId: number]: string };
   trainingDashboards?: TrainingDashboard[]; // XXX
   nowDateTimeUTC?: string;
   fakeData?: FakeData;

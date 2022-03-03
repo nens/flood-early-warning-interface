@@ -1,15 +1,15 @@
-import React from 'react';
-import * as L from 'leaflet';
-import { Polygon, Tooltip } from 'react-leaflet';
-import { WarningArea } from '../types/config';
-import { RasterAlarm } from '../types/api';
-import { TRIGGER_LEVELS } from '../constants';
-import { useClickToTimeseries } from '../util/config';
+import React from "react";
+import * as L from "leaflet";
+import { Polygon, Tooltip } from "react-leaflet";
+import { WarningArea } from "../types/config";
+import { RasterAlarm } from "../types/api";
+import { TRIGGER_LEVELS } from "../constants";
+import { useClickToTimeseries } from "../util/config";
 
 interface WarningAreaPolygonProps {
   warningArea: WarningArea;
   hover: boolean;
-  onHover: (id: string|null) => void;
+  onHover: (id: string | null) => void;
   alarm: RasterAlarm | null;
   clickToTimeseriesUuid?: string | null;
 }
@@ -19,28 +19,30 @@ function WarningAreaPolygon({
   hover,
   onHover,
   alarm,
-  clickToTimeseriesUuid
+  clickToTimeseriesUuid,
 }: WarningAreaPolygonProps) {
   const onClick = useClickToTimeseries(clickToTimeseriesUuid || "");
 
   const positions = warningArea.geometry.coordinates[0].map(
-    point => [point[1], point[0]] as L.LatLngExpression
+    (point) => [point[1], point[0]] as L.LatLngExpression
   );
 
   const triggerLevel = alarm ? alarm.latest_trigger.warning_level : null;
 
-  const trigger = (triggerLevel && TRIGGER_LEVELS.indexOf(triggerLevel.toLowerCase()) !== -1 ?
-                   `var(--trigger-${triggerLevel.toLowerCase()})` :
-                   'var(--trigger-none)');
+  const trigger =
+    triggerLevel && TRIGGER_LEVELS.indexOf(triggerLevel.toLowerCase()) !== -1
+      ? `var(--trigger-${triggerLevel.toLowerCase()})`
+      : "var(--trigger-none)";
 
   return (
     <Polygon
-      positions={positions} color={trigger}
-      key={""+hover+triggerLevel} // Otherwise it doesn't update
+      positions={positions}
+      color={trigger}
+      key={"" + hover + triggerLevel} // Otherwise it doesn't update
       eventHandlers={{
-        mouseover: () => onHover(""+warningArea.id!),
+        mouseover: () => onHover("" + warningArea.id!),
         mouseout: () => onHover(null),
-        click: onClick ?? undefined
+        click: onClick ?? undefined,
       }}
       fillOpacity={hover ? 0.7 : 0.5}
       opacity={hover ? 1 : 0.5}
@@ -50,4 +52,4 @@ function WarningAreaPolygon({
   );
 }
 
-    export default WarningAreaPolygon;
+export default WarningAreaPolygon;

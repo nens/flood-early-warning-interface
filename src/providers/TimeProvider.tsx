@@ -1,8 +1,8 @@
 // Makes 'start', 'end' and 'now' Dates available
 
-import React, { useState, useEffect, createContext } from 'react';
-import { WithChildren } from '../types/util';
-import { useConfigContext } from './ConfigProvider';
+import React, { useState, useEffect, createContext } from "react";
+import { WithChildren } from "../types/util";
+import { useConfigContext } from "./ConfigProvider";
 
 const HOUR_IN_MS = 60 * 60 * 1000;
 
@@ -21,9 +21,8 @@ export const TimeContext = createContext<Times>({
   start: new Date(),
   now: new Date(),
   end: new Date(),
-  isDateEdited: false
+  isDateEdited: false,
 });
-
 
 function roundDown(d: Date) {
   const minutes = d.getMinutes();
@@ -41,14 +40,11 @@ function TimeProvider({ children }: WithChildren<{}>) {
   // Now is real time, updated every 5 minutes
   const [now, setNow] = useState<Date>(roundDown(new Date()));
   // "Edited now" is set by the user, takes precedence if set
-  const [editedNow, setEditedNow] = useState<Date|null>(null);
+  const [editedNow, setEditedNow] = useState<Date | null>(null);
 
   const getPeriod = (d: Date) => {
     const ms = d.getTime();
-    return [
-      new Date(ms - 24 * HOUR_IN_MS),
-      new Date(ms + 12 * HOUR_IN_MS)
-    ];
+    return [new Date(ms - 24 * HOUR_IN_MS), new Date(ms + 12 * HOUR_IN_MS)];
   };
 
   const isDateEdited = editedNow !== null;
@@ -57,19 +53,20 @@ function TimeProvider({ children }: WithChildren<{}>) {
 
   // Update, taking rounding into account
   useEffect(() => {
-    setTimeout(() =>
-      setNow(new Date()), (5 * 60 * 1000) - (new Date().getTime() - now.getTime()));
+    setTimeout(() => setNow(new Date()), 5 * 60 * 1000 - (new Date().getTime() - now.getTime()));
   }, [now]);
 
   return (
-    <TimeContext.Provider value={{
-      now: usedNow,
-      start,
-      end,
-      isDateEdited,
-      setEditedNow,
-      resetEditedNow: () => setEditedNow(null)
-    }}>
+    <TimeContext.Provider
+      value={{
+        now: usedNow,
+        start,
+        end,
+        isDateEdited,
+        setEditedNow,
+        resetEditedNow: () => setEditedNow(null),
+      }}
+    >
       {children}
     </TimeContext.Provider>
   );

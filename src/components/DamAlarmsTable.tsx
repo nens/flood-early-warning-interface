@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
-import { dashOrNum } from '../util/functions';
-import { useClickToTimeseries } from '../util/config';
-import { Dam } from '../types/config';
-import { RasterAlarm } from '../types/api';
-import { thresholdsByWarningLevel } from '../util/rasterAlarms';
-import { isSamePoint } from '../util/bounds';
-import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from '../api/hooks';
-import { TimeContext } from '../providers/TimeProvider';
-import { useConfigContext } from '../providers/ConfigProvider';
-import TriggerHeader from './TriggerHeader';
-import styles from './AlarmsTable.module.css';
+import React, { useContext } from "react";
+import { dashOrNum } from "../util/functions";
+import { useClickToTimeseries } from "../util/config";
+import { Dam } from "../types/config";
+import { RasterAlarm } from "../types/api";
+import { thresholdsByWarningLevel } from "../util/rasterAlarms";
+import { isSamePoint } from "../util/bounds";
+import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from "../api/hooks";
+import { TimeContext } from "../providers/TimeProvider";
+import { useConfigContext } from "../providers/ConfigProvider";
+import TriggerHeader from "./TriggerHeader";
+import styles from "./AlarmsTable.module.css";
 
 interface TableProps {
   dams: Dam[];
@@ -34,17 +34,10 @@ function timeDiffToString(timestamp: number, now: number) {
   const minutes = diffMinutes % 60;
   const hours = (diffMinutes - minutes) / 60;
 
-  return (hours > 0 ? hours+"h" : "") + minutes + "min";
+  return (hours > 0 ? hours + "h" : "") + minutes + "min";
 }
 
-function DamRow({
-  dam,
-  alarm,
-  now,
-  hoverDam,
-  setHoverDam,
-  operationalModelLevel
-}: RowProps) {
+function DamRow({ dam, alarm, now, hoverDam, setHoverDam, operationalModelLevel }: RowProps) {
   const rowClick = useClickToTimeseries(dam.properties.timeseries);
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
 
@@ -56,8 +49,8 @@ function DamRow({
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const warningStyle = {
-    background: warningLevel ? `var(--trigger-${warningLevel.toLowerCase()}-table)` : undefined
-  }
+    background: warningLevel ? `var(--trigger-${warningLevel.toLowerCase()}-table)` : undefined,
+  };
   const warningClassTd = warningLevel ? styles.td_warning : "";
   const highlight = hoverDam === dam.properties.name;
 
@@ -70,18 +63,14 @@ function DamRow({
       onClick={rowClick ?? undefined}
     >
       <div className={styles.tdLeft}>{dam.properties.name}</div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(currentLevel)}</div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>
-        {dashOrNum(currentLevel)}
+        {maxForecast.time !== null
+          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+          : "-"}
       </div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>
-        {dashOrNum(maxForecast.value)}
-      </div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>
-        {maxForecast.time !== null ? timeDiffToString(maxForecast.time.getTime(), now.getTime()) : "-"}
-      </div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>
-        {warningLevel || "-"}
-      </div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.monitor)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.white)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.amber)}</div>
@@ -92,7 +81,7 @@ function DamRow({
 
 function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) {
   const config = useConfigContext();
-  const {now} = useContext(TimeContext);
+  const { now } = useContext(TimeContext);
 
   const operationalModelLevel = config.rasters.operationalModelLevel;
 
@@ -104,13 +93,21 @@ function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) 
         <div className={styles.thtd}>Max forecast (mAHD)</div>
         <div className={styles.thtd}>Time to max</div>
         <div className={styles.thtd}>Forecast level breached</div>
-        <div className={styles.thtd}><TriggerHeader level="Monitor"/></div>
-        <div className={styles.thtd}><TriggerHeader level="White"/></div>
-        <div className={styles.thtd}><TriggerHeader level="Amber"/></div>
-        <div className={styles.thtd}><TriggerHeader level="Red"/></div>
+        <div className={styles.thtd}>
+          <TriggerHeader level="Monitor" />
+        </div>
+        <div className={styles.thtd}>
+          <TriggerHeader level="White" />
+        </div>
+        <div className={styles.thtd}>
+          <TriggerHeader level="Amber" />
+        </div>
+        <div className={styles.thtd}>
+          <TriggerHeader level="Red" />
+        </div>
       </div>
       {dams.map((dam, idx) => {
-        const alarm = damAlarms.find(alarm => isSamePoint(alarm.geometry, dam.geometry));
+        const alarm = damAlarms.find((alarm) => isSamePoint(alarm.geometry, dam.geometry));
 
         return (
           <DamRow

@@ -2,7 +2,9 @@
   min-width: 300px;
 }
 
-.PopupTable, .PopupTable th, .PopupTable td {
+.PopupTable,
+.PopupTable th,
+.PopupTable td {
   border-collapse: collapse;
   border: solid #ccc 1px;
   padding: 5px;

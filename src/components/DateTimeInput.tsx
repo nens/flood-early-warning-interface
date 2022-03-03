@@ -6,16 +6,12 @@ interface DateTimeInputProps {
   setConfirmedDate: (d: Date) => void;
 }
 
-function getDateAndTimeStrings(
-  dateTime: Date,
-  browserOffset: boolean
-): [string, string] {
+function getDateAndTimeStrings(dateTime: Date, browserOffset: boolean): [string, string] {
   // Takes a UTC dateTime string like "2019-03-21T10:58Z" and an
   // offset in hours like 1. Returns a date and time in the timezone
   // with that offset representing the same time.
   const utcTimestamp = new Date(dateTime).getTime();
-  const withOffset = utcTimestamp - 3600000 * (
-    browserOffset ? BROWSER_OFFSET_HOURS : 0);
+  const withOffset = utcTimestamp - 3600000 * (browserOffset ? BROWSER_OFFSET_HOURS : 0);
 
   const offsetDate = new Date(withOffset);
 
@@ -61,11 +57,15 @@ function DateTimeInput(props: DateTimeInputProps) {
       />
       <select
         name="timezone"
-        onChange={(event) => setUseUTC(event.target.value === 'utc')}
-        value={useUTC ? 'utc' : 'local'}
+        onChange={(event) => setUseUTC(event.target.value === "utc")}
+        value={useUTC ? "utc" : "local"}
       >
-        <option key="local" value="local">Local time</option>
-        <option key="utc" value="utc">UTC</option>
+        <option key="local" value="local">
+          Local time
+        </option>
+        <option key="utc" value="utc">
+          UTC
+        </option>
       </select>
       <input type="button" value="Change" onClick={confirmChangedDate} />
     </div>

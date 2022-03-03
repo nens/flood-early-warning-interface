@@ -1,25 +1,25 @@
-import { useContext, useState } from 'react';
+import { useContext, useState } from "react";
 
-import { MapContainer, TileLayer, WMSTileLayer, CircleMarker } from 'react-leaflet';
+import { MapContainer, TileLayer, WMSTileLayer, CircleMarker } from "react-leaflet";
 
-import { BoundingBox } from '../util/bounds';
-import { MapTile } from '../types/tiles';
-import { MeasuringStation } from '../types/api';
-import { RectContext } from '../providers/RectProvider';
-import { RectResult } from '../util/hooks';
-import { getMapBackgrounds } from '../constants';
-import { useAssetTypes } from '../api/hooks';
-import { useConfigContext } from '../providers/ConfigProvider';
-import StationPopup from './StationPopup';
+import { BoundingBox } from "../util/bounds";
+import { MapTile } from "../types/tiles";
+import { MeasuringStation } from "../types/api";
+import { RectContext } from "../providers/RectProvider";
+import { RectResult } from "../util/hooks";
+import { getMapBackgrounds } from "../constants";
+import { useAssetTypes } from "../api/hooks";
+import { useConfigContext } from "../providers/ConfigProvider";
+import StationPopup from "./StationPopup";
 
 interface Props {
   tile: MapTile;
   full?: boolean;
 }
 
-function MapTileComponent({tile, full=false}: Props) {
+function MapTileComponent({ tile, full = false }: Props) {
   const config = useConfigContext();
-  const { rect } = useContext(RectContext) as {rect: RectResult};
+  const { rect } = useContext(RectContext) as { rect: RectResult };
   const [station, setStation] = useState<MeasuringStation | null>(null);
 
   const wmsLayers = tile.wmsLayers ?? [];
@@ -35,15 +35,10 @@ function MapTileComponent({tile, full=false}: Props) {
     <MapContainer
       key={`${rect.width}x${rect.height}`}
       bounds={bounds.toLeafletBounds()}
-      style={{height: rect.height, width: rect.width}}
+      style={{ height: rect.height, width: rect.width }}
     >
       <TileLayer url={mapBackgrounds[1].url} />
-      {wmsLayers.map(({
-        url,
-        layers,
-        zindex=10,
-        transparent=true
-      }) => (
+      {wmsLayers.map(({ url, layers, zindex = 10, transparent = true }) => (
         <WMSTileLayer
           key={url + layers}
           url={url}
@@ -53,11 +48,11 @@ function MapTileComponent({tile, full=false}: Props) {
           zIndex={zindex}
         />
       ))}
-      {responses.map(({isSuccess, data}: any) => {
+      {responses.map(({ isSuccess, data }: any) => {
         if (!isSuccess) return null;
 
         return data.results.map((asset: any) => {
-          if (!asset.url.includes('measuringstations')) return null;
+          if (!asset.url.includes("measuringstations")) return null;
 
           const station: MeasuringStation = asset;
 
@@ -68,19 +63,14 @@ function MapTileComponent({tile, full=false}: Props) {
               color="blue"
               key={station.id}
               eventHandlers={{
-                click: () => setStation(station)
+                click: () => setStation(station),
               }}
-            >
-            </CircleMarker>
+            ></CircleMarker>
           );
         });
       })}
       {full && station !== null ? (
-        <StationPopup
-          station={station}
-          key={station.id}
-          onClose={() => setStation(null)}
-        />
+        <StationPopup station={station} key={station.id} onClose={() => setStation(null)} />
       ) : null}
     </MapContainer>
   );

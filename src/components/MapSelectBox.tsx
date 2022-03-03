@@ -1,4 +1,4 @@
-import styles from './MapSelectBox.module.css';
+import styles from "./MapSelectBox.module.css";
 
 interface MapSelectBoxProps {
   options: [string, string][];

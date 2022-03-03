@@ -1,4 +1,4 @@
-import cssStyles from './Legend.module.css';
+import cssStyles from "./Legend.module.css";
 
 interface LegendProps {
   steps: [string, string][];
@@ -36,21 +36,21 @@ function getCorrectTextColor(hex: string) {
 function Legend({ steps }: LegendProps) {
   return (
     <div className={cssStyles.Legend}>
-    <span className={cssStyles.LegendTitle}>Legend</span>
-        <ul className={cssStyles.LegendUl}>
+      <span className={cssStyles.LegendTitle}>Legend</span>
+      <ul className={cssStyles.LegendUl}>
         {steps.map(([value, color], idx) => (
           <li
             className={cssStyles.LegendStep}
             key={`${color}${idx}`}
             style={{
               background: color,
-              color: getCorrectTextColor(color)
+              color: getCorrectTextColor(color),
             }}
           >
-          {value}
+            {value}
           </li>
         ))}
-        </ul>
+      </ul>
     </div>
   );
 }

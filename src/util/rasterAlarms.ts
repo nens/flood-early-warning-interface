@@ -1,22 +1,23 @@
-import { RasterAlarm } from '../types/api';
-
+import { RasterAlarm } from "../types/api";
 
 export function isGaugeAlarm(alarm: RasterAlarm): boolean {
   // Return true if 'minor' is in the thresholds, dam alarms
   // use other terms
-  return alarm.thresholds && alarm.thresholds.some(
-    ({warning_level}) => (warning_level.toLowerCase() === 'minor'));
+  return (
+    alarm.thresholds &&
+    alarm.thresholds.some(({ warning_level }) => warning_level.toLowerCase() === "minor")
+  );
 }
-
 
 export function isDamAlarm(alarm: RasterAlarm): boolean {
-  return alarm.thresholds && alarm.thresholds.some(
-    ({warning_level}) => (warning_level.toLowerCase() === 'amber'));
+  return (
+    alarm.thresholds &&
+    alarm.thresholds.some(({ warning_level }) => warning_level.toLowerCase() === "amber")
+  );
 }
 
-
-export function thresholdsByWarningLevel(alarm: RasterAlarm): {[level: string]: number} {
-  const result: {[level: string]: number} = {};
+export function thresholdsByWarningLevel(alarm: RasterAlarm): { [level: string]: number } {
+  const result: { [level: string]: number } = {};
 
   if (alarm.thresholds) {
     for (const threshold of alarm.thresholds) {

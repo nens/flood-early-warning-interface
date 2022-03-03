@@ -1,26 +1,20 @@
-import { useContext } from 'react';
+import { useContext } from "react";
 import Plot from "react-plotly.js";
-import { PlotData, Shape, Layout } from 'plotly.js';
+import { PlotData, Shape, Layout } from "plotly.js";
 
-import {
-  BackgroundColorShape,
-  ChartTile,
-  LegendStyle,
-  Threshold,
-  Timeline
-} from '../types/tiles';
-import { ObservationType, Events, RasterAlarm } from '../types/api';
-import { RectResult } from '../util/hooks';
-import { isSamePoint } from '../util/bounds';
-import { RectContext } from '../providers/RectProvider';
-import { TimeContext } from '../providers/TimeProvider';
+import { BackgroundColorShape, ChartTile, LegendStyle, Threshold, Timeline } from "../types/tiles";
+import { ObservationType, Events, RasterAlarm } from "../types/api";
+import { RectResult } from "../util/hooks";
+import { isSamePoint } from "../util/bounds";
+import { RectContext } from "../providers/RectProvider";
+import { TimeContext } from "../providers/TimeProvider";
 import {
   useRasterMetadata,
   useRasterAlarms,
   useRasterEvents,
   useTimeseriesMetadata,
-  useTimeseriesEvents
-} from '../api/hooks';
+  useTimeseriesEvents,
+} from "../api/hooks";
 
 interface Props {
   tile: ChartTile;
@@ -34,25 +28,27 @@ interface ObservationTypeHistorical {
   historical: boolean;
 }
 
-const TRIGGER_LEVEL_TO_COLOR: {[key: string]: string} = {
+const TRIGGER_LEVEL_TO_COLOR: { [key: string]: string } = {
   major: "#f44",
   moderate: "#ffa544",
   minor: "#ff4",
   monitor: "#00477A",
   white: "#999",
   amber: "#ffa544",
-  red: "#f44"
+  red: "#f44",
 };
 
 function _getAxes(observationTypes: ObservationTypeHistorical[]): Axes {
   // Only use normal types for deciding axes
-  const types = observationTypes.filter(obsType => !obsType.historical).map(obsType => obsType.observationType);
+  const types = observationTypes
+    .filter((obsType) => !obsType.historical)
+    .map((obsType) => obsType.observationType);
 
   const first: ObservationType = types[0];
 
   if (!first) return [];
 
-  for (let i=1; i < types.length; i++) {
+  for (let i = 1; i < types.length; i++) {
     if (first.url !== types[i].url) {
       return [first, types[i]];
     }
@@ -60,29 +56,28 @@ function _getAxes(observationTypes: ObservationTypeHistorical[]): Axes {
   return [first];
 }
 
-function getYAxis(observationType: ObservationType, side: "left"|"right") {
+function getYAxis(observationType: ObservationType, side: "left" | "right") {
   const isRatio = observationType.scale === "ratio";
 
   return {
     title: observationType.unit || observationType.reference_frame,
     type: "linear" as const,
-    rangemode: (isRatio ? "tozero" as const : "normal" as const),
+    rangemode: isRatio ? ("tozero" as const) : ("normal" as const),
     side: side,
-    overlaying: side === 'right' ? ("y" as const) : undefined,
+    overlaying: side === "right" ? ("y" as const) : undefined,
     ticks: "outside" as const,
     tick0: isRatio ? 0 : undefined,
-    showgrid: side === 'left',
+    showgrid: side === "left",
     zeroline: isRatio,
-    range: observationType.unit === 'mm' ? [0, 15] : undefined
+    range: observationType.unit === "mm" ? [0, 15] : undefined,
   };
 }
-
 
 function _getLegend(observationType: ObservationType, legendString: string | null) {
   let legend = legendString || observationType.parameter;
 
   if (observationType.unit) {
-      return `${legend} (${observationType.unit})`;
+    return `${legend} (${observationType.unit})`;
   } else {
     return legend;
   }
@@ -101,13 +96,13 @@ function _getHistoricalColor(idx: number, amount: number) {
   // least recent (idx 0) should be light gray (#eeeeee).
   // #60 = 96, #ee = 239.
   if (amount < 2) {
-    return '#606060'; // There is only one, used darkest
+    return "#606060"; // There is only one, used darkest
   }
   if (idx >= amount) {
-    return '#eeeeee'; // Should never happen
+    return "#eeeeee"; // Should never happen
   }
 
-  const value = Math.round(239 + (96 - 239) * (idx / (amount-1)));
+  const value = Math.round(239 + (96 - 239) * (idx / (amount - 1)));
   const hex = value.toString(16); // Should always be length 2
 
   return `#${hex}${hex}${hex}`;
@@ -116,7 +111,7 @@ function _getHistoricalColor(idx: number, amount: number) {
 function createVerticalLine(
   timeInEpoch: number,
   color: string,
-  lineDash: Shape['line']['dash'],
+  lineDash: Shape["line"]["dash"],
   isFull: boolean,
   isRelativeTimeFromNow: boolean,
   now: number
@@ -132,8 +127,8 @@ function createVerticalLine(
     line: {
       dash: lineDash,
       color: color,
-      width: isFull ? 2 : 1
-    }
+      width: isFull ? 2 : 1,
+    },
   };
 }
 
@@ -152,7 +147,7 @@ function createAnnotationForVerticalLine(
     yref: "paper" as const,
     y: 1,
     yanchor: "top" as const,
-    showarrow: false
+    showarrow: false,
   };
 }
 
@@ -188,9 +183,9 @@ function backgroundColorBetweenTwoX(
     fillcolor: color,
     opacity: opacity,
     line: {
-      width: 0
+      width: 0,
     },
-    layer: 'below'
+    layer: "below",
   };
 }
 
@@ -206,18 +201,17 @@ function getThresholdLine(threshold: Threshold, yref: string) {
     y1: threshold.value,
     line: {
       width: 1,
-      color: threshold.color
-    }
+      color: threshold.color,
+    },
   };
 }
 
 function getAlarmLines(alarm: RasterAlarm, yref: string) {
-  return alarm.thresholds.map(threshold => {
-    const color = (
-      alarm.latest_trigger.warning_level === threshold.warning_level ?
-      TRIGGER_LEVEL_TO_COLOR[threshold.warning_level!.toLowerCase()] :
-      "#888"
-    ) || "#888";
+  return alarm.thresholds.map((threshold) => {
+    const color =
+      (alarm.latest_trigger.warning_level === threshold.warning_level
+        ? TRIGGER_LEVEL_TO_COLOR[threshold.warning_level!.toLowerCase()]
+        : "#888") || "#888";
 
     return {
       type: "line",
@@ -226,13 +220,13 @@ function getAlarmLines(alarm: RasterAlarm, yref: string) {
       x0: 0,
       x1: 1,
       yref,
-      y0: typeof threshold.value === 'string' ? parseFloat(threshold.value) : threshold.value,
-      y1: typeof threshold.value === 'string' ? parseFloat(threshold.value) : threshold.value,
+      y0: typeof threshold.value === "string" ? parseFloat(threshold.value) : threshold.value,
+      y1: typeof threshold.value === "string" ? parseFloat(threshold.value) : threshold.value,
       line: {
         dash: "dot",
         color,
-        width: 2
-      }
+        width: 2,
+      },
     };
   });
 }
@@ -247,18 +241,16 @@ function getThresholdAnnotation(threshold: Threshold, yref: string) {
     yanchor: "bottom" as const,
     yref: yref,
     y: parseFloat(threshold.value),
-    showarrow: false
+    showarrow: false,
   };
 }
 
 function getAlarmAnnotations(alarm: RasterAlarm, yref: string) {
-  return alarm.thresholds.map(threshold => {
+  return alarm.thresholds.map((threshold) => {
     let active = "";
     let label = "";
 
-    if (
-      alarm.latest_trigger.warning_level === threshold.warning_level
-    ) {
+    if (alarm.latest_trigger.warning_level === threshold.warning_level) {
       const time = new Date(alarm.latest_trigger.value_time);
       active = `, active since ${time.toLocaleString()}`;
     }
@@ -273,7 +265,7 @@ function getAlarmAnnotations(alarm: RasterAlarm, yref: string) {
       yref: yref,
       y: threshold.value,
       yanchor: "bottom",
-      showarrow: false
+      showarrow: false,
     };
   });
 }
@@ -293,41 +285,40 @@ function getAnnotationsAndShapes(
 
   //  const alarmReferenceLines = alarmReferenceLines(axes);
 
-  const thresholdLines = thresholds.map(th =>
-    getThresholdLine(th, (axes.length === 2 && axes[1].unit === th.unitReference) ? "y2" : "y")
+  const thresholdLines = thresholds.map((th) =>
+    getThresholdLine(th, axes.length === 2 && axes[1].unit === th.unitReference ? "y2" : "y")
   );
 
-  const rasterAlarmLines = rasterAlarms.map(alarm =>
-    getAlarmLines(alarm, (axes.length === 2 && axes[1].unit === "mAHD") ? "y2" : "y")
-  ).flat();
+  const rasterAlarmLines = rasterAlarms
+    .map((alarm) => getAlarmLines(alarm, axes.length === 2 && axes[1].unit === "mAHD" ? "y2" : "y"))
+    .flat();
 
-  thresholdAnnotations = thresholds.map(th =>
-    getThresholdAnnotation(
-      th,
-      (axes.length === 2 && axes[1].unit === th.unitReference) ? "y2" : "y"
+  thresholdAnnotations = thresholds.map((th) =>
+    getThresholdAnnotation(th, axes.length === 2 && axes[1].unit === th.unitReference ? "y2" : "y")
+  );
+
+  const rasterAlarmAnnotations = rasterAlarms
+    .map((alarm) =>
+      getAlarmAnnotations(alarm, axes.length === 2 && axes[1].unit === "mAHD" ? "y2" : "y")
     )
-  );
-
-  const rasterAlarmAnnotations = rasterAlarms.map(alarm =>
-    getAlarmAnnotations(alarm,  (axes.length === 2 && axes[1].unit === "mAHD") ? "y2" : "y")
-  ).flat();
+    .flat();
 
   /* if (alarmReferenceLines) {
-     *   shapes = alarmReferenceLines.shapes;
-     *   annotations = alarmReferenceLines.annotations;
-     * } */
+   *   shapes = alarmReferenceLines.shapes;
+   *   annotations = alarmReferenceLines.annotations;
+   * } */
 
-    // Return lines for alarms, ts thresholds and timelines
+  // Return lines for alarms, ts thresholds and timelines
 
-    // Timelines with annotation
-    // Always show nowline
-    const nowLine = createVerticalLine(
-      0,
-      "#C0392B", // red in Lizard colors
-      "dot",
-      full,
-      true,
-      now.getTime()
+  // Timelines with annotation
+  // Always show nowline
+  const nowLine = createVerticalLine(
+    0,
+    "#C0392B", // red in Lizard colors
+    "dot",
+    full,
+    true,
+    now.getTime()
   );
 
   shapes.push(nowLine);
@@ -341,7 +332,7 @@ function getAnnotationsAndShapes(
   );
 
   annotations.push(nowAnnotation);
-  timelines.forEach(function(timeline) {
+  timelines.forEach(function (timeline) {
     const nowLine = createVerticalLine(
       timeline.epochTimeInMilliSeconds,
       timeline.color,
@@ -363,7 +354,7 @@ function getAnnotationsAndShapes(
 
   // Background color shapes to show a certain background color between
   // two x axis values.
-  backgroundColorShapes.forEach(function(backgroundColorShape) {
+  backgroundColorShapes.forEach(function (backgroundColorShape) {
     const backgroundShape = backgroundColorBetweenTwoX(
       backgroundColorShape.x1EpochTimeInMilliSeconds,
       backgroundColorShape.x2EpochTimeInMilliSeconds,
@@ -376,20 +367,19 @@ function getAnnotationsAndShapes(
   });
 
   if (thresholds) {
-    thresholdLines.forEach(thLine => {
+    thresholdLines.forEach((thLine) => {
       shapes.push(thLine);
     });
 
-    thresholdAnnotations.forEach(thAnnot => {
+    thresholdAnnotations.forEach((thAnnot) => {
       annotations.push(thAnnot);
     });
   }
-  rasterAlarmLines.forEach(line => shapes.push(line));
-  rasterAlarmAnnotations.forEach(annot => annotations.push(annot));
+  rasterAlarmLines.forEach((line) => shapes.push(line));
+  rasterAlarmAnnotations.forEach((annot) => annotations.push(annot));
 
   return { annotations, shapes };
 }
-
 
 function _getData(
   eventsArray: Events[],
@@ -398,7 +388,7 @@ function _getData(
   axes: Axes,
   colors: string[] | null,
   legendStrings: string[] | null,
-  full: boolean,
+  full: boolean
 ) {
   const normalEvents = eventsArray.length - numHistoricalTimeseries;
   let shownHistoricalLegend = false;
@@ -406,22 +396,23 @@ function _getData(
   const data = eventsArray.map((events, idx) => {
     const { observationType, historical } = observationTypes[idx];
 
-    const legendString = (legendStrings !== null ? legendStrings[idx] : null);
-    const color = (
-      historical ?
-      _getHistoricalColor(idx - normalEvents, numHistoricalTimeseries) :
-      _getColor(colors, idx));
+    const legendString = legendStrings !== null ? legendStrings[idx] : null;
+    const color = historical
+      ? _getHistoricalColor(idx - normalEvents, numHistoricalTimeseries)
+      : _getColor(colors, idx);
 
     const plotlyEvents: Partial<PlotData> = {
-      x: events.map(event => event.timestamp),
-      y: events.map(event => (typeof event.value === 'number' ? Math.round(event.value*100)/100 : event.value)),
-      name: historical ? 'Historical forecasts' : _getLegend(observationType, legendString),
+      x: events.map((event) => event.timestamp),
+      y: events.map((event) =>
+        typeof event.value === "number" ? Math.round(event.value * 100) / 100 : event.value
+      ),
+      name: historical ? "Historical forecasts" : _getLegend(observationType, legendString),
       showlegend: !historical || !shownHistoricalLegend,
-      hoverinfo: full && !historical ? "x+y+name": "none",
+      hoverinfo: full && !historical ? "x+y+name" : "none",
       hoverlabel: {
-        namelength: -1
-      }
-    }
+        namelength: -1,
+      },
+    };
 
     if (historical) {
       shownHistoricalLegend = true;
@@ -431,18 +422,18 @@ function _getData(
       plotlyEvents.yaxis = "y2";
     }
 
-    if (observationType.scale === 'ratio') {
+    if (observationType.scale === "ratio") {
       // Bar plot
-      plotlyEvents.type = 'bar'
+      plotlyEvents.type = "bar";
       plotlyEvents.marker = {
-        color
+        color,
       };
     } else {
       // Line plot
       plotlyEvents.type = "scatter";
       plotlyEvents.mode = "lines";
       plotlyEvents.line = {
-        color
+        color,
       };
     }
 
@@ -453,23 +444,22 @@ function _getData(
   return data.slice(normalEvents).concat(data.slice(0, normalEvents));
 }
 
-
 function _getLayout(
-    now: Date,
-    start: Date,
-    end: Date,
-    full: boolean,
-    showAxis: boolean,
-    showLegend: boolean,
-    width: number,
-    height: number,
-    axes: Axes,
-    thresholds: Threshold[],
-    timelines: Timeline[],
-    rasterAlarms: RasterAlarm[],
-    backgroundColorShapes: BackgroundColorShape[],
-    tileLegend?: LegendStyle
-  ) {
+  now: Date,
+  start: Date,
+  end: Date,
+  full: boolean,
+  showAxis: boolean,
+  showLegend: boolean,
+  width: number,
+  height: number,
+  axes: Axes,
+  thresholds: Threshold[],
+  timelines: Timeline[],
+  rasterAlarms: RasterAlarm[],
+  backgroundColorShapes: BackgroundColorShape[],
+  tileLegend?: LegendStyle
+) {
   // We have a bunch of lines with labels, the labels are annotations and
   // the lines are shapes, that's why we have one function to make them.
   // Only full mode shows the labels.
@@ -483,20 +473,20 @@ function _getLayout(
     full
   );
 
-  const margin = (
-    (full || showAxis) ?
-    {
-      t: 20,
-      l: 50,
-      r: 50,
-      b: 40
-    } : {
-      t: 5,
-      l: 5,
-      r: 5,
-      b: 5
-    }
-  );
+  const margin =
+    full || showAxis
+      ? {
+          t: 20,
+          l: 50,
+          r: 50,
+          b: 40,
+        }
+      : {
+          t: 5,
+          l: 5,
+          r: 5,
+          b: 5,
+        };
 
   // Use the tile configuration for some of the configuration.
   // Use the react-plotly default (undefined), if no configuration is set.
@@ -507,32 +497,23 @@ function _getLayout(
     showlegend: full && showLegend,
     legend: {
       x: tileLegend && tileLegend.x ? tileLegend.x : 0.02, // 1.02 is default
-      xanchor:
-         tileLegend && tileLegend.xanchor ? tileLegend.xanchor : undefined, // left is default
+      xanchor: tileLegend && tileLegend.xanchor ? tileLegend.xanchor : undefined, // left is default
       y: tileLegend && tileLegend.y ? tileLegend.y : 1, // 1 is default
-      yanchor:
-         tileLegend && tileLegend.yanchor ? tileLegend.yanchor : undefined, // auto is default
-      borderwidth:
-         tileLegend && tileLegend.borderwidth ? tileLegend.borderwidth : 1,
-      bordercolor:
-          tileLegend && tileLegend.bordercolor
-          ? tileLegend.bordercolor
-          : undefined,
-      bgcolor:
-          tileLegend && tileLegend.bgcolor ? tileLegend.bgcolor : undefined,
+      yanchor: tileLegend && tileLegend.yanchor ? tileLegend.yanchor : undefined, // auto is default
+      borderwidth: tileLegend && tileLegend.borderwidth ? tileLegend.borderwidth : 1,
+      bordercolor: tileLegend && tileLegend.bordercolor ? tileLegend.bordercolor : undefined,
+      bgcolor: tileLegend && tileLegend.bgcolor ? tileLegend.bgcolor : undefined,
       font: {
         family:
-            tileLegend && tileLegend.font && tileLegend.font.family
+          tileLegend && tileLegend.font && tileLegend.font.family
             ? tileLegend.font.family
             : undefined,
         size:
-            tileLegend && tileLegend.font && tileLegend.font.size
-            ? tileLegend.font.size
-            : undefined, // 12
+          tileLegend && tileLegend.font && tileLegend.font.size ? tileLegend.font.size : undefined, // 12
         color:
-            tileLegend && tileLegend.font && tileLegend.font.color
+          tileLegend && tileLegend.font && tileLegend.font.color
             ? tileLegend.font.color
-            : undefined
+            : undefined,
       },
     },
     margin: margin,
@@ -540,100 +521,110 @@ function _getLayout(
       visible: showAxis,
       type: "date" as const,
       showgrid: true,
-      range: [start, end]
+      range: [start, end],
     },
     // False makes it unable to interact with the graph when displayed as tile
-    dragmode: full ? "zoom" as const : false as const, // default is "zoom"
+    dragmode: full ? ("zoom" as const) : (false as const), // default is "zoom"
     shapes: annotationsAndShapes.shapes,
-    annotations: full ? annotationsAndShapes.annotations : []
+    annotations: full ? annotationsAndShapes.annotations : [],
   };
 
   if (axes.length >= 1) {
     layout.yaxis = {
       ...getYAxis(axes[0]!, "left"),
       fixedrange: true,
-      visible: showAxis
+      visible: showAxis,
     };
   }
   if (axes.length >= 2) {
     layout.yaxis2 = {
       ...getYAxis(axes[1]!, "right"),
       fixedrange: true,
-      visible: showAxis
+      visible: showAxis,
     };
   }
 
   return layout;
 }
 
-
-function TimeseriesTile({tile, full=false}: Props) {
+function TimeseriesTile({ tile, full = false }: Props) {
   const { now, start, end } = useContext(TimeContext);
-  const { rect } = useContext(RectContext) as {rect: RectResult};
+  const { rect } = useContext(RectContext) as { rect: RectResult };
 
   const rasterMetadata = useRasterMetadata(
-    (tile.rasterIntersections || []).map(intersection => intersection.uuid)
+    (tile.rasterIntersections || []).map((intersection) => intersection.uuid)
   );
   const timeseriesMetadata = useTimeseriesMetadata(tile.timeseries || []);
 
-  const rasterEvents = useRasterEvents((tile.rasterIntersections || []), start, end);
+  const rasterEvents = useRasterEvents(tile.rasterIntersections || [], start, end);
   const timeseriesEvents = useTimeseriesEvents(tile.timeseries || [], start, end);
 
   const rasterAlarmsResponse = useRasterAlarms();
 
   // Reverse these historical timeseries so they show in the right order in the chart
   const historicalTimeseries =
-    (tile.historicalTimeseries && full ?
-     tile.historicalTimeseries.slice().reverse() :
-     []);
+    tile.historicalTimeseries && full ? tile.historicalTimeseries.slice().reverse() : [];
   const historicalTimeseriesMetadata = useTimeseriesMetadata(historicalTimeseries);
   const historicalTimeseriesEvents = useTimeseriesEvents(historicalTimeseries, start, end);
 
-  if (![rasterMetadata, timeseriesMetadata, historicalTimeseriesMetadata,
-        rasterEvents, timeseriesEvents, historicalTimeseriesEvents].every(
-          response => response.success) || rasterAlarmsResponse.status !== 'success') {
+  if (
+    ![
+      rasterMetadata,
+      timeseriesMetadata,
+      historicalTimeseriesMetadata,
+      rasterEvents,
+      timeseriesEvents,
+      historicalTimeseriesEvents,
+    ].every((response) => response.success) ||
+    rasterAlarmsResponse.status !== "success"
+  ) {
     return null; // XXX Spinner
   }
 
   // Find the raster alarms that are on the same point as one of the raster
   // intersections.
-  const rasterAlarms = (full && tile.rasterIntersections ? (
-    rasterAlarmsResponse.data!.results.map(alarm => {
-      const intersection = tile.rasterIntersections!.find(
-        rasterIntersection => (
-          isSamePoint(rasterIntersection.geometry, alarm.geometry)
-        )
-      );
-      if (!intersection) return null;
+  const rasterAlarms = (
+    full && tile.rasterIntersections
+      ? rasterAlarmsResponse.data!.results.map((alarm) => {
+          const intersection = tile.rasterIntersections!.find((rasterIntersection) =>
+            isSamePoint(rasterIntersection.geometry, alarm.geometry)
+          );
+          if (!intersection) return null;
 
-      return alarm;
-    })) : []).filter(r => r !== null) as RasterAlarm[];
+          return alarm;
+        })
+      : []
+  ).filter((r) => r !== null) as RasterAlarm[];
 
   // Note: always concat timeseries first, then rasters, as config items like
   // tile.colors and tile.legendStrings depend on that.
-  const events = (timeseriesEvents.data!).concat(rasterEvents.data!).concat(historicalTimeseriesEvents.data!);
+  const events = timeseriesEvents
+    .data!.concat(rasterEvents.data!)
+    .concat(historicalTimeseriesEvents.data!);
 
-  const tsObservationTypes = timeseriesMetadata.data!.map(ts => {
+  const tsObservationTypes = timeseriesMetadata.data!.map((ts) => {
     return {
       observationType: ts.observation_type,
-      historical: false
+      historical: false,
     };
   });
-  const historicalTsObservationTypes = historicalTimeseriesMetadata.data!.map(ts => {
+  const historicalTsObservationTypes = historicalTimeseriesMetadata.data!.map((ts) => {
     return {
       observationType: ts.observation_type,
-      historical: true
+      historical: true,
     };
   });
   const numHistoricalTimeseries = historicalTsObservationTypes.length;
 
-  const rasterObservationTypes = rasterMetadata.data!.map(raster => {
+  const rasterObservationTypes = rasterMetadata.data!.map((raster) => {
     return {
       observationType: raster.observation_type,
-      historical: false
+      historical: false,
     };
   });
-  const observationTypes = tsObservationTypes.concat(rasterObservationTypes).concat(historicalTsObservationTypes);
+  const observationTypes = tsObservationTypes
+    .concat(rasterObservationTypes)
+    .concat(historicalTsObservationTypes);
 
   const axes = _getAxes(observationTypes);
 
@@ -660,15 +651,11 @@ function TimeseriesTile({tile, full=false}: Props) {
     axes,
     tile.colors || null,
     tile.legendStrings || null,
-    full);
+    full
+  );
 
   return (
-    <Plot
-      className="fullPlot"
-      data={data}
-      layout={layout}
-      config={{displayModeBar: full}}
-    />
+    <Plot className="fullPlot" data={data} layout={layout} config={{ displayModeBar: full }} />
   );
 }
 

@@ -1,7 +1,7 @@
 // Helper code for bounds and bounding boxes.
 
 import { LatLngBounds } from "leaflet";
-import { Geometry, Point, Polygon } from 'geojson';
+import { Geometry, Point, Polygon } from "geojson";
 
 export class BoundingBox {
   westmost: string;
@@ -17,11 +17,10 @@ export class BoundingBox {
   }
 
   toLeafletArray(): [[number, number], [number, number]] {
-    return [[
-      parseFloat(this.southmost), parseFloat(this.westmost)
-    ], [
-      parseFloat(this.northmost), parseFloat(this.eastmost)
-    ]];
+    return [
+      [parseFloat(this.southmost), parseFloat(this.westmost)],
+      [parseFloat(this.northmost), parseFloat(this.eastmost)],
+    ];
   }
 
   toLeafletBounds() {
@@ -29,9 +28,7 @@ export class BoundingBox {
   }
 
   toLizardBbox() {
-    return [this.westmost, this.southmost, this.eastmost, this.northmost].join(
-      ","
-    );
+    return [this.westmost, this.southmost, this.eastmost, this.northmost].join(",");
   }
 }
 
@@ -48,7 +45,6 @@ export function isSamePoint(a: Geometry, b: Geometry, epsilon: number = 0) {
   );
 }
 
-
 export function pointInPolygon(point: Point, polygon: Polygon) {
   // ray-casting algorithm based on
   // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -63,11 +59,12 @@ export function pointInPolygon(point: Point, polygon: Polygon) {
   const vs = polygon.coordinates[0]; // We only use the outer boundary, ignore the holes
 
   for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-    const xi = vs[i][0], yi = vs[i][1];
-    const xj = vs[j][0], yj = vs[j][1];
+    const xi = vs[i][0],
+      yi = vs[i][1];
+    const xj = vs[j][0],
+      yj = vs[j][1];
 
-    const intersect = ((yi > y) !== (yj > y))
-                 && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
     if (intersect) inside = !inside;
   }
 

@@ -1,6 +1,6 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
-module.exports = function(app) {
+module.exports = function (app) {
   const password = process.env.PROXY_PASSWORD;
   const username = process.env.PROXY_USERNAME;
 
@@ -10,15 +10,15 @@ module.exports = function(app) {
   }
 
   const proxyMiddleware = createProxyMiddleware({
-//    target: 'https://nxt3.staging.lizard.net/',
-    target: 'https://parramatta.lizard.net/',
+    //    target: 'https://nxt3.staging.lizard.net/',
+    target: "https://parramatta.lizard.net/",
     changeOrigin: true,
     // Use HTTP basic auth, works with Lizard only
-    auth: `${username}:${password}`
+    auth: `${username}:${password}`,
   });
 
-  app.use('/api', proxyMiddleware);
-  app.use('/bootstrap', proxyMiddleware);
-  app.use('/wms', proxyMiddleware);
-  app.use('/proxy', proxyMiddleware);
+  app.use("/api", proxyMiddleware);
+  app.use("/bootstrap", proxyMiddleware);
+  app.use("/wms", proxyMiddleware);
+  app.use("/proxy", proxyMiddleware);
 };

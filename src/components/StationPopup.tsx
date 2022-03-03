@@ -1,18 +1,18 @@
-import { Popup } from 'react-leaflet';
-import { MeasuringStation, Timeseries } from '../types/api';
-import { useTimeseriesMetadata } from '../api/hooks';
-import { useClickToTimeseries } from '../util/config';
+import { Popup } from "react-leaflet";
+import { MeasuringStation, Timeseries } from "../types/api";
+import { useTimeseriesMetadata } from "../api/hooks";
+import { useClickToTimeseries } from "../util/config";
 
-import styles from './IframeMap.module.css';
-import { dashOrNum } from '../util/functions';
+import styles from "./IframeMap.module.css";
+import { dashOrNum } from "../util/functions";
 
 interface PopupProps {
   station: MeasuringStation;
   onClose: () => void;
-  setClickedStation?: (station: MeasuringStation|null) => void;
+  setClickedStation?: (station: MeasuringStation | null) => void;
 }
 
-function TimeseriesRow(props: {ts: Timeseries, onClick: (() => void) | null}) {
+function TimeseriesRow(props: { ts: Timeseries; onClick: (() => void) | null }) {
   const { ts, onClick } = props;
 
   const toTimeseries = useClickToTimeseries(ts.uuid);
@@ -25,14 +25,16 @@ function TimeseriesRow(props: {ts: Timeseries, onClick: (() => void) | null}) {
       <td>{dashOrNum(ts.last_value)}</td>
       <td>{ts.observation_type.unit ?? ""}</td>
       <td>
-        <p>{toTimeseries ? (
+        <p>
+          {toTimeseries ? (
             <input
               type="button"
               value="View in chart"
               onClick={click ?? undefined}
-              style={{margin: "0"}}
+              style={{ margin: "0" }}
             />
-        ) : null}</p>
+          ) : null}
+        </p>
       </td>
     </tr>
   );
@@ -40,7 +42,7 @@ function TimeseriesRow(props: {ts: Timeseries, onClick: (() => void) | null}) {
 
 function StationPopup(props: PopupProps) {
   const { station, onClose, setClickedStation } = props;
-  const metadataResponse = useTimeseriesMetadata(station.timeseries.map(ts => ts.uuid));
+  const metadataResponse = useTimeseriesMetadata(station.timeseries.map((ts) => ts.uuid));
 
   if (!metadataResponse.success) {
     return null;
@@ -72,7 +74,10 @@ function StationPopup(props: PopupProps) {
         </thead>
         <tbody>
           {metadataResponse.data!.map((ts) => (
-            <TimeseriesRow ts={ts} onClick={setClickedStation ? (() => setClickedStation(station)) : null}/>
+            <TimeseriesRow
+              ts={ts}
+              onClick={setClickedStation ? () => setClickedStation(station) : null}
+            />
           ))}
         </tbody>
       </table>

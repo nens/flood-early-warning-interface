@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import styles from '../components/Tile.module.css';
-import Tile from '../components/Tile';
-import DamAlarmsMap from '../components/DamAlarmsMap';
-import DamAlarmsTable from '../components/DamAlarmsTable';
-import { useRasterAlarms } from '../api/hooks';
-import { isDamAlarm } from '../util/rasterAlarms';
-import { useConfigContext } from '../providers/ConfigProvider';
+import styles from "../components/Tile.module.css";
+import Tile from "../components/Tile";
+import DamAlarmsMap from "../components/DamAlarmsMap";
+import DamAlarmsTable from "../components/DamAlarmsTable";
+import { useRasterAlarms } from "../api/hooks";
+import { isDamAlarm } from "../util/rasterAlarms";
+import { useConfigContext } from "../providers/ConfigProvider";
 
 function DamAlarmsTab() {
   const response = useRasterAlarms();
@@ -14,7 +14,7 @@ function DamAlarmsTab() {
 
   const [hoverDam, setHoverDam] = useState<string | null>(null);
 
-  if (response.status === 'success') {
+  if (response.status === "success") {
     const alarms = response.data!;
 
     const damAlarms = alarms.results.filter(isDamAlarm);
@@ -40,7 +40,7 @@ function DamAlarmsTab() {
       </div>
     );
   } else {
-    return <p>Fetching alarms status...</p>
+    return <p>Fetching alarms status...</p>;
   }
 }
 

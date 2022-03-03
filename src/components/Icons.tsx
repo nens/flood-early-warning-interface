@@ -15,14 +15,7 @@ export function IconActiveAlarmSVG() {
 export function IconInactiveAlarmSVG() {
   return (
     <svg height="30" width="30">
-      <circle
-        cx="15"
-        cy="15"
-        r="10"
-        stroke="white"
-        strokeWidth="2"
-        fill="green"
-      />
+      <circle cx="15" cy="15" r="10" stroke="white" strokeWidth="2" fill="green" />
       <g transform="translate(8 8)" fill="#FFF">
         <g transform="translate(0 .58)">
           <polygon points="5 10.42 0 5.42 1.41 4.01 5 7.59 12.59 0 14 1.42" />

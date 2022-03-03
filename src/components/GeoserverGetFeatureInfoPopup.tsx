@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useMapEvent, Popup } from 'react-leaflet';
+import { useState } from "react";
+import { useMapEvent, Popup } from "react-leaflet";
 
-import { ClickProps, useFeatureInfo } from '../api/geoserverHooks';
-import { useConfigContext } from '../providers/ConfigProvider';
+import { ClickProps, useFeatureInfo } from "../api/geoserverHooks";
+import { useConfigContext } from "../providers/ConfigProvider";
 
-import styles from './GeoserverGetFeatureInfoPopup.module.css';
+import styles from "./GeoserverGetFeatureInfoPopup.module.css";
 
 interface GeoserverGetFeatureInfoPopupProps {
   url: string;
@@ -18,19 +18,10 @@ interface FeatureInfoSubComponentProps {
   close: () => void;
 }
 
-function GetFeatureInfoSubComponent({
-  url,
-  layer,
-  click,
-  close
-}: FeatureInfoSubComponentProps) {
+function GetFeatureInfoSubComponent({ url, layer, click, close }: FeatureInfoSubComponentProps) {
   const config = useConfigContext();
 
-  const featureInfo = useFeatureInfo(
-    url,
-    layer,
-    click
-  );
+  const featureInfo = useFeatureInfo(url, layer, click);
 
   if (featureInfo === null) return null;
 
@@ -46,13 +37,12 @@ function GetFeatureInfoSubComponent({
   );
 }
 
-
-function GeoserverGetFeatureInfoPopup({url, layer}: GeoserverGetFeatureInfoPopupProps) {
+function GeoserverGetFeatureInfoPopup({ url, layer }: GeoserverGetFeatureInfoPopupProps) {
   const [click, setClick] = useState<ClickProps | null>(null);
 
-  const map = useMapEvent('click', (event) => {
-    const {x, y} = event.containerPoint;
-    const {x: width, y: height} = map.getSize();
+  const map = useMapEvent("click", (event) => {
+    const { x, y } = event.containerPoint;
+    const { x: width, y: height } = map.getSize();
 
     const click = {
       bbox: map.getBounds().toBBoxString(),
@@ -60,7 +50,7 @@ function GeoserverGetFeatureInfoPopup({url, layer}: GeoserverGetFeatureInfoPopup
       width: Math.round(width),
       height: Math.round(height),
       x: Math.round(x),
-      y: Math.round(y)
+      y: Math.round(y),
     };
 
     setClick(click);

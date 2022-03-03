@@ -41,7 +41,8 @@ li.InactiveTab {
   background: var(--secondary-color);
 }
 
-li.ActiveTab a, li.InactiveTab a {
+li.ActiveTab a,
+li.InactiveTab a {
   text-decoration: none;
 }
 

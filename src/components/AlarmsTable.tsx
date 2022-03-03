@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
-import { Feature, Polygon } from 'geojson';
-import { RasterAlarm } from '../types/api';
-import { WarningAreaProperties } from '../types/config';
-import { thresholdsByWarningLevel } from '../util/rasterAlarms';
-import { pointInPolygon } from '../util/bounds';
-import { useClickToTimeseries } from '../util/config';
-import { dashOrNum } from '../util/functions';
-import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from '../api/hooks';
-import { TimeContext } from '../providers/TimeProvider';
-import { useConfigContext } from '../providers/ConfigProvider';
-import styles from './AlarmsTable.module.css';
-import TriggerHeader from './TriggerHeader';
+import React, { useContext } from "react";
+import { Feature, Polygon } from "geojson";
+import { RasterAlarm } from "../types/api";
+import { WarningAreaProperties } from "../types/config";
+import { thresholdsByWarningLevel } from "../util/rasterAlarms";
+import { pointInPolygon } from "../util/bounds";
+import { useClickToTimeseries } from "../util/config";
+import { dashOrNum } from "../util/functions";
+import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from "../api/hooks";
+import { TimeContext } from "../providers/TimeProvider";
+import { useConfigContext } from "../providers/ConfigProvider";
+import styles from "./AlarmsTable.module.css";
+import TriggerHeader from "./TriggerHeader";
 
 interface TableProps {
   alarms: RasterAlarm[];
@@ -34,7 +34,7 @@ function timeDiffToString(timestamp: number, now: number) {
   const minutes = diffMinutes % 60;
   const hours = (diffMinutes - minutes) / 60;
 
-  return (hours > 0 ? hours+"h" : "") + minutes + "min";
+  return (hours > 0 ? hours + "h" : "") + minutes + "min";
 }
 
 function WarningAreaRow({
@@ -43,16 +43,13 @@ function WarningAreaRow({
   now,
   hoverArea,
   setHoverArea,
-  operationalModelLevel
+  operationalModelLevel,
 }: RowProps) {
   const rowClick = useClickToTimeseries(warningArea.properties.timeseries);
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
 
   const currentLevel = useCurrentLevelTimeseries(warningArea.properties.timeseries);
-  const maxForecast = useMaxForecastAtPoint(
-    operationalModelLevel,
-    alarm || null
-  );
+  const maxForecast = useMaxForecastAtPoint(operationalModelLevel, alarm || null);
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const warningClass = warningLevel ? styles[`tr_${warningLevel.toLowerCase()}`] : "";
@@ -67,18 +64,14 @@ function WarningAreaRow({
       onClick={rowClick ?? undefined}
     >
       <div className={styles.tdLeft}>{warningArea.properties.name}</div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(currentLevel)}</div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>
-        {dashOrNum(currentLevel)}
+        {maxForecast.time !== null
+          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+          : "-"}
       </div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>
-        {dashOrNum(maxForecast.value)}
-      </div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>
-        {maxForecast.time !== null ? timeDiffToString(maxForecast.time.getTime(), now.getTime()) : "-"}
-      </div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>
-        {warningLevel || "-"}
-      </div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.moderate)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.major)}</div>
@@ -88,7 +81,7 @@ function WarningAreaRow({
 
 function AlarmsTable({ alarms, hoverArea, setHoverArea }: TableProps) {
   const config = useConfigContext();
-  const {now} = useContext(TimeContext);
+  const { now } = useContext(TimeContext);
 
   const warning_areas = config.flood_warning_areas;
   const operationalModelLevel = config.rasters.operationalModelLevel;
@@ -101,9 +94,15 @@ function AlarmsTable({ alarms, hoverArea, setHoverArea }: TableProps) {
         <div className={styles.thtd}>Max forecast (mAHD)</div>
         <div className={styles.thtd}>Time to max</div>
         <div className={styles.thtd}>Forecast level breached</div>
-        <div className={styles.thtd}><TriggerHeader level="Minor"/></div>
-        <div className={styles.thtd}><TriggerHeader level="Moderate"/></div>
-        <div className={styles.thtd}><TriggerHeader level="Major"/></div>
+        <div className={styles.thtd}>
+          <TriggerHeader level="Minor" />
+        </div>
+        <div className={styles.thtd}>
+          <TriggerHeader level="Moderate" />
+        </div>
+        <div className={styles.thtd}>
+          <TriggerHeader level="Major" />
+        </div>
       </div>
       {warning_areas.features.map((feature, idx) => (
         <WarningAreaRow
