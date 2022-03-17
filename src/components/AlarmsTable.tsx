@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import { BiMessageRoundedDetail } from "react-icons/bi";
 import { Feature, Polygon } from "geojson";
 import { RasterAlarm } from "../types/api";
 import { WarningAreaProperties } from "../types/config";
@@ -16,6 +17,8 @@ interface TableProps {
   alarms: RasterAlarm[];
   hoverArea: string | null;
   setHoverArea: (uuid: string | null) => void;
+  messagesArea: string | null;
+  setMessagesArea: (uuid: string | null | ((uuid: string | null) => string | null)) => void;
 }
 
 interface RowProps {
@@ -24,6 +27,8 @@ interface RowProps {
   now: Date;
   hoverArea: string | null;
   setHoverArea: (uuid: string | null) => void;
+  messagesArea: string | null;
+  setMessagesArea: (uuid: string | null | ((uuid: string | null) => string | null)) => void;
   operationalModelLevel: string;
 }
 
@@ -43,9 +48,15 @@ function WarningAreaRow({
   now,
   hoverArea,
   setHoverArea,
+  //   messagesArea,
+  setMessagesArea,
   operationalModelLevel,
 }: RowProps) {
-  const rowClick = useClickToTimeseries(warningArea.properties.timeseries);
+  const rowClick = useClickToTimeseries(
+    warningArea.properties.timeseries,
+    false,
+    (target) => target === "div"
+  );
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
 
   const currentLevel = useCurrentLevelTimeseries(warningArea.properties.timeseries);
@@ -57,29 +68,49 @@ function WarningAreaRow({
   const highlight = hoverArea === warningArea.id;
 
   return (
-    <div
-      className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
-      onMouseEnter={() => setHoverArea("" + warningArea.id)}
-      onMouseLeave={() => setHoverArea(null)}
-      onClick={rowClick ?? undefined}
-    >
-      <div className={styles.tdLeft}>{warningArea.properties.name}</div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(currentLevel)}</div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>
-        {maxForecast.time !== null
-          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
-          : "-"}
+    <>
+      <div
+        className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
+        onMouseEnter={() => setHoverArea("" + warningArea.id)}
+        onMouseLeave={() => setHoverArea(null)}
+        onClick={rowClick ?? undefined}
+      >
+        <div className={styles.tdLeft}>{warningArea.properties.name}</div>
+        <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(currentLevel)}</div>
+        <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
+        <div className={`${styles.tdCenter} ${warningClassTd}`}>
+          {maxForecast.time !== null
+            ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+            : "-"}
+        </div>
+        <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
+        <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>
+        <div className={styles.tdCenter}>{dashOrNum(thresholds.moderate)}</div>
+        <div className={styles.tdCenter}>{dashOrNum(thresholds.major)}</div>
+        <div className={styles.tdCenter}>
+          <button
+            onClick={(event) => {
+              setMessagesArea((messagesArea) =>
+                messagesArea === "" + warningArea.id ? null : "" + warningArea.id
+              );
+              event.stopPropagation();
+            }}
+          >
+            <BiMessageRoundedDetail color="red" fontWeight="bold" />
+          </button>
+        </div>
       </div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
-      <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>
-      <div className={styles.tdCenter}>{dashOrNum(thresholds.moderate)}</div>
-      <div className={styles.tdCenter}>{dashOrNum(thresholds.major)}</div>
-    </div>
+    </>
   );
 }
 
-function AlarmsTable({ alarms, hoverArea, setHoverArea }: TableProps) {
+function AlarmsTable({
+  alarms,
+  hoverArea,
+  setHoverArea,
+  messagesArea,
+  setMessagesArea,
+}: TableProps) {
   const config = useConfigContext();
   const { now } = useContext(TimeContext);
 
@@ -103,6 +134,9 @@ function AlarmsTable({ alarms, hoverArea, setHoverArea }: TableProps) {
         <div className={styles.thtd}>
           <TriggerHeader level="Major" />
         </div>
+        <div className={styles.thtd}>
+          <BiMessageRoundedDetail />
+        </div>
       </div>
       {warning_areas.features.map((feature, idx) => (
         <WarningAreaRow
@@ -112,6 +146,8 @@ function AlarmsTable({ alarms, hoverArea, setHoverArea }: TableProps) {
           key={idx}
           hoverArea={hoverArea}
           setHoverArea={setHoverArea}
+          messagesArea={messagesArea}
+          setMessagesArea={setMessagesArea}
           operationalModelLevel={operationalModelLevel}
         />
       ))}

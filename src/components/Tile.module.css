@@ -90,3 +90,16 @@
   overflow: hidden;
   bottom: 0;
 }
+
+.TileOverlay {
+  position: absolute;
+  bottom: 0;
+  box-sizing: border-box;
+  background: white;
+  border: solid black 1px;
+  margin: 0;
+  overflow: hidden;
+  z-index: 1000;
+  width: 100%;
+  transition: height 0.2s;
+}

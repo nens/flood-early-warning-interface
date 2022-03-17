@@ -34,8 +34,8 @@ function ConfigProvider({ children }: WithChildren) {
   const configResponse = useConfig(currentConfigSlug);
 
   if (configResponse.status === "success" && configResponse.config) {
-    const config = configResponse.config.configuration;
-    const organisation = configResponse.config.organisation;
+    const config = configResponse.config.clientconfig.configuration;
+    const organisation = configResponse.config.clientconfig.organisation;
 
     return (
       <ConfigContext.Provider

@@ -189,7 +189,7 @@ export function useConfig(slug: string) {
     ...response,
     config:
       response.data && response.data.results && response.data.results.length
-        ? response.data.results[0].clientconfig
+        ? response.data.results[0]
         : null,
   };
 }
@@ -468,4 +468,33 @@ export function useLegend(wmsUrl: string, raster: string, styles: string): Legen
   } else {
     return null;
   }
+}
+
+export type UserRole = "user" | "admin" | "supplier" | "manager";
+
+export interface OrganisationUser {
+  first_name: string;
+  last_name: string;
+  username: string;
+  email: string;
+  roles: UserRole[];
+}
+
+export function useOrganisationUser(): OrganisationUser | null {
+  const organisation = useOrganisation();
+
+  const userResponse = useQuery<OrganisationUser, FetchError>(
+    "organisationUser",
+    () => fetchWithError(`/api/v4/organisations/${organisation.uuid}/users/me`),
+    QUERY_OPTIONS
+  );
+
+  if (userResponse.isSuccess) return userResponse.data;
+  return null;
+}
+
+export function useUserHasRole(role: UserRole): boolean {
+  const organisationUser = useOrganisationUser();
+
+  return organisationUser !== null && organisationUser.roles.indexOf(role) !== -1;
 }
