@@ -1,13 +1,13 @@
 import { FC, useState } from "react";
 import { useUserHasRole } from "../api/hooks";
-import { useAddMessage } from "../api/messages";
+import { useChangeMessages } from "../api/messages";
 
 const AddMessage: FC<{ uuid: string }> = ({ uuid }) => {
   const isAdmin = useUserHasRole("admin");
   const [enabled, setEnabled] = useState<boolean>(true);
   const [newMessage, setNewMessage] = useState("");
 
-  const { addMessage } = useAddMessage();
+  const { addMessage } = useChangeMessages();
 
   const onClick = async () => {
     if (!isAdmin || newMessage === "") {
@@ -23,16 +23,17 @@ const AddMessage: FC<{ uuid: string }> = ({ uuid }) => {
   };
 
   return (
-    <p style={{ width: "100%" }}>
+    <div style={{ width: "100%", display: "grid", gridTemplateColumns: "1fr 5rem" }}>
       <input
         type="text"
         value={newMessage}
+        style={{textAlign: "left", margin: 0, marginRight: "1rem"}}
         onChange={(event) => setNewMessage(event.target.value)}
-        style={{ width: "80%" }}
         disabled={!enabled}
+        onKeyDown={(event) => event.key === "Enter" && onClick() }
       />
       <input type="button" value="Add" onClick={onClick} disabled={!enabled} />
-    </p>
+    </div>
   );
 };
 

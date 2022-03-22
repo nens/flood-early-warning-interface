@@ -73,8 +73,8 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {maxForecast.time !== null
-          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
-          : "-"}
+        ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+        : "-"}
       </div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.monitor)}</div>
@@ -84,19 +84,19 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
       <div className={styles.tdCenter}>
         {hasMessages || isAdmin ? (
           <button
+            style={{background: "var(--white-color)", padding: 0, margin: 0}}
             onClick={(event) => {
               setSelect((select) =>
                 select?.name === dam.properties.name
-                  ? null
-                  : { id: "" + dam.id!, name: dam.properties.name }
+                ? null
+                : { id: "" + dam.id!, name: dam.properties.name }
               );
               event.stopPropagation();
             }}
           >
             <BiMessageRoundedDetail
-              color={hasMessages ? "green" : "gray"}
-              fontWeight="bold"
-              size="20px"
+              color={hasMessages ? "var(--primary-color)" : "lightgray"}
+              size="25px"
             />
           </button>
         ) : null}

@@ -83,6 +83,7 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
         <div className={styles.tdCenter}>
           {hasMessages || isAdmin ? (
             <button
+              style={{background: "var(--white-color)", padding: 0, margin: 0}}
               onClick={(event) => {
                 setSelect((select) =>
                   select?.id === "" + warningArea.id
@@ -93,9 +94,9 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
               }}
             >
               <BiMessageRoundedDetail
-                color={hasMessages ? "green" : "gray"}
+                color={hasMessages ? "var(--primary-color)" : "lightgray"}
                 fontWeight="bold"
-                size="20px"
+                size="25px"
               />
             </button>
           ) : null}

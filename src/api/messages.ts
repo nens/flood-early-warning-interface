@@ -84,7 +84,7 @@ async function updateMessages(
   }
 }
 
-export function useAddMessage() {
+export function useChangeMessages() {
   const queryClient = useQueryClient();
   const messagesResponse = useConfig<Messages>("messages");
   const organisationUser = useOrganisationUser();
@@ -124,5 +124,42 @@ export function useAddMessage() {
     }
   };
 
-  return { addMessage };
+  const removeMessage = async (uuid: string, index: number, message: string) => {
+    const currentMessages = messagesResponse.data?.clientconfig.configuration;
+
+    if (!currentMessages || !organisationUser || messagesResponse.status !== "success") return;
+
+    const currentMessagesInUuid = currentMessages[uuid];
+
+    if (!currentMessagesInUuid) return; // Nothing to remove.
+
+    const currentMessage = currentMessagesInUuid[index];
+
+    if (!currentMessage || currentMessage.message !== message) return;
+
+    const newMessagesInUuid = currentMessagesInUuid;
+    newMessagesInUuid.splice(index, 1); // Actually remove the message
+
+    const updatedMessages = await updateMessages(
+      messagesResponse.data || makeEmptyMessages(organisation),
+      { ...currentMessages, [uuid]: newMessagesInUuid },
+      organisationUser,
+      organisation
+    );
+
+    if (updatedMessages) {
+      // Replace React Query cache with new version and return true
+      //      queryClient.invalidateQueries(["config", "messages"]);
+      queryClient.setQueryData(["config", "messages"], updatedMessages);
+      return;
+    } else {
+      // Invalidate React Query cache (apparently something changed, e.g.
+      // another session added a message to the backend config) and the
+      // state needs to be refetched.
+      queryClient.invalidateQueries(["config", "messages"]);
+      return;
+    }
+  };
+
+  return { addMessage, removeMessage };
 }

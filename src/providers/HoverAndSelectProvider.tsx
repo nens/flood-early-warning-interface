@@ -28,7 +28,12 @@ const HoverAndSelectProvider: FC<{}> = ({ children }) => {
   const [select, setSelect] = useState<Area>(null);
 
   return (
-    <HoverAndSelectContext.Provider value={{ hover, setHover, select, setSelect }}>
+    <HoverAndSelectContext.Provider value={{
+      hover: select || hover,  // If there is a "select", also use it as the "hover"
+      setHover,
+      select,
+      setSelect
+    }}>
       {children}
     </HoverAndSelectContext.Provider>
   );
