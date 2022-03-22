@@ -64,7 +64,7 @@ export function pointInPolygon(point: Point, polygon: Polygon) {
     const xj = vs[j][0],
       yj = vs[j][1];
 
-    const intersect = (yi > y) !== (yj > y) && x < (((xj - xi) * (y - yi)) / (yj - yi) + xi);
+    const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
     if (intersect) inside = !inside;
   }
 

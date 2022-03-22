@@ -1,15 +1,15 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
-module.exports = function(app) {
-  const env_prefix = process.env.PROXY_PREFIX || 'PROXY';
-  const url = process.env[env_prefix + '_URL'] || 'https://nxt3.staging.lizard.net/';
-  const apiKey = process.env[env_prefix + '_API_KEY'];
+module.exports = function (app) {
+  const env_prefix = process.env.PROXY_PREFIX || "PROXY";
+  const url = process.env[env_prefix + "_URL"] || "https://nxt3.staging.lizard.net/";
+  const apiKey = process.env[env_prefix + "_API_KEY"];
 
   let proxyMiddleware;
   console.log(`Proxying to ${url}.`);
 
   if (!apiKey) {
-    console.log('Without authentication.');
+    console.log("Without authentication.");
     proxyMiddleware = createProxyMiddleware({
       target: url,
       changeOrigin: true,
@@ -23,8 +23,8 @@ module.exports = function(app) {
     });
   }
 
-  app.use('/api', proxyMiddleware);
-  app.use('/bootstrap', proxyMiddleware);
-  app.use('/wms', proxyMiddleware);
-  app.use('/proxy', proxyMiddleware);
+  app.use("/api", proxyMiddleware);
+  app.use("/bootstrap", proxyMiddleware);
+  app.use("/wms", proxyMiddleware);
+  app.use("/proxy", proxyMiddleware);
 };

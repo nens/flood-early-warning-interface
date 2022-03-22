@@ -1,8 +1,7 @@
 {
   "short_name": "FloodSmart",
   "name": "FloodSmart Dashboard",
-  "icons": [
-  ],
+  "icons": [],
   "start_url": ".",
   "display": "standalone",
   "orientation": "landscape",
