@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 import { Feature, Polygon } from "geojson";
 import { RasterAlarm } from "../types/api";
@@ -7,28 +7,22 @@ import { thresholdsByWarningLevel } from "../util/rasterAlarms";
 import { pointInPolygon } from "../util/bounds";
 import { useClickToTimeseries } from "../util/config";
 import { dashOrNum } from "../util/functions";
-import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from "../api/hooks";
+import { useCurrentLevelTimeseries, useMaxForecastAtPoint, useUserHasRole } from "../api/hooks";
 import { TimeContext } from "../providers/TimeProvider";
 import { useConfigContext } from "../providers/ConfigProvider";
 import styles from "./AlarmsTable.module.css";
 import TriggerHeader from "./TriggerHeader";
+import { useMessages } from "../api/messages";
+import { HoverAndSelectContext } from "../providers/HoverAndSelectProvider";
 
 interface TableProps {
   alarms: RasterAlarm[];
-  hoverArea: string | null;
-  setHoverArea: (uuid: string | null) => void;
-  messagesArea: string | null;
-  setMessagesArea: (uuid: string | null | ((uuid: string | null) => string | null)) => void;
 }
 
 interface RowProps {
   warningArea: Feature<Polygon, WarningAreaProperties>;
   alarm: RasterAlarm | undefined;
   now: Date;
-  hoverArea: string | null;
-  setHoverArea: (uuid: string | null) => void;
-  messagesArea: string | null;
-  setMessagesArea: (uuid: string | null | ((uuid: string | null) => string | null)) => void;
   operationalModelLevel: string;
 }
 
@@ -42,22 +36,17 @@ function timeDiffToString(timestamp: number, now: number) {
   return (hours > 0 ? hours + "h" : "") + minutes + "min";
 }
 
-function WarningAreaRow({
-  warningArea,
-  alarm,
-  now,
-  hoverArea,
-  setHoverArea,
-  //   messagesArea,
-  setMessagesArea,
-  operationalModelLevel,
-}: RowProps) {
+function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowProps) {
   const rowClick = useClickToTimeseries(
     warningArea.properties.timeseries,
     false,
     (target) => target === "div"
   );
+  const { hover, setHover, setSelect } = useContext(HoverAndSelectContext);
+
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
+  const messages = useMessages("" + warningArea.id);
+  const isAdmin = useUserHasRole("admin");
 
   const currentLevel = useCurrentLevelTimeseries(warningArea.properties.timeseries);
   const maxForecast = useMaxForecastAtPoint(operationalModelLevel, alarm || null);
@@ -65,14 +54,18 @@ function WarningAreaRow({
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const warningClass = warningLevel ? styles[`tr_${warningLevel.toLowerCase()}`] : "";
   const warningClassTd = warningLevel ? styles.td_warning : "";
-  const highlight = hoverArea === warningArea.id;
+  const highlight = hover?.id === warningArea.id;
+
+  const hasMessages = messages.status === "success" && messages.messages.length > 0;
 
   return (
     <>
       <div
         className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
-        onMouseEnter={() => setHoverArea("" + warningArea.id)}
-        onMouseLeave={() => setHoverArea(null)}
+        onMouseEnter={() =>
+          setHover({ id: "" + warningArea.id, name: warningArea.properties.name })
+        }
+        onMouseLeave={() => setHover(null)}
         onClick={rowClick ?? undefined}
       >
         <div className={styles.tdLeft}>{warningArea.properties.name}</div>
@@ -88,29 +81,31 @@ function WarningAreaRow({
         <div className={styles.tdCenter}>{dashOrNum(thresholds.moderate)}</div>
         <div className={styles.tdCenter}>{dashOrNum(thresholds.major)}</div>
         <div className={styles.tdCenter}>
-          <button
-            onClick={(event) => {
-              setMessagesArea((messagesArea) =>
-                messagesArea === "" + warningArea.id ? null : "" + warningArea.id
-              );
-              event.stopPropagation();
-            }}
-          >
-            <BiMessageRoundedDetail color="red" fontWeight="bold" />
-          </button>
+          {hasMessages || isAdmin ? (
+            <button
+              onClick={(event) => {
+                setSelect((select) =>
+                  select?.id === "" + warningArea.id
+                    ? null
+                    : { id: "" + warningArea.id, name: warningArea.properties.name }
+                );
+                event.stopPropagation();
+              }}
+            >
+              <BiMessageRoundedDetail
+                color={hasMessages ? "green" : "gray"}
+                fontWeight="bold"
+                size="20px"
+              />
+            </button>
+          ) : null}
         </div>
       </div>
     </>
   );
 }
 
-function AlarmsTable({
-  alarms,
-  hoverArea,
-  setHoverArea,
-  messagesArea,
-  setMessagesArea,
-}: TableProps) {
+function AlarmsTable({ alarms }: TableProps) {
   const config = useConfigContext();
   const { now } = useContext(TimeContext);
 
@@ -144,10 +139,6 @@ function AlarmsTable({
           alarm={alarms.find((alarm) => pointInPolygon(alarm.geometry, feature.geometry))}
           now={now}
           key={idx}
-          hoverArea={hoverArea}
-          setHoverArea={setHoverArea}
-          messagesArea={messagesArea}
-          setMessagesArea={setMessagesArea}
           operationalModelLevel={operationalModelLevel}
         />
       ))}

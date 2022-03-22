@@ -4,16 +4,22 @@ import { useAddMessage } from "../api/messages";
 
 const AddMessage: FC<{ uuid: string }> = ({ uuid }) => {
   const isAdmin = useUserHasRole("admin");
+  const [enabled, setEnabled] = useState<boolean>(true);
   const [newMessage, setNewMessage] = useState("");
 
   const { addMessage } = useAddMessage();
 
-  const onClick = () => {
+  const onClick = async () => {
     if (!isAdmin || newMessage === "") {
       return;
     }
 
-    addMessage(uuid, newMessage);
+    setEnabled(false);
+    const success = await addMessage(uuid, newMessage);
+    if (success) {
+      setNewMessage("");
+    }
+    setEnabled(true);
   };
 
   return (
@@ -23,8 +29,9 @@ const AddMessage: FC<{ uuid: string }> = ({ uuid }) => {
         value={newMessage}
         onChange={(event) => setNewMessage(event.target.value)}
         style={{ width: "80%" }}
+        disabled={!enabled}
       />
-      <input type="button" value="Add" onClick={onClick} />
+      <input type="button" value="Add" onClick={onClick} disabled={!enabled} />
     </p>
   );
 };

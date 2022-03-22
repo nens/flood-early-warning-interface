@@ -2,7 +2,7 @@
 // These use useQuery, and return a status / json tuple.
 
 import { useContext } from "react";
-import { useQuery, useQueries, QueryObserverResult } from "react-query";
+import { useQuery, useQueries, QueryObserverResult, UseQueryResult } from "react-query";
 import {
   Paginated,
   Bootstrap,
@@ -168,30 +168,36 @@ export function useRasterAlarmTriggers() {
   return triggers;
 }
 
-interface WrappedConfig {
+// We use different client config objects (for the configuration of the whole app, and for
+// messages), they have a number of fields in common.
+export interface Wrapped<T> {
+  revision: number;
+  comment: string;
   clientconfig: {
-    configuration: Config;
+    id?: number;
+    client: string;
+    slug: string;
+    portal: string;
+    configuration: T;
     organisation: Organisation;
   };
 }
 
-export function useConfig(slug: string) {
-  const response = useQuery<Paginated<WrappedConfig>, FetchError>(
-    `config-${slug}`,
-    () =>
-      fetchWithError(
+export function useConfig<T = Config>(slug: string): UseQueryResult<Wrapped<T>, FetchError> {
+  return useQuery<Wrapped<T>, FetchError>(
+    ["config", slug],
+    async () => {
+      const response = await fetchWithError(
         `/api/v4/clientconfigs/?format=json&client=flood-early-warning-interface&slug=${slug}`
-      ),
+      );
+      if (response.results && response.results.length) {
+        return response.results[0];
+      } else {
+        return null;
+      }
+    },
     QUERY_OPTIONS
   );
-
-  return {
-    ...response,
-    config:
-      response.data && response.data.results && response.data.results.length
-        ? response.data.results[0]
-        : null,
-  };
 }
 
 export function useRasterMetadata(uuids: string[]) {

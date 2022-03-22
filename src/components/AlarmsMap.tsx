@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { Polygon } from "geojson";
 import { RasterAlarm } from "../types/api";
@@ -9,11 +9,10 @@ import { useRectContext } from "../providers/RectProvider";
 import { WarningArea } from "../types/config";
 import WarningAreaPolygon from "./WarningAreaPolygon";
 import MapCircle from "./MapCircle";
+import { HoverAndSelectContext } from "../providers/HoverAndSelectProvider";
 
 interface MapProps {
   alarms: RasterAlarm[];
-  hoverArea: string | null;
-  setHoverArea: (uuid: string | null) => void;
 }
 
 function findAlarmForFeature(alarms: RasterAlarm[], feature: WarningArea | undefined) {
@@ -35,9 +34,10 @@ function findFeatureForAlarm(alarm: RasterAlarm, features: WarningArea[]) {
   );
 }
 
-function AlarmsMap({ alarms, hoverArea, setHoverArea }: MapProps) {
+function AlarmsMap({ alarms }: MapProps) {
   const config = useConfigContext();
   const rect = useRectContext();
+  const { hover, setHover } = useContext(HoverAndSelectContext);
   const boundingBoxes = config.boundingBoxes;
   const bounds = new BoundingBox(...(boundingBoxes.warningAreas || boundingBoxes.default));
   const mapBackgrounds = getMapBackgrounds(config.mapbox_access_token);
@@ -66,8 +66,8 @@ function AlarmsMap({ alarms, hoverArea, setHoverArea }: MapProps) {
         <WarningAreaPolygon
           key={`${idx}${warningArea.properties.id}`}
           warningArea={warningArea}
-          hover={hoverArea === warningArea.id!}
-          onHover={setHoverArea}
+          hover={hover?.id === warningArea.id!}
+          onHover={() => setHover({ id: "" + warningArea.id!, name: warningArea.properties.name })}
           alarm={findAlarmForFeature(alarms, warningArea)}
           clickToTimeseriesUuid={warningArea.properties.timeseries}
         />
