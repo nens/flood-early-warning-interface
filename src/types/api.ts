@@ -28,12 +28,14 @@ export interface MeasuringStation {
   timeseries: Timeseries[];
 }
 
+// Just a selection of those fields of the bootstrap that we use
 export interface Bootstrap {
   user: {
     authenticated: boolean;
     username: string;
     first_name: string;
   };
+  domain: string;
   sso: {
     login: string;
     logout: string;

@@ -2,9 +2,11 @@ import { FC, useState } from "react";
 import { useUserHasRole } from "../api/hooks";
 import { useChangeMessages } from "../api/messages";
 
+import styles from "./Messages.module.css";
+
 const AddMessage: FC<{ uuid: string }> = ({ uuid }) => {
   const isAdmin = useUserHasRole("admin");
-  const [enabled, setEnabled] = useState<boolean>(true);
+  const [disabled, setDisabled] = useState<boolean>(false);
   const [newMessage, setNewMessage] = useState("");
 
   const { addMessage } = useChangeMessages();
@@ -14,25 +16,24 @@ const AddMessage: FC<{ uuid: string }> = ({ uuid }) => {
       return;
     }
 
-    setEnabled(false);
+    setDisabled(true);
     const success = await addMessage(uuid, newMessage);
     if (success) {
       setNewMessage("");
     }
-    setEnabled(true);
+    setDisabled(false);
   };
 
   return (
-    <div style={{ width: "100%", display: "grid", gridTemplateColumns: "1fr 5rem" }}>
+    <div className={styles.AddMessage}>
       <input
         type="text"
         value={newMessage}
-        style={{textAlign: "left", margin: 0, marginRight: "1rem"}}
         onChange={(event) => setNewMessage(event.target.value)}
-        disabled={!enabled}
-        onKeyDown={(event) => event.key === "Enter" && onClick() }
+        disabled={disabled}
+        onKeyDown={(event) => event.key === "Enter" && onClick()}
       />
-      <input type="button" value="Add" onClick={onClick} disabled={!enabled} />
+      <input type="button" value="Add" onClick={onClick} disabled={disabled} />
     </div>
   );
 };

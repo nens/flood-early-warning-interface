@@ -10,7 +10,6 @@ const MessagesOverlay: FC<{}> = () => {
     <TileOverlay
       title={`Messages for ${select?.name}`}
       open={select !== null}
-      height="30%"
       x={() => setSelect(null)}
     >
       {select !== null ? <MessagesFor uuid={select.id} /> : null}

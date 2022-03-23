@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, MouseEvent } from "react";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 
 import { dashOrNum } from "../util/functions";
@@ -60,6 +60,14 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
 
   const hasMessages = messages.status === "success" && messages.messages.length > 0;
 
+  const clickMessagesButton = (event: MouseEvent<HTMLButtonElement>) => {
+    // If already selected to this, turn selection off; otherwise select this dam.
+    setSelect((select) =>
+      select?.name === dam.properties.name ? null : { id: "" + dam.id!, name: dam.properties.name }
+    );
+    event.stopPropagation();
+  };
+
   return (
     <div
       className={`${styles.tr} ${highlight ? styles.tr_highlight : ""}`}
@@ -73,8 +81,8 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {maxForecast.time !== null
-        ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
-        : "-"}
+          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+          : "-"}
       </div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.monitor)}</div>
@@ -84,15 +92,8 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
       <div className={styles.tdCenter}>
         {hasMessages || isAdmin ? (
           <button
-            style={{background: "var(--white-color)", padding: 0, margin: 0}}
-            onClick={(event) => {
-              setSelect((select) =>
-                select?.name === dam.properties.name
-                ? null
-                : { id: "" + dam.id!, name: dam.properties.name }
-              );
-              event.stopPropagation();
-            }}
+            style={{ background: "var(--white-color)", padding: 0, margin: 0 }}
+            onClick={clickMessagesButton}
           >
             <BiMessageRoundedDetail
               color={hasMessages ? "var(--primary-color)" : "lightgray"}

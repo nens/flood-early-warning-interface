@@ -6,12 +6,11 @@ import styles from "./Tile.module.css";
 
 interface TileOverlayProps {
   open: boolean;
-  height: string; // CSS height
   title: string;
   x?: () => void;
 }
 
-const TileOverlay: FC<TileOverlayProps> = ({ open, height, children, title, x }) => {
+const TileOverlay: FC<TileOverlayProps> = ({ open, children, title, x }) => {
   return (
     <div
       className={styles.TileOverlay}

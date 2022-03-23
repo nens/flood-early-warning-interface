@@ -101,7 +101,8 @@ button {
   cursor: pointer;
 }
 
-input[type="button"], button {
+input[type="button"],
+button {
   font-weight: bold;
 }
 

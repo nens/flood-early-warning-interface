@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, MouseEvent } from "react";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 import { Feature, Polygon } from "geojson";
 import { RasterAlarm } from "../types/api";
@@ -37,11 +37,7 @@ function timeDiffToString(timestamp: number, now: number) {
 }
 
 function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowProps) {
-  const rowClick = useClickToTimeseries(
-    warningArea.properties.timeseries,
-    false,
-    (target) => target === "div"
-  );
+  const rowClick = useClickToTimeseries(warningArea.properties.timeseries, false);
   const { hover, setHover, setSelect } = useContext(HoverAndSelectContext);
 
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
@@ -57,6 +53,16 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
   const highlight = hover?.id === warningArea.id;
 
   const hasMessages = messages.status === "success" && messages.messages.length > 0;
+
+  const clickMessagesButton = (event: MouseEvent<HTMLButtonElement>) => {
+    // If already selected to this, turn selection off; otherwise select this warningArea.
+    setSelect((select) =>
+      select?.id === "" + warningArea.id
+        ? null
+        : { id: "" + warningArea.id, name: warningArea.properties.name }
+    );
+    event.stopPropagation(); // Otherwise the row's onClick is triggered.
+  };
 
   return (
     <>
@@ -83,15 +89,8 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
         <div className={styles.tdCenter}>
           {hasMessages || isAdmin ? (
             <button
-              style={{background: "var(--white-color)", padding: 0, margin: 0}}
-              onClick={(event) => {
-                setSelect((select) =>
-                  select?.id === "" + warningArea.id
-                    ? null
-                    : { id: "" + warningArea.id, name: warningArea.properties.name }
-                );
-                event.stopPropagation();
-              }}
+              style={{ background: "var(--white-color)", padding: 0, margin: 0 }}
+              onClick={clickMessagesButton}
             >
               <BiMessageRoundedDetail
                 color={hasMessages ? "var(--primary-color)" : "lightgray"}
