@@ -65,43 +65,41 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
   };
 
   return (
-    <>
-      <div
-        className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
-        onMouseEnter={() =>
-          setHover({ id: "" + warningArea.id, name: warningArea.properties.name })
-        }
-        onMouseLeave={() => setHover(null)}
-        onClick={rowClick ?? undefined}
-      >
-        <div className={styles.tdLeft}>{warningArea.properties.name}</div>
-        <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(currentLevel)}</div>
-        <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
-        <div className={`${styles.tdCenter} ${warningClassTd}`}>
-          {maxForecast.time !== null
-            ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
-            : "-"}
-        </div>
-        <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
-        <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>
-        <div className={styles.tdCenter}>{dashOrNum(thresholds.moderate)}</div>
-        <div className={styles.tdCenter}>{dashOrNum(thresholds.major)}</div>
-        <div className={styles.tdCenter}>
-          {hasMessages || isAdmin ? (
-            <button
-              style={{ background: "var(--white-color)", padding: 0, margin: 0 }}
-              onClick={clickMessagesButton}
-            >
-              <BiMessageRoundedDetail
-                color={hasMessages ? "var(--primary-color)" : "lightgray"}
-                fontWeight="bold"
-                size="25px"
-              />
-            </button>
-          ) : null}
-        </div>
+    <div
+      className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
+      onMouseEnter={() =>
+        setHover({ id: "" + warningArea.id, name: warningArea.properties.name })
+      }
+      onMouseLeave={() => setHover(null)}
+      onClick={rowClick ?? undefined}
+    >
+      <div className={styles.tdLeft}>{warningArea.properties.name}</div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(currentLevel)}</div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>
+        {maxForecast.time !== null
+        ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+        : "-"}
       </div>
-    </>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
+      <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>
+      <div className={styles.tdCenter}>{dashOrNum(thresholds.moderate)}</div>
+      <div className={styles.tdCenter}>{dashOrNum(thresholds.major)}</div>
+      <div className={styles.tdCenter}>
+        {hasMessages || isAdmin ? (
+          <button
+            style={{ background: "var(--white-color)", padding: 0, margin: 0 }}
+            onClick={clickMessagesButton}
+          >
+            <BiMessageRoundedDetail
+              color={hasMessages ? "var(--primary-color)" : "lightgray"}
+              fontWeight="bold"
+              size="25px"
+            />
+          </button>
+        ) : null}
+      </div>
+    </div>
   );
 }
 
