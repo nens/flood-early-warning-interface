@@ -14,6 +14,7 @@ import styles from "./AlarmsTable.module.css";
 import TriggerHeader from "./TriggerHeader";
 import { useMessages } from "../api/messages";
 import { HoverAndSelectContext } from "../providers/HoverAndSelectProvider";
+import { useLatestItemForArea } from "../api/rss";
 
 interface TableProps {
   alarms: RasterAlarm[];
@@ -64,12 +65,17 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
     event.stopPropagation(); // Otherwise the row's onClick is triggered.
   };
 
+  const latestEWNRssItem = useLatestItemForArea(warningArea.properties.name);
+
+  const EWNWarning =
+    latestEWNRssItem !== null && latestEWNRssItem.warning.toLowerCase() !== "no further impact"
+      ? latestEWNRssItem.warning
+      : "-";
+
   return (
     <div
       className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
-      onMouseEnter={() =>
-        setHover({ id: "" + warningArea.id, name: warningArea.properties.name })
-      }
+      onMouseEnter={() => setHover({ id: "" + warningArea.id, name: warningArea.properties.name })}
       onMouseLeave={() => setHover(null)}
       onClick={rowClick ?? undefined}
     >
@@ -78,10 +84,11 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {maxForecast.time !== null
-        ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
-        : "-"}
+          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+          : "-"}
       </div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
+      <div className={`${styles.tdCenter} ${warningClassTd}`}>{EWNWarning}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.moderate)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.major)}</div>
@@ -118,6 +125,7 @@ function AlarmsTable({ alarms }: TableProps) {
         <div className={styles.thtd}>Max forecast (mAHD)</div>
         <div className={styles.thtd}>Time to max</div>
         <div className={styles.thtd}>Forecast level breached</div>
+        <div className={styles.thtd}>EWN Warning</div>
         <div className={styles.thtd}>
           <TriggerHeader level="Minor" />
         </div>

@@ -148,7 +148,7 @@ function IssuedWarningsTable() {
           </div>
         </div>
         {triggers.map(({ alarm, trigger }) => (
-          <div className={styles.tr}>
+          <div className={styles.tr} key={"" + trigger.id}>
             <div className={styles.tdLeft}>{_toTimeStr(new Date(trigger.trigger_time))}</div>
             <div className={styles.tdLeft}>{alarm.name}</div>
             <div className={styles.tdLeft}>{trigger.warning_level || "No further impact"}</div>
