@@ -11,10 +11,10 @@ function IssuedWarningsTab() {
 
   return (
     <div className={styles.TileList}>
-      <Tile size="large" title="Issued Warnings">
+      <Tile size="large" title="Partner Warnings">
         <IssuedWarningsTable />
       </Tile>
-      <Tile size="large" title="EWN Warnings">
+      <Tile size="large" title="Public Warnings">
         <EWNRSSTable />
       </Tile>
     </div>

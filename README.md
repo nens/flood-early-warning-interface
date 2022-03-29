@@ -41,3 +41,24 @@ by the `deploy_clients.yml` Ansible script of `lizard-nxt`. Steps:
 
 Make sure the build runs correctly (`npm run build`) and that the
 working directory is clean, then run `npm run release`.
+
+
+# Circumventing CORS problems with the Lizard proxy
+
+We do two types of fetch requests to other servers than Lizard:
+
+- GetFeatureInfo requests to Geoservers
+
+- RSS requests to EWN
+
+If we do these from the browser directly, we run into CORS problems as
+these servers do not serve the CORS headers necessary to prevent those
+problems.
+
+To circumvent this, we use Lizard's proxy functionality, by sending the request
+to `/proxy/<actualy URL>/`. To make this work, two things are needed:
+
+- Configure the URL in Lizard's Proxy list (using the admin interface)
+
+- Ask Ops to whitelist the URL in the outgoing proxy (if it's a domain
+  external to N&S).
