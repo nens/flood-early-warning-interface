@@ -1,46 +1,43 @@
-# Getting Started with Create React App
+# Flood Early Warning Interface
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This application is a dashboard for the "Flash" product, that provides
+flood risk warnings.
 
-## Available Scripts
+It runs on <customer>.lizard.net/floodsmart/ for customers that use it.
 
-In the project directory, you can run:
 
-### `yarn start`
+# Development
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Install dependencies with `npm install`.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The application needs a backend to run; as a lot of data is required
+in the backend, it is usually easiest to talk to the production
+environment, but please don't do this for testing functionality that
+makes *changes* in the backend (currently, the admin messages
+functionality).
 
-### `yarn test`
+Running the application with `npm start` starts it on
+`http://localhost:3000`. It runs the webpack dev serve and a proxy.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Without settings, the proxy goes to https://nxt3.staging.lizard.net/
+. There will be no authentication, the application will work as
+intended for non-authenticated users (the public).
 
-### `yarn build`
+The URL can be changed by setting the `PROXY_URL` environment variable,
+and an API key for authentication can be set in the `PROXY_API_KEY` variable.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+By also setting `PROXY_PREFIX`, these can be changed; e.g. with
+`PROXY_PREFIX=PARRAMATTA`, the `PARRAMATTA_URL` and
+`PARRAMATTA_API_KEY` variables are used. This is also an easy way in
+general to switch between proxying to production and to staging, or to look at
+settings for different customers (provided you have an API key with the correct
+authorization for those customers).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Deployment
 
-### `yarn eject`
+As of now, we use release-it to create a distribution on Github, that is deployed
+by the `deploy_clients.yml` Ansible script of `lizard-nxt`. Steps:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Make sure the build runs correctly (`npm run build`) and that the
+working directory is clean, then run `npm run release`.
