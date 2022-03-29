@@ -67,9 +67,7 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
   return (
     <div
       className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
-      onMouseEnter={() =>
-        setHover({ id: "" + warningArea.id, name: warningArea.properties.name })
-      }
+      onMouseEnter={() => setHover({ id: "" + warningArea.id, name: warningArea.properties.name })}
       onMouseLeave={() => setHover(null)}
       onClick={rowClick ?? undefined}
     >
@@ -78,8 +76,8 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {maxForecast.time !== null
-        ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
-        : "-"}
+          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+          : "-"}
       </div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>
