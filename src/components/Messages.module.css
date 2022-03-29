@@ -1,0 +1,27 @@
+.AddMessage {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 5rem;
+}
+
+.AddMessage input[type="text"] {
+  text-align: left;
+  margin: 0;
+  margin-right: 1rem;
+}
+
+.MessagesForAdmin {
+  margin-bottom: 16px;
+}
+
+.MessagesForText {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 20px;
+}
+
+.MessagesForAttribution {
+  font-size: 60%;
+  font-style: italic;
+  text-align: right;
+}

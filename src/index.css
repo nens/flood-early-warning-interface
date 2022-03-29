@@ -85,7 +85,8 @@ body,
 /* Default components */
 
 input,
-select {
+select,
+button {
   background: var(--primary-color);
   color: var(--white-color);
   text-align: center;
@@ -100,7 +101,8 @@ select {
   cursor: pointer;
 }
 
-input[type="button"] {
+input[type="button"],
+button {
   font-weight: bold;
 }
 

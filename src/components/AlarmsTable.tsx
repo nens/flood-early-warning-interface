@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import { useContext, MouseEvent } from "react";
+import { BiMessageRoundedDetail } from "react-icons/bi";
 import { Feature, Polygon } from "geojson";
 import { RasterAlarm } from "../types/api";
 import { WarningAreaProperties } from "../types/config";
@@ -6,24 +7,22 @@ import { thresholdsByWarningLevel } from "../util/rasterAlarms";
 import { pointInPolygon } from "../util/bounds";
 import { useClickToTimeseries } from "../util/config";
 import { dashOrNum } from "../util/functions";
-import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from "../api/hooks";
+import { useCurrentLevelTimeseries, useMaxForecastAtPoint, useUserHasRole } from "../api/hooks";
 import { TimeContext } from "../providers/TimeProvider";
 import { useConfigContext } from "../providers/ConfigProvider";
 import styles from "./AlarmsTable.module.css";
 import TriggerHeader from "./TriggerHeader";
+import { useMessages } from "../api/messages";
+import { HoverAndSelectContext } from "../providers/HoverAndSelectProvider";
 
 interface TableProps {
   alarms: RasterAlarm[];
-  hoverArea: string | null;
-  setHoverArea: (uuid: string | null) => void;
 }
 
 interface RowProps {
   warningArea: Feature<Polygon, WarningAreaProperties>;
   alarm: RasterAlarm | undefined;
   now: Date;
-  hoverArea: string | null;
-  setHoverArea: (uuid: string | null) => void;
   operationalModelLevel: string;
 }
 
@@ -37,16 +36,13 @@ function timeDiffToString(timestamp: number, now: number) {
   return (hours > 0 ? hours + "h" : "") + minutes + "min";
 }
 
-function WarningAreaRow({
-  warningArea,
-  alarm,
-  now,
-  hoverArea,
-  setHoverArea,
-  operationalModelLevel,
-}: RowProps) {
-  const rowClick = useClickToTimeseries(warningArea.properties.timeseries);
+function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowProps) {
+  const rowClick = useClickToTimeseries(warningArea.properties.timeseries, false);
+  const { hover, setHover, setSelect } = useContext(HoverAndSelectContext);
+
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
+  const messages = useMessages("" + warningArea.id);
+  const isAdmin = useUserHasRole("admin");
 
   const currentLevel = useCurrentLevelTimeseries(warningArea.properties.timeseries);
   const maxForecast = useMaxForecastAtPoint(operationalModelLevel, alarm || null);
@@ -54,13 +50,27 @@ function WarningAreaRow({
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const warningClass = warningLevel ? styles[`tr_${warningLevel.toLowerCase()}`] : "";
   const warningClassTd = warningLevel ? styles.td_warning : "";
-  const highlight = hoverArea === warningArea.id;
+  const highlight = hover?.id === warningArea.id;
+
+  const hasMessages = messages.status === "success" && messages.messages.length > 0;
+
+  const clickMessagesButton = (event: MouseEvent<HTMLButtonElement>) => {
+    // If already selected to this, turn selection off; otherwise select this warningArea.
+    setSelect((select) =>
+      select?.id === "" + warningArea.id
+        ? null
+        : { id: "" + warningArea.id, name: warningArea.properties.name }
+    );
+    event.stopPropagation(); // Otherwise the row's onClick is triggered.
+  };
 
   return (
     <div
       className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
-      onMouseEnter={() => setHoverArea("" + warningArea.id)}
-      onMouseLeave={() => setHoverArea(null)}
+      onMouseEnter={() =>
+        setHover({ id: "" + warningArea.id, name: warningArea.properties.name })
+      }
+      onMouseLeave={() => setHover(null)}
       onClick={rowClick ?? undefined}
     >
       <div className={styles.tdLeft}>{warningArea.properties.name}</div>
@@ -68,18 +78,32 @@ function WarningAreaRow({
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>
         {maxForecast.time !== null
-          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
-          : "-"}
+        ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+        : "-"}
       </div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.moderate)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.major)}</div>
+      <div className={styles.tdCenter}>
+        {hasMessages || isAdmin ? (
+          <button
+            style={{ background: "var(--white-color)", padding: 0, margin: 0 }}
+            onClick={clickMessagesButton}
+          >
+            <BiMessageRoundedDetail
+              color={hasMessages ? "var(--primary-color)" : "lightgray"}
+              fontWeight="bold"
+              size="25px"
+            />
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 }
 
-function AlarmsTable({ alarms, hoverArea, setHoverArea }: TableProps) {
+function AlarmsTable({ alarms }: TableProps) {
   const config = useConfigContext();
   const { now } = useContext(TimeContext);
 
@@ -103,6 +127,9 @@ function AlarmsTable({ alarms, hoverArea, setHoverArea }: TableProps) {
         <div className={styles.thtd}>
           <TriggerHeader level="Major" />
         </div>
+        <div className={styles.thtd}>
+          <BiMessageRoundedDetail />
+        </div>
       </div>
       {warning_areas.features.map((feature, idx) => (
         <WarningAreaRow
@@ -110,8 +137,6 @@ function AlarmsTable({ alarms, hoverArea, setHoverArea }: TableProps) {
           alarm={alarms.find((alarm) => pointInPolygon(alarm.geometry, feature.geometry))}
           now={now}
           key={idx}
-          hoverArea={hoverArea}
-          setHoverArea={setHoverArea}
           operationalModelLevel={operationalModelLevel}
         />
       ))}

@@ -22,10 +22,7 @@ export function useIsTimeseriesClickable(timeseries: Timeseries[]) {
   return null;
 }
 
-export function useClickToTimeseries(
-  timeseries: string,
-  iframe: boolean = false
-): (() => void) | null {
+export function useClickToTimeseries(timeseries: string, iframe: boolean = false) {
   // Hook that returns a memoized callback function that sends the user to the
   // correct timeseries chart. Returns a function that does nothing if there
   // is no such chart.

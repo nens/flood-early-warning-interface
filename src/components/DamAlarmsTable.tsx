@@ -1,29 +1,29 @@
-import React, { useContext } from "react";
+import { useContext, MouseEvent } from "react";
+import { BiMessageRoundedDetail } from "react-icons/bi";
+
 import { dashOrNum } from "../util/functions";
 import { useClickToTimeseries } from "../util/config";
 import { Dam } from "../types/config";
 import { RasterAlarm } from "../types/api";
 import { thresholdsByWarningLevel } from "../util/rasterAlarms";
 import { isSamePoint } from "../util/bounds";
-import { useCurrentLevelTimeseries, useMaxForecastAtPoint } from "../api/hooks";
+import { useCurrentLevelTimeseries, useMaxForecastAtPoint, useUserHasRole } from "../api/hooks";
 import { TimeContext } from "../providers/TimeProvider";
 import { useConfigContext } from "../providers/ConfigProvider";
 import TriggerHeader from "./TriggerHeader";
 import styles from "./AlarmsTable.module.css";
+import { HoverAndSelectContext } from "../providers/HoverAndSelectProvider";
+import { useMessages } from "../api/messages";
 
 interface TableProps {
   dams: Dam[];
   damAlarms: RasterAlarm[];
-  hoverDam: string | null;
-  setHoverDam: (uuid: string | null) => void;
 }
 
 interface RowProps {
   dam: Dam;
   alarm: RasterAlarm | undefined;
   now: Date;
-  hoverDam: string | null;
-  setHoverDam: (uuid: string | null) => void;
   operationalModelLevel: string;
 }
 
@@ -37,7 +37,11 @@ function timeDiffToString(timestamp: number, now: number) {
   return (hours > 0 ? hours + "h" : "") + minutes + "min";
 }
 
-function DamRow({ dam, alarm, now, hoverDam, setHoverDam, operationalModelLevel }: RowProps) {
+function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
+  const { hover, setHover, setSelect } = useContext(HoverAndSelectContext);
+  const messages = useMessages("" + dam.properties.name);
+  const isAdmin = useUserHasRole("admin");
+
   const rowClick = useClickToTimeseries(dam.properties.timeseries);
   const thresholds = alarm ? thresholdsByWarningLevel(alarm) : {};
 
@@ -52,14 +56,24 @@ function DamRow({ dam, alarm, now, hoverDam, setHoverDam, operationalModelLevel 
     background: warningLevel ? `var(--trigger-${warningLevel.toLowerCase()}-table)` : undefined,
   };
   const warningClassTd = warningLevel ? styles.td_warning : "";
-  const highlight = hoverDam === dam.properties.name;
+  const highlight = hover?.name === dam.properties.name;
+
+  const hasMessages = messages.status === "success" && messages.messages.length > 0;
+
+  const clickMessagesButton = (event: MouseEvent<HTMLButtonElement>) => {
+    // If already selected to this, turn selection off; otherwise select this dam.
+    setSelect((select) =>
+      select?.name === dam.properties.name ? null : { id: "" + dam.id!, name: dam.properties.name }
+    );
+    event.stopPropagation();
+  };
 
   return (
     <div
       className={`${styles.tr} ${highlight ? styles.tr_highlight : ""}`}
       style={warningStyle}
-      onMouseEnter={() => setHoverDam(dam.properties.name)}
-      onMouseLeave={() => setHoverDam(null)}
+      onMouseEnter={() => setHover({ id: "" + dam.id!, name: dam.properties.name })}
+      onMouseLeave={() => setHover(null)}
       onClick={rowClick ?? undefined}
     >
       <div className={styles.tdLeft}>{dam.properties.name}</div>
@@ -75,11 +89,24 @@ function DamRow({ dam, alarm, now, hoverDam, setHoverDam, operationalModelLevel 
       <div className={styles.tdCenter}>{dashOrNum(thresholds.white)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.amber)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.red)}</div>
+      <div className={styles.tdCenter}>
+        {hasMessages || isAdmin ? (
+          <button
+            style={{ background: "var(--white-color)", padding: 0, margin: 0 }}
+            onClick={clickMessagesButton}
+          >
+            <BiMessageRoundedDetail
+              color={hasMessages ? "var(--primary-color)" : "lightgray"}
+              size="25px"
+            />
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 }
 
-function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) {
+function DamAlarmsTable({ dams, damAlarms }: TableProps) {
   const config = useConfigContext();
   const { now } = useContext(TimeContext);
 
@@ -105,6 +132,9 @@ function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) 
         <div className={styles.thtd}>
           <TriggerHeader level="Red" />
         </div>
+        <div className={styles.thtd}>
+          <BiMessageRoundedDetail />
+        </div>
       </div>
       {dams.map((dam, idx) => {
         const alarm = damAlarms.find((alarm) => isSamePoint(alarm.geometry, dam.geometry));
@@ -115,8 +145,6 @@ function DamAlarmsTable({ dams, damAlarms, hoverDam, setHoverDam }: TableProps) 
             alarm={alarm}
             now={now}
             key={idx}
-            hoverDam={hoverDam}
-            setHoverDam={setHoverDam}
             operationalModelLevel={operationalModelLevel}
           />
         );

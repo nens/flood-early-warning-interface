@@ -1,4 +1,5 @@
-import React from "react";
+import { useContext } from "react";
+
 import { MapContainer, TileLayer } from "react-leaflet";
 import { Dam } from "../types/config";
 import { RasterAlarm } from "../types/api";
@@ -7,21 +8,21 @@ import { getMapBackgrounds } from "../constants";
 import { useConfigContext } from "../providers/ConfigProvider";
 import { useRectContext } from "../providers/RectProvider";
 import MapCircle from "./MapCircle";
+import { HoverAndSelectContext } from "../providers/HoverAndSelectProvider";
 
 interface MapProps {
   dams: Dam[];
   alarms: RasterAlarm[];
-  hoverDam: string | null;
-  setHoverDam: (uuid: string | null) => void;
 }
 
 function findAlarmForFeature(alarms: RasterAlarm[], feature: Dam) {
   return alarms.find((alarm) => isSamePoint(alarm.geometry, feature.geometry)) || null;
 }
 
-function DamAlarmsMap({ dams, alarms, hoverDam, setHoverDam }: MapProps) {
+function DamAlarmsMap({ dams, alarms }: MapProps) {
   const config = useConfigContext();
   const rect = useRectContext();
+  const { hover, setHover } = useContext(HoverAndSelectContext);
   const boundingBoxes = config.boundingBoxes;
   const bounds = new BoundingBox(...(boundingBoxes.dams || boundingBoxes.default));
   const mapBackgrounds = getMapBackgrounds(config.mapbox_access_token);
@@ -39,14 +40,14 @@ function DamAlarmsMap({ dams, alarms, hoverDam, setHoverDam }: MapProps) {
         const alarm = findAlarmForFeature(alarms, dam);
         return (
           <MapCircle
-            key={`${damIdx}${hoverDam === dam.properties.name}`}
+            key={`${damIdx}${hover?.name === dam.properties.name}`}
             position={[dam.geometry.coordinates[1], dam.geometry.coordinates[0]]}
             clickToTimeseriesUuid={dam.properties.timeseries}
             triggerLevel={alarm ? alarm.latest_trigger.warning_level : null}
             label={dam.properties.name}
-            onHover={setHoverDam}
+            onHover={() => setHover({ id: "" + dam.id!, name: dam.properties.name })}
             onHoverId={dam.properties.name}
-            hover={hoverDam === dam.properties.name}
+            hover={hover?.name === dam.properties.name}
           />
         );
       })}
