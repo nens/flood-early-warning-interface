@@ -71,20 +71,21 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
   return (
     <div
       className={`${styles.tr} ${highlight ? styles.tr_highlight : ""}`}
-      style={warningStyle}
       onMouseEnter={() => setHover({ id: "" + dam.id!, name: dam.properties.name })}
       onMouseLeave={() => setHover(null)}
       onClick={rowClick ?? undefined}
     >
       <div className={styles.tdLeft}>{dam.properties.name}</div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(currentLevel)}</div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>
+      <div className={styles.tdCenter}>{dashOrNum(currentLevel)}</div>
+      <div className={styles.tdCenter}>{dashOrNum(maxForecast.value)}</div>
+      <div className={styles.tdCenter}>
         {maxForecast.time !== null
           ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
           : "-"}
       </div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
+      <div style={warningStyle} className={`${styles.tdCenter} ${warningClassTd}`}>
+        {warningLevel || "-"}
+      </div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.monitor)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.white)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.amber)}</div>
@@ -119,7 +120,7 @@ function DamAlarmsTable({ dams, damAlarms }: TableProps) {
         <div className={styles.thtd}>Current level (mAHD)</div>
         <div className={styles.thtd}>Max forecast (mAHD)</div>
         <div className={styles.thtd}>Time to max</div>
-        <div className={styles.thtd}>Forecast level breached</div>
+        <div className={styles.thtd}>Partner Warning</div>
         <div className={styles.thtd}>
           <TriggerHeader level="Monitor" />
         </div>

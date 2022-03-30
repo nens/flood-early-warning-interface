@@ -50,17 +50,18 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const latestEWNRssItem = useLatestItemForArea(warningArea.properties.name);
-  const EWNWarning =
-    latestEWNRssItem !== null && latestEWNRssItem.warning.toLowerCase() !== "no further impact"
-      ? latestEWNRssItem.warning
-      : "-";
-
   const warningClassTd = warningLevel
     ? styles[`td_${warningLevel.toLowerCase()}`] + " " + styles.td_warning
     : "";
-  const warningClassTdEwn = EWNWarning
-    ? styles[`td_${EWNWarning.toLowerCase()}`] + " " + styles.td_warning
-    : "";
+
+  let EWNWarning = "-";
+  let warningClassTdEwn = "";
+  if (latestEWNRssItem !== null && latestEWNRssItem.warning.toLowerCase() !== "no further impact") {
+    EWNWarning = latestEWNRssItem.warning;
+    // Turn a warning string like "Minor Flood Warning" into the "td_warning" class
+    warningClassTdEwn = styles[`td_${EWNWarning.toLowerCase().split(" ")[0]}`];
+  }
+
   const highlight = hover?.id === warningArea.id;
 
   const hasMessages = messages.status === "success" && messages.messages.length > 0;
