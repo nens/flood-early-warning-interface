@@ -87,4 +87,5 @@ export interface Config {
   trainingDashboards?: TrainingDashboard[]; // XXX
   nowDateTimeUTC?: string;
   fakeData?: FakeData;
+  rssUrl?: string;
 }

@@ -2,6 +2,7 @@
 // Use React Query around it so it is re-fetched regularly.
 
 import { useQuery } from "react-query";
+import { useConfigContext } from "../providers/ConfigProvider";
 import { QUERY_OPTIONS, FetchError } from "./hooks";
 
 export interface RssItem {
@@ -14,10 +15,14 @@ export interface RssItem {
 }
 
 export function useRSSFeed() {
+  const config = useConfigContext();
+
+  const rssUrl = config.rssUrl || "https://www.ewn.com.au/alerts/COPrss.aspx";
+
   const rssResponse = useQuery(
     ["rss"],
     async () => {
-      const response = await fetch("/proxy/https://www.ewn.com.au/alerts/COPrss.aspx", {
+      const response = await fetch(`/proxy/${rssUrl}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/rss+xml",
