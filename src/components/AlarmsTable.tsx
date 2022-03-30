@@ -52,11 +52,15 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
   const latestEWNRssItem = useLatestItemForArea(warningArea.properties.name);
   const EWNWarning =
     latestEWNRssItem !== null && latestEWNRssItem.warning.toLowerCase() !== "no further impact"
-    ? latestEWNRssItem.warning
-    : "-";
+      ? latestEWNRssItem.warning
+      : "-";
 
-  const warningClassTd = warningLevel ? styles[`td_${warningLevel.toLowerCase()}`] + " " + styles.td_warning : "";
-  const warningClassTdEwn = EWNWarning ? styles[`td_${EWNWarning.toLowerCase()}`] + " " + styles.td_warning : "";
+  const warningClassTd = warningLevel
+    ? styles[`td_${warningLevel.toLowerCase()}`] + " " + styles.td_warning
+    : "";
+  const warningClassTdEwn = EWNWarning
+    ? styles[`td_${EWNWarning.toLowerCase()}`] + " " + styles.td_warning
+    : "";
   const highlight = hover?.id === warningArea.id;
 
   const hasMessages = messages.status === "success" && messages.messages.length > 0;
@@ -65,8 +69,8 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
     // If already selected to this, turn selection off; otherwise select this warningArea.
     setSelect((select) =>
       select?.id === "" + warningArea.id
-      ? null
-      : { id: "" + warningArea.id, name: warningArea.properties.name }
+        ? null
+        : { id: "" + warningArea.id, name: warningArea.properties.name }
     );
     event.stopPropagation(); // Otherwise the row's onClick is triggered.
   };
@@ -83,8 +87,8 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
       <div className={styles.tdCenter}>{dashOrNum(maxForecast.value)}</div>
       <div className={styles.tdCenter}>
         {maxForecast.time !== null
-        ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
-        : "-"}
+          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+          : "-"}
       </div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
       <div className={`${styles.tdCenter} ${warningClassTdEwn}`}>{EWNWarning}</div>
