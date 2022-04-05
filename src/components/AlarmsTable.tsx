@@ -14,6 +14,7 @@ import styles from "./AlarmsTable.module.css";
 import TriggerHeader from "./TriggerHeader";
 import { useMessages } from "../api/messages";
 import { HoverAndSelectContext } from "../providers/HoverAndSelectProvider";
+import { useLatestItemForArea } from "../api/rss";
 
 interface TableProps {
   alarms: RasterAlarm[];
@@ -48,8 +49,27 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
   const maxForecast = useMaxForecastAtPoint(operationalModelLevel, alarm || null);
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
-  const warningClass = warningLevel ? styles[`tr_${warningLevel.toLowerCase()}`] : "";
-  const warningClassTd = warningLevel ? styles.td_warning : "";
+  const latestEWNRssItem = useLatestItemForArea(warningArea.properties.name);
+  const warningClassTd = warningLevel
+    ? styles[`td_${warningLevel.toLowerCase()}`] + " " + styles.td_warning
+    : "";
+
+  let EWNWarning = "-";
+  let warningClassTdEwn = "";
+  if (latestEWNRssItem !== null && latestEWNRssItem.warning.toLowerCase() !== "no further impact") {
+    EWNWarning = latestEWNRssItem.warning;
+    // Turn a warning string like "Minor Flood Warning" into the "td_warning" class
+    const firstWordOfEWNWarning = EWNWarning.toLowerCase().split(" ")[0];
+    warningClassTdEwn =
+      firstWordOfEWNWarning === "minor"
+        ? styles.td_minor
+        : firstWordOfEWNWarning === "major"
+        ? styles.td_major
+        : firstWordOfEWNWarning === "moderate"
+        ? styles.td_moderate
+        : "";
+  }
+
   const highlight = hover?.id === warningArea.id;
 
   const hasMessages = messages.status === "success" && messages.messages.length > 0;
@@ -66,20 +86,21 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
 
   return (
     <div
-      className={`${styles.tr} ${warningClass} ${highlight ? styles.tr_highlight : ""}`}
+      className={`${styles.tr} ${highlight ? styles.tr_highlight : ""}`}
       onMouseEnter={() => setHover({ id: "" + warningArea.id, name: warningArea.properties.name })}
       onMouseLeave={() => setHover(null)}
       onClick={rowClick ?? undefined}
     >
       <div className={styles.tdLeft}>{warningArea.properties.name}</div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(currentLevel)}</div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>{dashOrNum(maxForecast.value)}</div>
-      <div className={`${styles.tdCenter} ${warningClassTd}`}>
+      <div className={styles.tdCenter}>{dashOrNum(currentLevel)}</div>
+      <div className={styles.tdCenter}>{dashOrNum(maxForecast.value)}</div>
+      <div className={styles.tdCenter}>
         {maxForecast.time !== null
           ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
           : "-"}
       </div>
       <div className={`${styles.tdCenter} ${warningClassTd}`}>{warningLevel || "-"}</div>
+      <div className={`${styles.tdCenter} ${warningClassTdEwn}`}>{EWNWarning}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.minor)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.moderate)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.major)}</div>
@@ -115,7 +136,8 @@ function AlarmsTable({ alarms }: TableProps) {
         <div className={styles.thtd}>Current level (mAHD)</div>
         <div className={styles.thtd}>Max forecast (mAHD)</div>
         <div className={styles.thtd}>Time to max</div>
-        <div className={styles.thtd}>Forecast level breached</div>
+        <div className={styles.thtd}>Partner Warning</div>
+        <div className={styles.thtd}>Public Warning</div>
         <div className={styles.thtd}>
           <TriggerHeader level="Minor" />
         </div>

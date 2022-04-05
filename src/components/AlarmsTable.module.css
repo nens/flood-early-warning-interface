@@ -20,15 +20,15 @@
   font-weight: bold;
 }
 
-.tr_major {
+.td_major {
   background: var(--trigger-major-table);
 }
 
-.tr_moderate {
+.td_moderate {
   background: var(--trigger-moderate-table);
 }
 
-.tr_minor {
+.td_minor {
   background: var(--trigger-minor-table);
 }
 

@@ -67,7 +67,8 @@ function sortTriggers(triggers: AlarmTrigger[], ordering: string) {
 function IssuedWarningsTable() {
   const [filter, setFilter] = useState<string>("");
   const [page, setPage] = useState<number>(0);
-  const [ordering, setOrdering] = useState<string>("-triggeredat");
+  const defaultOrdering = "-triggeredat";
+  const [ordering, setOrdering] = useState<string>(defaultOrdering);
 
   const rasterAlarms = useRasterAlarms();
   const response = useRasterAlarmTriggers();
@@ -101,6 +102,8 @@ function IssuedWarningsTable() {
   const clickOrdering = (header: string) => {
     if (ordering === header) {
       setOrdering(`-${header}`);
+    } else if (ordering === `-${header}`) {
+      setOrdering("");
     } else {
       setOrdering(header);
     }
@@ -148,7 +151,7 @@ function IssuedWarningsTable() {
           </div>
         </div>
         {triggers.map(({ alarm, trigger }) => (
-          <div className={styles.tr}>
+          <div className={styles.tr} key={"" + trigger.id}>
             <div className={styles.tdLeft}>{_toTimeStr(new Date(trigger.trigger_time))}</div>
             <div className={styles.tdLeft}>{alarm.name}</div>
             <div className={styles.tdLeft}>{trigger.warning_level || "No further impact"}</div>
@@ -159,18 +162,16 @@ function IssuedWarningsTable() {
       <p className={styles.numWarnings}>
         Showing warnings {firstIndex + 1} to {lastIndex} of {numTriggers}.
       </p>
-      <input
+      <button
         type="button"
         disabled={!previousEnabled}
-        value="<"
         onClick={() => previousEnabled && setPage(page - 1)}
-      />
-      <input
+      >&lt;</button>
+      <button
         type="button"
         disabled={!nextEnabled}
-        value=">"
         onClick={() => nextEnabled && setPage(page + 1)}
-      />
+      >&gt;</button>
     </div>
   );
 }
