@@ -19,6 +19,12 @@ const TIME_PERIODS: TimePeriod[] = [
   ["T0 + 12h", 12 * 60 * 60 * 1000],
 ];
 
+const EXTRA_EXTENT_MAPS = [
+  ["Council adopted 1:20", "#7800A0"]
+   ["Council adopted 1:100", "#D232FF"]
+
+   ];
+
 function FloodModelMap() {
   const { boundingBoxes, mapbox_access_token, rasters, wmsLayers } = useConfigContext();
   const rect = useRectContext();
@@ -82,11 +88,25 @@ function FloodModelMap() {
 
   return (
     <>
-      <MapSelectBox
-        options={TIME_PERIODS.map((period) => [period[0], period[0]])}
-        currentValue={currentPeriod}
-        setValue={setCurrentPeriod}
-      />
+      <div style={{
+        position: "absolute",
+        top: "1rem",
+        right: "1rem",
+        zIndex: 1000,
+        display: "flex",
+        flexDirection: "column"
+      }}>
+        <MapSelectBox
+          options={TIME_PERIODS.map((period) => [period[0], period[0]])}
+          currentValue={currentPeriod}
+          setValue={setCurrentPeriod}
+        />
+        <MapSelectBox
+          options={TIME_PERIODS.map((period) => [period[0], period[0]])}
+          currentValue={currentPeriod}
+          setValue={setCurrentPeriod}
+        />
+      </div>
       {legend}
       <MapContainer
         key={`${rect.width}x${rect.height}${time.getTime()}`}
