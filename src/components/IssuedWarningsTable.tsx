@@ -67,7 +67,8 @@ function sortTriggers(triggers: AlarmTrigger[], ordering: string) {
 function IssuedWarningsTable() {
   const [filter, setFilter] = useState<string>("");
   const [page, setPage] = useState<number>(0);
-  const [ordering, setOrdering] = useState<string>("-triggeredat");
+  const defaultOrdering = "-triggeredat";
+  const [ordering, setOrdering] = useState<string>(defaultOrdering);
 
   const rasterAlarms = useRasterAlarms();
   const response = useRasterAlarmTriggers();
@@ -101,6 +102,8 @@ function IssuedWarningsTable() {
   const clickOrdering = (header: string) => {
     if (ordering === header) {
       setOrdering(`-${header}`);
+    } else if (ordering === `-${header}`) {
+      setOrdering("");
     } else {
       setOrdering(header);
     }
