@@ -59,7 +59,15 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
   if (latestEWNRssItem !== null && latestEWNRssItem.warning.toLowerCase() !== "no further impact") {
     EWNWarning = latestEWNRssItem.warning;
     // Turn a warning string like "Minor Flood Warning" into the "td_warning" class
-    warningClassTdEwn = styles[`td_${EWNWarning.toLowerCase().split(" ")[0]}`];
+    const firstWordOfEWNWarning = EWNWarning.toLowerCase().split(" ")[0];
+    warningClassTdEwn =
+      firstWordOfEWNWarning === "minor"
+        ? styles.td_minor
+        : firstWordOfEWNWarning === "major"
+        ? styles.td_major
+        : firstWordOfEWNWarning === "moderate"
+        ? styles.td_moderate
+        : "";
   }
 
   const highlight = hover?.id === warningArea.id;

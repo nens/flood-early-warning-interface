@@ -45,8 +45,6 @@ export function useRSSFeed() {
         const item = items.item(i);
         if (!item) continue;
 
-        console.log(item.innerHTML);
-
         // Title is of the form "Minor Flood Warning: Darling Mills Creek" so split it
         const title = item.querySelector("title")!.innerHTML;
         const [warning, area] = title.split(": ");

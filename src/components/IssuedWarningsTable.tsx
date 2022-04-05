@@ -159,18 +159,16 @@ function IssuedWarningsTable() {
       <p className={styles.numWarnings}>
         Showing warnings {firstIndex + 1} to {lastIndex} of {numTriggers}.
       </p>
-      <input
+      <button
         type="button"
         disabled={!previousEnabled}
-        value="<"
         onClick={() => previousEnabled && setPage(page - 1)}
-      />
-      <input
+      >&lt;</button>
+      <button
         type="button"
         disabled={!nextEnabled}
-        value=">"
         onClick={() => nextEnabled && setPage(page + 1)}
-      />
+      >&gt;</button>
     </div>
   );
 }

@@ -30,7 +30,7 @@ function sortItems(items: RssItem[], ordering: string) {
 function EWNRSSTable() {
   const [filter, setFilter] = useState<string>("");
   const [page, setPage] = useState<number>(0);
-  const [ordering, setOrdering] = useState<string>("-triggeredat");
+  const [ordering, setOrdering] = useState<string>("");
 
   const rssItems = useRSSFeed();
 
@@ -57,6 +57,8 @@ function EWNRSSTable() {
   const clickOrdering = (header: string) => {
     if (ordering === header) {
       setOrdering(`-${header}`);
+    } else if (ordering === `-${header}`) {
+      setOrdering("");
     } else {
       setOrdering(header);
     }
@@ -90,14 +92,19 @@ function EWNRSSTable() {
       </select>
       <div className={styles.WarningsTable}>
         <div className={styles.tr}>
-          <div className={styles.thtd}>Publication date</div>
+          {/* Note the columns without ordering get the default cursor instead of pointer */}
+          <div className={styles.thtd} style={{ cursor: "auto" }}>
+            Publication date
+          </div>
           <div className={styles.thtd} onClick={() => clickOrdering("area")}>
             Warning Area {isOrdering("area")}
           </div>
           <div className={styles.thtd} onClick={() => clickOrdering("level")}>
             Trigger level {isOrdering("level")}
           </div>
-          <div className={styles.thtd}>Link</div>
+          <div className={styles.thtd} style={{ cursor: "auto" }}>
+            Link
+          </div>
         </div>
         {items.map(({ pubDate, area, warning, link }) => (
           <div className={styles.tr} key={link}>
@@ -133,18 +140,14 @@ function EWNRSSTable() {
       <p className={styles.numWarnings}>
         Showing warnings {firstIndex + 1} to {lastIndex} of {numTriggers}.
       </p>
-      <input
-        type="button"
+      <button
         disabled={!previousEnabled}
-        value="<"
         onClick={() => previousEnabled && setPage(page - 1)}
-      />
-      <input
-        type="button"
+      >&lt;</button>
+      <button
         disabled={!nextEnabled}
-        value=">"
         onClick={() => nextEnabled && setPage(page + 1)}
-      />
+      >&gt;</button>
     </div>
   );
 }

@@ -7,8 +7,6 @@ import styles from "../components/Tile.module.css";
 function IssuedWarningsTab() {
   const rssResponse = useRSSFeed();
 
-  console.log(rssResponse.data);
-
   return (
     <div className={styles.TileList}>
       <Tile size="large" title="Partner Warnings">
