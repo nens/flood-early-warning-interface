@@ -583,9 +583,13 @@ function TimeseriesTile({ tile, full = false }: Props) {
 
   // Find the raster alarms that are on the same point as one of the raster
   // intersections.
+  // We don't show alarm lines in small tiles because that looks very cluttered together
+  // with the threshold lines; except we *do* show them if there are no threshold line,
+  // otherwise the Y axis looks very compressed.
+  const showRasterAlarms = full || (tile.thresholds || []).length === 0;
   const rasterAlarms = (
-    full && tile.rasterIntersections
-      ? rasterAlarmsResponse.data!.results.map((alarm) => {
+     showRasterAlarms && tile.rasterIntersections
+     ? rasterAlarmsResponse.data!.results.map((alarm) => {
           const intersection = tile.rasterIntersections!.find((rasterIntersection) =>
             isSamePoint(rasterIntersection.geometry, alarm.geometry)
           );
