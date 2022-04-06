@@ -48,6 +48,11 @@ interface FakeData {
   [key: string]: Timeseries | Event[] | MaxForecast | Paginated<RasterAlarm>;
 }
 
+export interface ExtraRasters {
+  title: string;
+  maps: Record<string, { title: string; uuid: string; color: string }>;
+}
+
 export type BoundingBox = [string, string, string, string];
 
 export interface Config {
@@ -88,4 +93,5 @@ export interface Config {
   nowDateTimeUTC?: string;
   fakeData?: FakeData;
   rssUrl?: string;
+  extraRasters?: ExtraRasters;
 }

@@ -1,7 +1,9 @@
 import React, { useContext, useState } from "react";
-import { MapContainer, TileLayer, WMSTileLayer } from "react-leaflet";
+import { MapContainer, Pane, TileLayer, WMSTileLayer } from "react-leaflet";
+import { getCorrectTextColor } from "./Legend";
 import { BoundingBox } from "../util/bounds";
 import { getMapBackgrounds } from "../constants";
+import { ExtraRasters } from "../types/config";
 import { useConfigContext } from "../providers/ConfigProvider";
 import { useRectContext } from "../providers/RectProvider";
 import { TimeContext } from "../providers/TimeProvider";
@@ -19,18 +21,32 @@ const TIME_PERIODS: TimePeriod[] = [
   ["T0 + 12h", 12 * 60 * 60 * 1000],
 ];
 
-const EXTRA_EXTENT_MAPS = [
-  ["Council adopted 1:20", "#7800A0"]
-   ["Council adopted 1:100", "#D232FF"]
-
-   ];
-
+/* const EXTRA_EXTENT_MAPS: Record<string, [string, string, string]> = {
+ *   "": ["Council adopted flood extents", "", ""],
+ *   "1:20": ["1:20", "91941c69-1161-4ef7-a96a-8d6b58d27879", "#7800A0"],
+ *   "1:100": ["1:100", "bd2f86a6-43ca-4e43-959c-91e9ec73e9d3", "#D232FF"],
+ *   PMF: ["PMF", "d0ebb435-2f63-4159-8b36-d243f77a392e", "E69BFF"],
+ * };
+ *  */
 function FloodModelMap() {
   const { boundingBoxes, mapbox_access_token, rasters, wmsLayers } = useConfigContext();
   const rect = useRectContext();
   const rasterResponse = useRasterMetadata([rasters.operationalModelDepth]);
   const { now } = useContext(TimeContext);
+  const { extraRasters = { title: "", maps: {} } } = useConfigContext();
+
+  const allExtraRasters: ExtraRasters["maps"] = {
+    "": { title: extraRasters.title, uuid: "", color: "" },
+    ...extraRasters.maps,
+  };
+
   const [currentPeriod, setCurrentPeriod] = useState<string>("T0");
+  const [extraRasterTitle, setExtraRasterTitle] = useState<string>("");
+
+  const extraRaster = allExtraRasters[extraRasterTitle] || null;
+  const extraRasterResponse = useRasterMetadata(
+    extraRaster && extraRaster.uuid ? [extraRaster.uuid] : []
+  );
 
   if (!rect.width || !rect.height) return null; // Too early
 
@@ -38,6 +54,7 @@ function FloodModelMap() {
   const mapBackgrounds = getMapBackgrounds(mapbox_access_token);
 
   let wmsLayer = null;
+  let extraRasterLayer = null;
   let buildingsLayer = null;
   let legend = null;
   let raster = null;
@@ -86,26 +103,58 @@ function FloodModelMap() {
     );
   }
 
+  if (extraRasterResponse.success && extraRasterResponse.data.length > 0) {
+    const extraRasterMetadata = extraRasterResponse.data[0];
+
+    extraRasterLayer = (
+      <WMSTileLayer
+        key={extraRasterMetadata.wms_info.layer}
+        url={extraRasterMetadata.wms_info.endpoint}
+        layers={extraRasterMetadata.wms_info.layer}
+        styles={extraRasterMetadata.options.styles}
+        format="image/png"
+        opacity={0.6}
+        transparent
+      />
+    );
+  }
+
   return (
     <>
-      <div style={{
-        position: "absolute",
-        top: "1rem",
-        right: "1rem",
-        zIndex: 1000,
-        display: "flex",
-        flexDirection: "column"
-      }}>
+      <div
+        style={{
+          position: "absolute",
+          top: "1rem",
+          right: "1rem",
+          zIndex: 1000,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <MapSelectBox
           options={TIME_PERIODS.map((period) => [period[0], period[0]])}
           currentValue={currentPeriod}
           setValue={setCurrentPeriod}
         />
-        <MapSelectBox
-          options={TIME_PERIODS.map((period) => [period[0], period[0]])}
-          currentValue={currentPeriod}
-          setValue={setCurrentPeriod}
-        />
+        {Object.keys(extraRasters.maps).length > 0 ? (
+          <MapSelectBox
+            options={Object.values(allExtraRasters).map((extent) => [extent.title, extent.title])}
+            currentValue={extraRasterTitle}
+            setValue={setExtraRasterTitle}
+          />
+        ) : null}
+        {extraRasterLayer ? (
+          <div
+            style={{
+              backgroundColor: allExtraRasters[extraRasterTitle].color,
+              color: getCorrectTextColor(allExtraRasters[extraRasterTitle].color),
+              padding: "0.5rem",
+            }}
+            key={extraRasterTitle}
+          >
+            {extraRasters.title}: {extraRasterTitle}
+          </div>
+        ) : null}
       </div>
       {legend}
       <MapContainer
@@ -113,9 +162,18 @@ function FloodModelMap() {
         bounds={bounds.toLeafletBounds()}
         style={{ height: rect.height, width: rect.width }}
       >
+        {/* By default, all these layers are in Leaflet's "tile pane", which has z-index 200. */}
+        {/* Why want the extra extent layer between the map background and the rest */}
         <TileLayer url={mapBackgrounds[1].url} />
-        {buildingsLayer}
-        {wmsLayer}
+        {extraRasterLayer ? (
+          <Pane name="extra extent pane" style={{ zIndex: 210 }}>
+            {extraRasterLayer}
+          </Pane>
+        ) : null}
+        <Pane name="data pane" style={{ zIndex: 220 }}>
+          {buildingsLayer}
+          {wmsLayer}
+        </Pane>
         {raster !== null ? <FloodModelPopup raster={raster.uuid} time={time} /> : null}
       </MapContainer>
     </>
