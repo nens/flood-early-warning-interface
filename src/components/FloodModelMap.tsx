@@ -21,13 +21,6 @@ const TIME_PERIODS: TimePeriod[] = [
   ["T0 + 12h", 12 * 60 * 60 * 1000],
 ];
 
-/* const EXTRA_EXTENT_MAPS: Record<string, [string, string, string]> = {
- *   "": ["Council adopted flood extents", "", ""],
- *   "1:20": ["1:20", "91941c69-1161-4ef7-a96a-8d6b58d27879", "#7800A0"],
- *   "1:100": ["1:100", "bd2f86a6-43ca-4e43-959c-91e9ec73e9d3", "#D232FF"],
- *   PMF: ["PMF", "d0ebb435-2f63-4159-8b36-d243f77a392e", "E69BFF"],
- * };
- *  */
 function FloodModelMap() {
   const { boundingBoxes, mapbox_access_token, rasters, wmsLayers } = useConfigContext();
   const rect = useRectContext();
