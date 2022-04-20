@@ -106,7 +106,8 @@ button {
   font-weight: bold;
 }
 
-input:disabled, button:disabled {
+input:disabled,
+button:disabled {
   cursor: auto;
   background: grey;
   font-weight: semibold;

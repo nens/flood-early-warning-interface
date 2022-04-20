@@ -166,12 +166,16 @@ function IssuedWarningsTable() {
         type="button"
         disabled={!previousEnabled}
         onClick={() => previousEnabled && setPage(page - 1)}
-      >&lt;</button>
+      >
+        &lt;
+      </button>
       <button
         type="button"
         disabled={!nextEnabled}
         onClick={() => nextEnabled && setPage(page + 1)}
-      >&gt;</button>
+      >
+        &gt;
+      </button>
     </div>
   );
 }

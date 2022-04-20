@@ -17,7 +17,7 @@ function cutHex(h: string) {
   return h.charAt(0) === "#" ? h.substring(1, 7) : h;
 }
 
-function getCorrectTextColor(hex: string) {
+export function getCorrectTextColor(hex: string) {
   let threshold = 130;
   // ^^ About half of 256. Lower threshold equals more dark text on dark background
 

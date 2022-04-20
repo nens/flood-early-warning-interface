@@ -140,14 +140,12 @@ function EWNRSSTable() {
       <p className={styles.numWarnings}>
         Showing warnings {firstIndex + 1} to {lastIndex} of {numTriggers}.
       </p>
-      <button
-        disabled={!previousEnabled}
-        onClick={() => previousEnabled && setPage(page - 1)}
-      >&lt;</button>
-      <button
-        disabled={!nextEnabled}
-        onClick={() => nextEnabled && setPage(page + 1)}
-      >&gt;</button>
+      <button disabled={!previousEnabled} onClick={() => previousEnabled && setPage(page - 1)}>
+        &lt;
+      </button>
+      <button disabled={!nextEnabled} onClick={() => nextEnabled && setPage(page + 1)}>
+        &gt;
+      </button>
     </div>
   );
 }
