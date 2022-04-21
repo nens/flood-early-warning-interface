@@ -1,4 +1,3 @@
-import { useRSSFeed } from "../api/rss";
 import IssuedWarningsTable from "../components/IssuedWarningsTable";
 import EWNRSSTable from "../components/EWNRSSTable";
 import Tile from "../components/Tile";

@@ -26,11 +26,22 @@ function RainMap() {
   let wmsLayerSelect = null;
   if (rainfallWmsLayers && rainfallWmsLayers.length) {
     wmsLayerSelect = (
-      <MapSelectBox
-        options={rainfallWmsLayers.map((layer) => [layer.wms_layers, layer.title])}
-        currentValue={currentLayer}
-        setValue={setCurrentLayer}
-      />
+      <div
+        style={{
+          position: "absolute",
+          top: "1rem",
+          right: "1rem",
+          zIndex: 1000,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <MapSelectBox
+          options={rainfallWmsLayers.map((layer) => [layer.wms_layers, layer.title])}
+          currentValue={currentLayer}
+          setValue={setCurrentLayer}
+        />
+      </div>
     );
 
     const selectedLayer = rainfallWmsLayers.find((layer) => layer.wms_layers === currentLayer);

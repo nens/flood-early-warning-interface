@@ -588,8 +588,8 @@ function TimeseriesTile({ tile, full = false }: Props) {
   // otherwise the Y axis looks very compressed.
   const showRasterAlarms = full || (tile.thresholds || []).length === 0;
   const rasterAlarms = (
-     showRasterAlarms && tile.rasterIntersections
-     ? rasterAlarmsResponse.data!.results.map((alarm) => {
+    showRasterAlarms && tile.rasterIntersections
+      ? rasterAlarmsResponse.data!.results.map((alarm) => {
           const intersection = tile.rasterIntersections!.find((rasterIntersection) =>
             isSamePoint(rasterIntersection.geometry, alarm.geometry)
           );
