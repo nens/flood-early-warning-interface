@@ -4,12 +4,14 @@ import { Switch, Route, useRouteMatch } from "react-router-dom";
 import TabBar from "./TabBar";
 import styles from "./Tabs.module.css";
 
+export interface TabDefinition {
+  url: string;
+  title: string;
+  component: React.ReactNode;
+}
+
 interface TabsProps {
-  definition: {
-    url: string;
-    title: string;
-    component: React.ReactNode;
-  }[];
+  definition: TabDefinition[];
 }
 
 function Tabs({ definition }: TabsProps) {
