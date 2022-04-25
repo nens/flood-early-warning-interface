@@ -95,13 +95,6 @@ const defaultTabs = [
 function AppWithAuthentication() {
   const config = useConfigContext();
 
-  const tabs = config.tabs ?? defaultTabs;
-  const tabsWithComponents: TabDefinition[] = tabs
-    .map((tab) => {
-      return { ...tab, component: tabComponents[tab.url] };
-    })
-    .filter((tab) => tab.component);
-
   const title = config.dashboardTitle || "FloodSmart Parramatta Dashboard";
 
   useEffect(() => {
@@ -111,6 +104,13 @@ function AppWithAuthentication() {
       el.setAttribute("content", title);
     }
   }, [title]);
+
+  const tabs = config.tabs ?? defaultTabs;
+  const tabsWithComponents: TabDefinition[] = tabs
+    .map((tab) => {
+      return { ...tab, component: tabComponents[tab.url] };
+    })
+    .filter((tab) => tab.component);
 
   if (tabsWithComponents.length === 0) return null;
 
