@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import LizardAuthProvider from "./providers/LizardAuthProvider";
-import ConfigProvider from "./providers/ConfigProvider";
+import ConfigProvider, { useConfigContext } from "./providers/ConfigProvider";
 import TimeProvider from "./providers/TimeProvider";
 
 import { QUERY_OPTIONS } from "./api/hooks";
-import Tabs from "./components/Tabs";
+import Tabs, { TabDefinition } from "./components/Tabs";
 import AlarmsTab from "./tabs/AlarmsTab";
 import DamAlarmsTab from "./tabs/DamAlarmsTab";
 import StationsChartsTab from "./tabs/StationsChartsTab";
@@ -30,12 +30,12 @@ function App() {
           <Route
             path="/floodsmart/iframe"
             children={
-              // No Auth needed
-              <ConfigProvider>
-                <TimeProvider>
-                  <IframeScreen />
-                </TimeProvider>
-              </ConfigProvider>
+            // No Auth needed
+            <ConfigProvider>
+              <TimeProvider>
+                <IframeScreen />
+              </TimeProvider>
+            </ConfigProvider>
             }
           />
           <Route
@@ -56,54 +56,78 @@ function App() {
   );
 }
 
-const tabDefinition = [
+const tabComponents: { [url: string]: React.ReactNode } = {
+  alarms: <AlarmsTab />,
+  damalarms: <DamAlarmsTab />,
+  waterlevel: <FloodModelTab />,
+  rainfall: <RainfallTab />,
+  issuedwarnings: <IssuedWarningsTab />,
+  stations: <StationsChartsTab />
+};
+
+const defaultTabs = [
   {
     url: "alarms",
     title: "FloodSmart Warnings",
-    component: <AlarmsTab />,
   },
   {
     url: "damalarms",
     title: "Dam Alarms",
-    component: <DamAlarmsTab />,
   },
   {
     url: "waterlevel",
     title: "Flood Model Extent and Depths",
-    component: <FloodModelTab />,
   },
   {
     url: "rainfall",
     title: "Rainfall Forecast and Totals",
-    component: <RainfallTab />,
   },
   {
     url: "stations",
     title: "Stations & Graphs",
-    component: <StationsChartsTab />,
   },
   {
     url: "issuedwarnings",
     title: "Issued Warnings",
-    component: <IssuedWarningsTab />,
   },
 ];
 
 function AppWithAuthentication() {
+  const config = useConfigContext();
+
+  const title = config.dashboardTitle || "FloodSmart Parramatta Dashboard";
+
+  useEffect(() => {
+    document.title = title;
+    const el = document.querySelector("meta[name='description']");
+    if (el) {
+      el.setAttribute("content", title);
+    }
+  }, [title]);
+
+  const tabs = config.tabs ?? defaultTabs;
+  const tabsWithComponents: TabDefinition[] = tabs
+    .map((tab) => {
+      return { ...tab, component: tabComponents[tab.url] };
+    })
+    .filter((tab) => tab.component);
+
+  if (tabsWithComponents.length === 0) return null;
+
   return (
     <Router>
       <Switch>
         <Route
           path="/floodsmart/"
           exact={true}
-          children={<Redirect to={"/floodsmart/" + tabDefinition[0].url} />}
+          children={<Redirect to={"/floodsmart/" + tabsWithComponents[0].url} />}
         />
         <Route
           path="/floodsmart/"
           children={
             <>
-              <Header />
-              <Tabs definition={tabDefinition} />
+              <Header title={title} />
+              <Tabs definition={tabsWithComponents} />
             </>
           }
         />

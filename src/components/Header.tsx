@@ -14,14 +14,19 @@ const SETTINGS_MODAL = "settings_modal";
 
 type ModalType = typeof INFO_MODAL | typeof SETTINGS_MODAL | null;
 
-function Header() {
+interface HeaderProps {
+  title: string;
+}
+
+function Header({ title }: HeaderProps) {
   const [showingModal, setShowingModal] = useState<ModalType>(null);
   const configContext = useContext(ConfigContext);
   const { config, isTraining } = configContext;
 
-  const dashboards = config!.trainingDashboards || [];
+  if (config == null) return null;
 
-  const title = config!.dashboardTitle ?? "FloodSmart Parramatta Dashboard";
+  const showInfoModal = config.showInfoModal ?? true;
+  const dashboards = config.trainingDashboards ?? [];
 
   return (
     <div className={styles.Header}>
@@ -33,9 +38,11 @@ function Header() {
         }`}
       >
         {title}
-        <span className={styles.InformationIcon} onClick={() => setShowingModal(INFO_MODAL)}>
-          &#9432;
-        </span>
+        {showInfoModal ? (
+          <span className={styles.InformationIcon} onClick={() => setShowingModal(INFO_MODAL)}>
+            &#9432;
+          </span>
+        ) : null}
       </div>
       <div className={styles.RightBlock}>
         <LastUpdate />
