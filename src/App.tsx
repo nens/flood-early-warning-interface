@@ -76,11 +76,11 @@ const defaultTabs = [
   },
   {
     url: "waterlevel",
-    title: "Flood Model Extent and Depths",
+    title: "Flood Model",
   },
   {
     url: "rainfall",
-    title: "Rainfall Forecast and Totals",
+    title: "Rainfall",
   },
   {
     url: "stations",

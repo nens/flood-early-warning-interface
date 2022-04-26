@@ -111,7 +111,7 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
             onClick={clickMessagesButton}
           >
             <BiMessageRoundedDetail
-              color={hasMessages ? "var(--primary-color)" : "lightgray"}
+              color={hasMessages ? "red" : "lightgray"}
               fontWeight="bold"
               size="25px"
             />
@@ -136,7 +136,7 @@ function AlarmsTable({ alarms }: TableProps) {
         <div className={styles.thtd}>Current level (mAHD)</div>
         <div className={styles.thtd}>Max forecast (mAHD)</div>
         <div className={styles.thtd}>Time to max</div>
-        <div className={styles.thtd}>Partner Warning</div>
+        <div className={styles.thtd}>Partner Alert</div>
         <div className={styles.thtd}>Public Warning</div>
         <div className={styles.thtd}>
           <TriggerHeader level="Minor" />
