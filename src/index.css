@@ -54,7 +54,7 @@ div.root {
   }
 }
 
-@media only screen and and (max-width: 1499) and (min-width: 1230px) {
+@media only screen and (max-width: 1499) and (min-width: 1230px) {
   html {
     font-size: 16px;
   }
@@ -80,9 +80,9 @@ div.root {
 
 /* Default components */
 
-input,
-select,
-button {
+.root input,
+.root select,
+.root button {
   background: var(--primary-color);
   color: var(--white-color);
   text-align: center;
@@ -97,13 +97,13 @@ button {
   cursor: pointer;
 }
 
-input[type="button"],
-button {
+.root input[type="button"],
+.root button {
   font-weight: bold;
 }
 
-input:disabled,
-button:disabled {
+.root input:disabled,
+.root button:disabled {
   cursor: auto;
   background: grey;
   font-weight: semibold;

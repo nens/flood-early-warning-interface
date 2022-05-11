@@ -31,12 +31,12 @@ function App() {
           <Route
             path="/floodsmart/iframe"
             children={
-            // No Auth needed
-            <ConfigProvider>
-              <TimeProvider>
-                <IframeScreen />
-              </TimeProvider>
-            </ConfigProvider>
+              // No Auth needed
+              <ConfigProvider>
+                <TimeProvider>
+                  <IframeScreen />
+                </TimeProvider>
+              </ConfigProvider>
             }
           />
           <Route
@@ -63,7 +63,7 @@ const tabComponents: { [url: string]: React.ReactNode } = {
   waterlevel: <FloodModelTab />,
   rainfall: <RainfallTab />,
   issuedwarnings: <IssuedWarningsTab />,
-  stations: <StationsChartsTab />
+  stations: <StationsChartsTab />,
 };
 
 const defaultTabs = [
@@ -118,9 +118,7 @@ function AppWithAuthentication() {
   return (
     <Router>
       <Switch>
-        <Route
-          path="/floodsmart/config"
-        >
+        <Route path="/floodsmart/config/">
           <ConfigEditor />
         </Route>
         <Route
@@ -128,10 +126,10 @@ function AppWithAuthentication() {
           exact={true}
           children={<Redirect to={"/floodsmart/" + tabsWithComponents[0].url} />}
         />
-        <Route
-          path="/floodsmart/"
-        >
-          <div className="root"> {/* Class defined in index.css */}
+        <Route path="/floodsmart/">
+          <div className="root">
+            {" "}
+            {/* Class defined in index.css */}
             <Header title={title} />
             <Tabs definition={tabsWithComponents} />
           </div>

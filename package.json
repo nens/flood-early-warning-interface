@@ -3,6 +3,9 @@
   "version": "1.9.1",
   "private": true,
   "dependencies": {
+    "@chakra-ui/react": "^1.8.8",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -14,6 +17,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-leaflet": "^2.5.2",
     "@types/react-plotly.js": "^2.2.4",
+    "framer-motion": "^6.3.3",
     "leaflet": "^1.7.1",
     "plotly.js": "^1.58.4",
     "react": "^17.0.1",

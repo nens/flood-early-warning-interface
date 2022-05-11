@@ -5,9 +5,7 @@ const EnsureAdminAccess: FC<{}> = ({ children }) => {
   const isAdmin = useUserHasRole("admin");
 
   if (!isAdmin) {
-    return (
-      <p>You do not have sufficient access to view this page.</p>
-    );
+    return <p>You do not have sufficient access to view this page.</p>;
   } else {
     return <>{children}</>;
   }
