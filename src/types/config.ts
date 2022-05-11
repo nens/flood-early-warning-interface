@@ -56,6 +56,7 @@ export interface ExtraRasters {
 export type BoundingBox = [string, string, string, string];
 
 export interface Config {
+  version?: 1;
   boundingBoxes: {
     default: BoundingBox;
     rainMap?: BoundingBox;

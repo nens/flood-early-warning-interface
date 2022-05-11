@@ -33,13 +33,9 @@ body {
   --trigger-none: #777;
 }
 
-/* Style to make body 100% height */
-html,
-body,
-#root {
+div.root {
   height: 100vh;
   margin: 0;
-
   background: var(--primary-color);
   color: var(--white-color);
 }
