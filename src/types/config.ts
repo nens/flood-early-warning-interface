@@ -96,5 +96,6 @@ export interface Config {
   rssUrl?: string;
   extraRasters?: ExtraRasters;
   showInfoModal?: boolean; // default is true
+  infoText: string;
   tabs?: { url: string; title: string }[];
 }
