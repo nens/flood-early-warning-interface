@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Config } from "../types/config";
-import { useConfig } from "../api/hooks";
+import { useConfig, Wrapped } from "../api/hooks";
 import { Organisation } from "../types/api";
 import { WithChildren } from "../types/util";
 
@@ -12,6 +12,7 @@ import { WithChildren } from "../types/util";
 const DEFAULT_SLUG = "dashboardconfig";
 
 interface ConfigContextInterface {
+  fullConfig: Wrapped<Config> | null;
   config: Config | null;
   organisation: Organisation | null;
   currentConfigSlug: string;
@@ -21,6 +22,7 @@ interface ConfigContextInterface {
 }
 
 export const ConfigContext = React.createContext<ConfigContextInterface>({
+  fullConfig: null,
   config: null,
   organisation: null,
   currentConfigSlug: DEFAULT_SLUG,
@@ -34,12 +36,14 @@ function ConfigProvider({ children }: WithChildren) {
   const configResponse = useConfig(currentConfigSlug);
 
   if (configResponse.status === "success" && configResponse.data) {
-    const config = configResponse.data.clientconfig.configuration;
-    const organisation = configResponse.data.clientconfig.organisation;
+    const fullConfig = configResponse.data;
+    const config = fullConfig.clientconfig.configuration;
+    const organisation = fullConfig.clientconfig.organisation;
 
     return (
       <ConfigContext.Provider
         value={{
+          fullConfig,
           config,
           organisation,
           currentConfigSlug,
