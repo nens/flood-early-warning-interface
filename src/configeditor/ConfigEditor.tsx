@@ -2,6 +2,7 @@ import { ChakraProvider, Box, Heading } from "@chakra-ui/react";
 
 import EnsureAdminAccess from "../components/EnsureAdminAccess";
 import ConfigTabs from "./ConfigTabs";
+import EditBoundingBoxes from "./EditBoundingBoxes";
 import EditGeneral from "./EditGeneral";
 
 function ConfigEditor() {
@@ -15,6 +16,7 @@ function ConfigEditor() {
           <ConfigTabs
             definition={[
               { url: "general", title: "General", component: <EditGeneral /> },
+              { url: "boundingBoxes", title: "Bounding boxes", component: <EditBoundingBoxes /> },
               { url: "other", title: "Other tab", component: <p>This is another tab</p> },
             ]}
             placeholder={<p>Configure the application.</p>}
