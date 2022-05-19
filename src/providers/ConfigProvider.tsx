@@ -74,11 +74,11 @@ export function useOrganisation(): Organisation {
 export function useFakeData() {
   const configContext = useContext(ConfigContext);
 
-  if (configContext.isTraining && configContext.config && configContext.config.fakeData) {
+  if (configContext.isTraining && configContext.config) {
     return configContext.config.fakeData;
+  } else {
+    return {};
   }
-
-  return null;
 }
 
 export default ConfigProvider;

@@ -26,7 +26,7 @@ function FloodModelMap() {
   const rect = useRectContext();
   const rasterResponse = useRasterMetadata([rasters.operationalModelDepth]);
   const { now } = useContext(TimeContext);
-  const { extraRasters = { title: "", maps: {} } } = useConfigContext();
+  const { extraRasters } = useConfigContext();
 
   const allExtraRasters: ExtraRasters["maps"] = {
     "": { title: extraRasters.title, uuid: "", color: "" },

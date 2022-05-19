@@ -100,6 +100,7 @@ export function useAssetTypes(assetTypes: string[]) {
 
 export function useRasterAlarms() {
   const fakeData = useFakeData();
+  const hasFakeRasterAlarms = 'rasterAlarms' in fakeData;
   const organisation = useOrganisation();
 
   const response = useQuery<Paginated<RasterAlarm>, FetchError>(
@@ -108,10 +109,10 @@ export function useRasterAlarms() {
       fetchWithError(
         `/api/v4/rasteralarms/?organisation__uuid=${organisation.uuid}&page_size=1000`
       ),
-    { ...QUERY_OPTIONS, refetchInterval: 300000, enabled: !fakeData }
+    { ...QUERY_OPTIONS, refetchInterval: 300000, enabled: !hasFakeRasterAlarms }
   );
 
-  if (fakeData) {
+  if (hasFakeRasterAlarms) {
     return {
       status: "success",
       data: fakeData.rasterAlarms as Paginated<RasterAlarm>,
@@ -207,7 +208,7 @@ export function useConfig<T extends { version?: number } = Config>(
           return {
             ...response.results[0],
             clientconfig: {
-              ...response.results[0].clientfig,
+              ...response.results[0].clientconfig,
               configuration: configWithDefaults,
             },
           };
@@ -304,16 +305,15 @@ interface MaxLevel {
 
 export function useMaxForecastAtPoint(rasterUuid: string, alarm: RasterAlarm | null): MaxLevel {
   const fakeData = useFakeData();
+  const hasFakeMaxForecast = 'fakeMaxForecast' in fakeData;
   const { now, end } = useContext(TimeContext);
 
-  let fake = false;
   let value = null;
   let time: Date | null = null;
 
   const uuid: string | null = alarm && alarm.uuid ? alarm.uuid : null;
 
-  if (fakeData && fakeData.fakeMaxForecast) {
-    fake = true;
+  if (hasFakeMaxForecast) {
     const forecast = fakeData.fakeMaxForecast as MaxForecast;
     if (uuid && forecast[uuid]) {
       value = forecast[uuid].value;
@@ -331,9 +331,9 @@ export function useMaxForecastAtPoint(rasterUuid: string, alarm: RasterAlarm | n
 
   // Figure out where 'max' is in the operation model events array
   // Only look from timestamp 'now'
-  const forecastLevels = useRasterEvents(intersection && !fake ? [intersection] : [], now, end);
+  const forecastLevels = useRasterEvents(intersection && !hasFakeMaxForecast ? [intersection] : [], now, end);
 
-  if (!fake && forecastLevels.success && forecastLevels.data.length > 0) {
+  if (!hasFakeMaxForecast && forecastLevels.success && forecastLevels.data.length > 0) {
     const events = forecastLevels.data[0];
 
     if (events !== null && events.length > 0) {
@@ -370,7 +370,7 @@ export function useTimeseriesMetadata(uuids: string[]) {
         })
   );
 
-  if (fakeData) {
+  if (uuids.some(uuid => (`timeseries-metadata-${uuid}` in fakeData))) {
     return {
       success: true,
       data:
@@ -390,10 +390,11 @@ export function useTimeseriesMetadata(uuids: string[]) {
 export function useCurrentLevelTimeseries(uuid: string) {
   // Fetch metadata of a single timeseries and return current level.
   const fakeData = useFakeData();
+  const hasFakeTimeseries = `timeseries-metadata-${uuid}` in fakeData;
 
-  const timeseriesResponse = useTimeseriesMetadata(uuid && !fakeData ? [uuid] : []);
+  const timeseriesResponse = useTimeseriesMetadata(uuid && !hasFakeTimeseries ? [uuid] : []);
 
-  if (fakeData) {
+  if (hasFakeTimeseries) {
     const metadata = fakeData[`timeseries-metadata-${uuid}`] as unknown as Timeseries;
     return metadata ? metadata.last_value : null;
   }
@@ -412,9 +413,10 @@ export function useTimeseriesEvents(
   params = {}
 ): EventsResponse {
   const fakeData = useFakeData();
+  const hasFakeTimeseriesEvents = uuids.some(uuid => (`timeseries-events-${uuid}` in fakeData));
 
   let results: any = useQueries(
-    fakeData
+    hasFakeTimeseriesEvents
       ? []
       : uuids.map((uuid: string) => {
           let parameters: { [key: string]: any } = {};
@@ -436,10 +438,10 @@ export function useTimeseriesEvents(
         })
   );
 
-  if (fakeData) {
+  if (hasFakeTimeseriesEvents) {
     results = uuids.map((uuid) => {
       return {
-        isSuccess: !!fakeData[`timeseries-events-${uuid}`],
+        isSuccess: `timeseries-events-${uuid}` in fakeData,
         data: fakeData[`timeseries-events-${uuid}`],
       };
     });
