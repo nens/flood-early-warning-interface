@@ -26,7 +26,7 @@ function InfoModal(props: InfoModalProps) {
           src={config.infoImage}
         />
       ) : null}
-      <ReactMarkdown children={config.infoText!} />
+      <ReactMarkdown children={config.infoText} />
     </Modal>
   );
 }
