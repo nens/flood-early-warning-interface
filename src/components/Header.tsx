@@ -25,7 +25,6 @@ function Header({ title }: HeaderProps) {
 
   if (config == null) return null;
 
-  const showInfoModal = config.showInfoModal ?? true;
   const dashboards = config.trainingDashboards ?? [];
 
   return (
@@ -38,7 +37,7 @@ function Header({ title }: HeaderProps) {
         }`}
       >
         {title}
-        {showInfoModal ? (
+        {config.infoText ? (
           <span className={styles.InformationIcon} onClick={() => setShowingModal(INFO_MODAL)}>
             &#9432;
           </span>

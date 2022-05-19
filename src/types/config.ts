@@ -95,6 +95,7 @@ export interface Config {
   fakeData?: FakeData;
   rssUrl?: string;
   extraRasters?: ExtraRasters;
-  showInfoModal?: boolean; // default is true
+  infoText: string;
+  infoImage?: string;
   tabs?: { url: string; title: string }[];
 }
