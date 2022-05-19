@@ -6,18 +6,18 @@ import { Flex, Box } from "@chakra-ui/react";
 
 import ConfigTabBar from "../configeditor/ConfigTabBar";
 
-export interface TabDefinition {
+export interface ConfigTabDefinition {
   url: string;
   title: string;
   component: React.ReactNode;
 }
 
-interface TabsProps {
-  definition: TabDefinition[];
+interface ConfigTabsProps {
+  definition: ConfigTabDefinition[];
   placeholder: React.ReactNode;
 }
 
-function Tabs({ definition, placeholder }: TabsProps) {
+function ConfigTabs({ definition, placeholder }: ConfigTabsProps) {
   const tabs = definition.map(({ url, title }) => ({ url, title }));
   let { path } = useRouteMatch();
 
@@ -49,4 +49,4 @@ function Tabs({ definition, placeholder }: TabsProps) {
   );
 }
 
-export default Tabs;
+export default ConfigTabs;
