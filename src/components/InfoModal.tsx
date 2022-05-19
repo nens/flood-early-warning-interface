@@ -27,7 +27,7 @@ function InfoModal(props: InfoModalProps) {
           src="static/logos-parramatta.png"
         />
       ) : null}
-      <ReactMarkdown>{config.infoText}</ReactMarkdown>
+      <ReactMarkdown children={config.infoText} />
     </Modal>
   );
 }
