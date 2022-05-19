@@ -39,21 +39,21 @@ export const DEFAULT_CONFIG: Config = {
   timeseriesForWarningAreas: {},
   dams: {
     type: "FeatureCollection",
-    features: []
+    features: [],
   },
   tiles: [],
-  publicTiles: [],
   flood_warning_areas: {
     type: "FeatureCollection",
-    features: []
+    features: [],
   },
   trainingDashboards: [],
-  /* Set explicitly to show it is not missing. Undefined means not fixed to a specific moment. */  nowDateTimeUTC: undefined,
+  /* Set explicitly to show it is not missing. Undefined means not fixed to a specific moment. */ nowDateTimeUTC:
+    undefined,
   fakeData: {},
   rssUrl: "",
   extraRasters: {
     title: "",
-    maps: [],
+    maps: {},
   },
   tabs: [
     {
@@ -80,7 +80,7 @@ export const DEFAULT_CONFIG: Config = {
       url: "issuedwarnings",
       title: "Issued Warnings",
     },
-  ]
+  ],
 };
 
 export function getMapBackgrounds(access_token: string) {

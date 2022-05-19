@@ -90,8 +90,8 @@ export interface Config {
   trainingDashboards: TrainingDashboard[];
   nowDateTimeUTC?: string;
   fakeData: FakeData;
-  rssUrl?: string;
-  extraRasters?: ExtraRasters;
+  rssUrl: string;
+  extraRasters: ExtraRasters;
   showInfoModal?: boolean; // default is true
-  tabs?: { url: string; title: string }[];
+  tabs: { url: string; title: string }[];
 }

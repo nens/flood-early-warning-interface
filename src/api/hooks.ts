@@ -22,7 +22,6 @@ import { combineUrlAndParams } from "../util/http";
 import { arrayMax } from "../util/functions";
 import { useOrganisation, useFakeData } from "../providers/ConfigProvider";
 import { TimeContext } from "../providers/TimeProvider";
-import { DEFAULT_CONFIG } from "../constants";
 
 ///// React Query helper functions
 
@@ -184,7 +183,10 @@ export interface Wrapped<T> {
   };
 }
 
-export function useConfig<T = Config>(slug: string, defaults?: T): UseQueryResult<Wrapped<T>, FetchError> {
+export function useConfig<T extends { version?: number } = Config>(
+  slug: string,
+  defaults?: T
+): UseQueryResult<Wrapped<T>, FetchError> {
   return useQuery<Wrapped<T>, FetchError>(
     ["config", slug],
     async () => {
@@ -192,19 +194,25 @@ export function useConfig<T = Config>(slug: string, defaults?: T): UseQueryResul
         `/api/v4/clientconfigs/?format=json&client=flood-early-warning-interface&slug=${slug}`
       );
       if (response.results && response.results.length) {
-        const serverConfig = response.results[0];
+        const serverConfig = response.results[0].clientconfig.configuration;
 
         if (defaults) {
-          if (serverConfig.version !== defaults.version) {
+          if ("version" in defaults && serverConfig.version !== defaults.version) {
             // Fix things we changed in the config here, if not handled by defaults.
           }
 
           // Take defaults, and add the fields returned by the server (that will
           // usually override most or all defaults).
-          const configWithDefaults: T = {...defaults, ...serverConfig };
-          return configWithDefaults;
+          const configWithDefaults: T = { ...defaults, ...serverConfig };
+          return {
+            ...response.results[0],
+            clientconfig: {
+              ...response.results[0].clientfig,
+              configuration: configWithDefaults,
+            },
+          };
         } else {
-          return serverConfig;
+          return response.results[0];
         }
       } else {
         return null;
