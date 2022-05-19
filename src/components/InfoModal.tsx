@@ -9,14 +9,13 @@ interface InfoModalProps {
 
 function InfoModal(props: InfoModalProps) {
   const { closeFunction } = props;
-  const configContext = useContext(ConfigContext);
-  const { config } = configContext;
+  const { config } = useContext(ConfigContext);
 
   if (!config) return null;
 
   return (
     <Modal close={closeFunction} title="About this dashboard">
-      {configContext.currentConfigSlug === "dashboardconfig" ? (
+      {config.infoImage ? (
         <img
           alt="Logos of contributing organizations"
           style={{
@@ -24,10 +23,10 @@ function InfoModal(props: InfoModalProps) {
             margin: "auto",
             width: "90%",
           }}
-          src="static/logos-parramatta.png"
+          src={config.infoImage}
         />
       ) : null}
-      <ReactMarkdown children={config.infoText} />
+      <ReactMarkdown children={config.infoText!} />
     </Modal>
   );
 }
