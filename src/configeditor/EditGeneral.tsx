@@ -5,12 +5,13 @@ import {
   FormControl,
   FormLabel,
   Text,
+  Textarea,
   FormErrorMessage,
 } from "@chakra-ui/react";
 import { useConfigEdit } from "./hooks";
 
 function EditGeneral() {
-  const { status, values, setValues, errors, submit } = useConfigEdit(["dashboardTitle"]);
+  const { status, values, setValues, errors, submit } = useConfigEdit(["dashboardTitle", "infoText"]);
 
   return (
     <VStack align="left">
@@ -24,6 +25,14 @@ function EditGeneral() {
           onChange={(event) => setValues({ ...values, dashboardTitle: event.target.value })}
         />
         <FormErrorMessage>{errors.dashboardTitle}</FormErrorMessage>
+        <FormLabel htmlFor="infoText">Information</FormLabel>
+        <Textarea
+          id="infoText"
+          variant="outline"
+          placeholder="Text for information modal"
+          value={values.infoText || ""}
+          onChange={(event) => setValues({ ...values, infoText: event.target.value })}
+        />
         <Button onClick={submit} marginTop="4" disabled={status !== "ok"}>
           Submit
         </Button>

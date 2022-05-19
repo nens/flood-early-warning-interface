@@ -81,6 +81,8 @@ export const DEFAULT_CONFIG: Config = {
       title: "Issued Warnings",
     },
   ],
+  infoImage: "",
+  infoText: "",
 };
 
 export function getMapBackgrounds(access_token: string) {
