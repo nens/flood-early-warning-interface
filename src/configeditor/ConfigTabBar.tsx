@@ -1,8 +1,6 @@
 // Called from ../components/Tabs
 
-import React, { useCallback } from "react";
-
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Box, VStack } from "@chakra-ui/react";
 
 interface ConfigTabBarProps {

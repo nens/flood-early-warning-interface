@@ -86,13 +86,10 @@ export interface Config {
   dams: FeatureCollection<Point, DamProperties>;
   dashboardTitle?: string;
   tiles: TileDefinition[];
-  publicTiles: TileDefinition[]; // For use in iframe mode
   flood_warning_areas: FeatureCollection<Polygon, WarningAreaProperties>;
-  iframeBaseTileId: number; // XXX
-  referenceLevels: { [assetId: number]: string };
-  trainingDashboards?: TrainingDashboard[]; // XXX
+  trainingDashboards: TrainingDashboard[];
   nowDateTimeUTC?: string;
-  fakeData?: FakeData;
+  fakeData: FakeData;
   rssUrl?: string;
   extraRasters?: ExtraRasters;
   showInfoModal?: boolean; // default is true

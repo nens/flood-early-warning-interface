@@ -3,6 +3,7 @@ import { Config } from "../types/config";
 import { useConfig, Wrapped } from "../api/hooks";
 import { Organisation } from "../types/api";
 import { WithChildren } from "../types/util";
+import { DEFAULT_CONFIG } from "../constants";
 
 // Note that the default is null, but because the below only renders children if
 // config is not null, components can assume that the value is a Config -- that is,
@@ -33,7 +34,7 @@ export const ConfigContext = React.createContext<ConfigContextInterface>({
 
 function ConfigProvider({ children }: WithChildren) {
   const [currentConfigSlug, setCurrentConfigSlug] = useState<string>(DEFAULT_SLUG);
-  const configResponse = useConfig(currentConfigSlug);
+  const configResponse = useConfig(currentConfigSlug, DEFAULT_CONFIG);
 
   if (configResponse.status === "success" && configResponse.data) {
     const fullConfig = configResponse.data;
