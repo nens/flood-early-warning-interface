@@ -30,6 +30,10 @@ export class BoundingBox {
   toLizardBbox() {
     return [this.westmost, this.southmost, this.eastmost, this.northmost].join(",");
   }
+
+  toConfigBbox() {
+    return [this.westmost, this.southmost, this.eastmost, this.northmost];
+  }
 }
 
 export function isSamePoint(a: Geometry, b: Geometry, epsilon: number = 0) {
