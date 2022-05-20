@@ -25,7 +25,7 @@ function Header({ title }: HeaderProps) {
 
   if (config == null) return null;
 
-  const dashboards = config.trainingDashboards ?? [];
+  const dashboards = config.trainingDashboards;
 
   return (
     <div className={styles.Header}>

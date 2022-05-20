@@ -66,33 +66,6 @@ const tabComponents: { [url: string]: React.ReactNode } = {
   stations: <StationsChartsTab />,
 };
 
-const defaultTabs = [
-  {
-    url: "alarms",
-    title: "FloodSmart Warnings",
-  },
-  {
-    url: "damalarms",
-    title: "Dam Alarms",
-  },
-  {
-    url: "waterlevel",
-    title: "Flood Model",
-  },
-  {
-    url: "rainfall",
-    title: "Rainfall",
-  },
-  {
-    url: "stations",
-    title: "Stations & Graphs",
-  },
-  {
-    url: "issuedwarnings",
-    title: "Issued Warnings",
-  },
-];
-
 function AppWithAuthentication() {
   const config = useConfigContext();
 
@@ -106,8 +79,7 @@ function AppWithAuthentication() {
     }
   }, [title]);
 
-  const tabs = config.tabs ?? defaultTabs;
-  const tabsWithComponents: TabDefinition[] = tabs
+  const tabsWithComponents: TabDefinition[] = config.tabs
     .map((tab) => {
       return { ...tab, component: tabComponents[tab.url] };
     })

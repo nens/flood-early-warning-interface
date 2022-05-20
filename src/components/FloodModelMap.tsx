@@ -26,7 +26,7 @@ function FloodModelMap() {
   const rect = useRectContext();
   const rasterResponse = useRasterMetadata([rasters.operationalModelDepth]);
   const { now } = useContext(TimeContext);
-  const { extraRasters = { title: "", maps: {} } } = useConfigContext();
+  const { extraRasters } = useConfigContext();
 
   const allExtraRasters: ExtraRasters["maps"] = {
     "": { title: extraRasters.title, uuid: "", color: "" },
@@ -156,7 +156,7 @@ function FloodModelMap() {
         style={{ height: rect.height, width: rect.width }}
       >
         {/* By default, all these layers are in Leaflet's "tile pane", which has z-index 200. */}
-        {/* Why want the extra extent layer between the map background and the rest */}
+        {/* We want the extra extent layer between the map background and the rest */}
         <TileLayer url={mapBackgrounds[1].url} />
         {extraRasterLayer ? (
           <Pane name="extra extent pane" style={{ zIndex: 210 }}>

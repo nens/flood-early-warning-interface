@@ -17,7 +17,7 @@ export interface RssItem {
 export function useRSSFeed() {
   const config = useConfigContext();
 
-  const rssUrl = config.rssUrl || "https://www.ewn.com.au/alerts/COPrss.aspx";
+  const rssUrl = config.rssUrl;
 
   const rssResponse = useQuery(
     ["rss"],
