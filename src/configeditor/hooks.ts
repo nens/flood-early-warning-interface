@@ -127,7 +127,7 @@ function validateBoundingBoxes(type: string, bounds: BoundingBox | null, errors:
   if (type === "default" && bounds === null) {
     errors.boundingBoxes = {
       ...errors.boundingBoxes,
-      [type]: 'Default field is required'
+      [type]: 'Default field is required.'
     }
   }
 
@@ -135,12 +135,32 @@ function validateBoundingBoxes(type: string, bounds: BoundingBox | null, errors:
     if (parseFloat(bounds.northmost) < parseFloat(bounds.southmost)) {
       errors.boundingBoxes = {
         ...errors.boundingBoxes,
-        [type]: 'North coordinate must be greater than South coordinate'
+        [type]: 'North coordinate must be greater than South coordinate.'
       }
     } else if (parseFloat(bounds.eastmost) < parseFloat(bounds.westmost)) {
       errors.boundingBoxes = {
         ...errors.boundingBoxes,
-        [type]: 'East coordinate must be greater than West coordinate'
+        [type]: 'East coordinate must be greater than West coordinate.'
+      }
+    } else if (
+      parseFloat(bounds.westmost) < -180 ||
+      parseFloat(bounds.westmost) > 180 ||
+      parseFloat(bounds.eastmost) < -180 ||
+      parseFloat(bounds.eastmost) > 180
+    ) {
+      errors.boundingBoxes = {
+        ...errors.boundingBoxes,
+        [type]: 'West and East coordinates must be between -180° and 180°.'
+      }
+    } else if (
+      parseFloat(bounds.southmost) < -90 ||
+      parseFloat(bounds.southmost) > 90 ||
+      parseFloat(bounds.northmost) < -90 ||
+      parseFloat(bounds.northmost) > 90
+    ) {
+      errors.boundingBoxes = {
+        ...errors.boundingBoxes,
+        [type]: 'South and North coordinates must be between -90° and 90°.'
       }
     } else if (!bounds.toConfigBbox().every(e => e !== "")) {
       errors.boundingBoxes = {
