@@ -2,15 +2,19 @@ import { useState, useContext } from "react";
 import { useQueryClient } from "react-query";
 import { useConfigContext, ConfigContext, useOrganisation } from "../providers/ConfigProvider";
 import { useOrganisationUser } from "../api/hooks";
-
+import { BoundingBox } from "../util/bounds";
 import { Config } from "../types/config";
 
 interface PartialConfig {
   [key: string]: any;
 }
 
+export interface ErrorObject {
+  [key: string]: string
+}
+
 interface ValidationErrors {
-  [key: string]: string;
+  [key: string]: string | ErrorObject;
 }
 
 // Hook used by the EditXxx components to store edited values,
@@ -117,11 +121,57 @@ function useUpdateConfig() {
   };
 }
 
+function validateBoundingBoxes(type: string, bounds: BoundingBox | null, errors: ValidationErrors) {
+  if (typeof errors.boundingBoxes === 'string') return;
+
+  if (type === "default" && bounds === null) {
+    errors.boundingBoxes = {
+      ...errors.boundingBoxes,
+      [type]: 'Default field is required'
+    }
+  }
+
+  if (bounds) {
+    if (parseFloat(bounds.northmost) < parseFloat(bounds.southmost)) {
+      errors.boundingBoxes = {
+        ...errors.boundingBoxes,
+        [type]: 'North coordinate must be greater than South coordinate'
+      }
+    } else if (parseFloat(bounds.eastmost) < parseFloat(bounds.westmost)) {
+      errors.boundingBoxes = {
+        ...errors.boundingBoxes,
+        [type]: 'East coordinate must be greater than West coordinate'
+      }
+    } else if (!bounds.toConfigBbox().every(e => e !== "")) {
+      errors.boundingBoxes = {
+        ...errors.boundingBoxes,
+        [type]: 'Empty field is not allowed.'
+      }
+    }
+  }
+}
+
 function validate(config: PartialConfig) {
   const errors: ValidationErrors = {};
 
   if (config.dashboardTitle === "") {
     errors.dashboardTitle = "Dashboard title should not be the empty string.";
+  }
+
+  if (config.boundingBoxes) {
+    // bounding boxes of different types of map
+    const boundingBoxes = config.boundingBoxes as Config['boundingBoxes'];
+    const defaultBounds = boundingBoxes.default ? new BoundingBox(...boundingBoxes.default) : null;
+    const warningAreaBounds = boundingBoxes.warningAreas ? new BoundingBox(...boundingBoxes.warningAreas) : null;
+    const rainMapBounds = boundingBoxes.rainMap ? new BoundingBox(...boundingBoxes.rainMap) : null;
+    const floodModelMapBounds = boundingBoxes.floodModelMap ? new BoundingBox(...boundingBoxes.floodModelMap) : null;
+    const damBounds = boundingBoxes.dams ? new BoundingBox(...boundingBoxes.dams) : null;
+
+    validateBoundingBoxes("default", defaultBounds, errors);
+    validateBoundingBoxes("warningAreas", warningAreaBounds, errors);
+    validateBoundingBoxes("damBounds", damBounds, errors);
+    validateBoundingBoxes("floodModelMapBounds", floodModelMapBounds, errors);
+    validateBoundingBoxes("rainMapBounds", rainMapBounds, errors);
   }
 
   return errors;
