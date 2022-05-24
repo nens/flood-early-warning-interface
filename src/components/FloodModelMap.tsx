@@ -132,6 +132,7 @@ function FloodModelMap() {
         />
         {Object.keys(extraRasters.maps).length > 0 ? (
           <MapMultipleSelectBox
+            title={extraRasters.title}
             options={Object.values(allExtraRasters).map((extent) => [extent.title, extent.title])}
             currentValues={extraRasterTitles}
             setValues={setExtraRasterTitles}

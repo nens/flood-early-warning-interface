@@ -1,12 +1,13 @@
 import styles from "./MapSelectBox.module.css";
 
 interface MapMultipleSelectBoxProps {
+  title: string;
   options: [string, string][];
   currentValues: string[];
   setValues: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-function MapMultipleSelectBox({ options, currentValues, setValues }: MapMultipleSelectBoxProps) {
+function MapMultipleSelectBox({ title, options, currentValues, setValues }: MapMultipleSelectBoxProps) {
   return (
     <select
       name="mapMultipleSelectBox"
@@ -24,7 +25,7 @@ function MapMultipleSelectBox({ options, currentValues, setValues }: MapMultiple
         <option key={option[0]} value={option[0]}>
           {option[1]}
           {" "}
-          {option[1] !== "" && option[1] !== "Council adopted flood extents" && currentValues.includes(option[1]) ? "✔" : null}
+          {option[1] !== title && currentValues.includes(option[1]) ? "✔" : null}
         </option>
       ))}
     </select>
