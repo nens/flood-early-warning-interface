@@ -147,7 +147,7 @@ function FloodModelMap() {
             }}
             key={extraRaster.title}
           >
-            {extraRaster.title}: {extraRaster.title}
+            {extraRasters.title}: {extraRaster.title}
           </div>
         ))}
       </div>
