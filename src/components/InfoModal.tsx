@@ -1,6 +1,4 @@
-import { useContext } from "react";
 import ReactMarkdown from "react-markdown";
-import { ConfigContext } from "../providers/ConfigProvider";
 import Modal from "./Modal";
 
 interface InfoModalProps {
@@ -12,9 +10,6 @@ interface InfoModalProps {
 
 function InfoModal(props: InfoModalProps) {
   const { closeFunction, title, markdownText, imageUrl } = props;
-  const { config } = useContext(ConfigContext);
-
-  if (!config) return null;
 
   return (
     <Modal close={closeFunction} title={title}>

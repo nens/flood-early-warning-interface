@@ -8,7 +8,7 @@ function LogoutButton() {
 
   return (
     <div
-      className={styles.LogoutButton}
+      className={styles.TextButton}
       onClick={() => (window.location.href = bootstrap.sso.logout)}
     >
       Log out
