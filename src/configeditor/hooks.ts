@@ -165,7 +165,7 @@ function validateBoundingBoxes(type: string, bounds: BoundingBox | null, errors:
     } else if (!bounds.toConfigBbox().every(e => e !== "")) {
       errors.boundingBoxes = {
         ...errors.boundingBoxes,
-        [type]: 'Empty field is not allowed.'
+        [type]: 'Please fill in all fields.'
       }
     }
   }
@@ -189,9 +189,9 @@ function validate(config: PartialConfig) {
 
     validateBoundingBoxes("default", defaultBounds, errors);
     validateBoundingBoxes("warningAreas", warningAreaBounds, errors);
-    validateBoundingBoxes("damBounds", damBounds, errors);
-    validateBoundingBoxes("floodModelMapBounds", floodModelMapBounds, errors);
-    validateBoundingBoxes("rainMapBounds", rainMapBounds, errors);
+    validateBoundingBoxes("dams", damBounds, errors);
+    validateBoundingBoxes("floodModelMap", floodModelMapBounds, errors);
+    validateBoundingBoxes("rainMap", rainMapBounds, errors);
   }
 
   return errors;

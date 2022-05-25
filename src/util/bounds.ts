@@ -16,6 +16,11 @@ export class BoundingBox {
     this.northmost = northmost;
   }
 
+  setField(field: string, value: string): BoundingBox {
+    const newBbox = { ...this, [field]: value };
+    return new BoundingBox(newBbox.westmost, newBbox.southmost, newBbox.eastmost, newBbox.northmost);
+  }
+
   toLeafletArray(): [[number, number], [number, number]] {
     return [
       [parseFloat(this.southmost), parseFloat(this.westmost)],

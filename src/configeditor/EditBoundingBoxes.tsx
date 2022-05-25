@@ -12,6 +12,7 @@ import {
 import { Config } from "../types/config";
 import { BoundingBox } from "../util/bounds";
 import { ErrorObject, useConfigEdit } from "./hooks";
+import { DEFAULT_CONFIG } from "../constants";
 
 interface LatLngInputProps {
   title: string;
@@ -39,6 +40,7 @@ function LatLngInput(props: LatLngInputProps) {
         variant="outline"
         value={props.value}
         onChange={props.onChange}
+        size="sm"
       />
     </FormControl>
   )
@@ -63,12 +65,13 @@ function EditSingleBoundingBoxes(props: EditSingleBoundingBoxesProps) {
         }
       });
     } else {
-      bounds[field] = value;
+      const newBounds = bounds.setField(field, value);
+      const configBbox = newBounds.toConfigBbox();
       setValues({
         ...values,
         boundingBoxes: {
           ...values.boundingBoxes,
-          [type]: bounds.toConfigBbox()
+          [type]: !configBbox.every(e => e === "") ? configBbox : undefined
         }
       });
     };
@@ -111,7 +114,7 @@ function EditSingleBoundingBoxes(props: EditSingleBoundingBoxesProps) {
           ...values,
           boundingBoxes: {
             ...values.boundingBoxes,
-            [type]: null
+            [type]: undefined
           }
         })}
       >
@@ -126,7 +129,7 @@ function EditBoundingBoxes() {
 
   // bounding boxes of different types of map
   const boundingBoxes = values.boundingBoxes as Config["boundingBoxes"];
-  const defaultBounds = boundingBoxes.default ? new BoundingBox(...boundingBoxes.default) : null;
+  const defaultBounds = boundingBoxes.default ? new BoundingBox(...boundingBoxes.default) : new BoundingBox(...DEFAULT_CONFIG.boundingBoxes.default);
   const warningAreaBounds = boundingBoxes.warningAreas ? new BoundingBox(...boundingBoxes.warningAreas) : null;
   const rainMapBounds = boundingBoxes.rainMap ? new BoundingBox(...boundingBoxes.rainMap) : null;
   const floodModelMapBounds = boundingBoxes.floodModelMap ? new BoundingBox(...boundingBoxes.floodModelMap) : null;
