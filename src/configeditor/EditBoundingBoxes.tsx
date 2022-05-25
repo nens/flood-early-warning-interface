@@ -129,7 +129,7 @@ function EditBoundingBoxes() {
 
   // bounding boxes of different types of map
   const boundingBoxes = values.boundingBoxes as Config["boundingBoxes"];
-  const defaultBounds = boundingBoxes.default ? new BoundingBox(...boundingBoxes.default) : new BoundingBox(...DEFAULT_CONFIG.boundingBoxes.default);
+  const defaultBounds = boundingBoxes.default ? new BoundingBox(...boundingBoxes.default) : null;
   const warningAreaBounds = boundingBoxes.warningAreas ? new BoundingBox(...boundingBoxes.warningAreas) : null;
   const rainMapBounds = boundingBoxes.rainMap ? new BoundingBox(...boundingBoxes.rainMap) : null;
   const floodModelMapBounds = boundingBoxes.floodModelMap ? new BoundingBox(...boundingBoxes.floodModelMap) : null;
