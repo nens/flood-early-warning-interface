@@ -3,6 +3,7 @@ import { ChakraProvider, Box, Heading } from "@chakra-ui/react";
 import EnsureAdminAccess from "../components/EnsureAdminAccess";
 import ConfigTabs from "./ConfigTabs";
 import EditGeneral from "./EditGeneral";
+// import EditTabs from "./EditTabs";
 
 function ConfigEditor() {
   return (
