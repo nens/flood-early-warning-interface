@@ -4,6 +4,7 @@ import EnsureAdminAccess from "../components/EnsureAdminAccess";
 import ConfigTabs from "./ConfigTabs";
 import EditBoundingBoxes from "./EditBoundingBoxes";
 import EditGeneral from "./EditGeneral";
+// import EditTabs from "./EditTabs";
 
 function ConfigEditor() {
   return (

@@ -1,5 +1,33 @@
 import { Config } from "./types/config";
 
+export const DEFAULT_TABS = [
+  {
+    url: "alarms",
+    title: "FloodSmart Warnings",
+  },
+  {
+    url: "damalarms",
+    title: "Dam Alarms",
+  },
+  {
+    url: "waterlevel",
+    title: "Flood Model",
+  },
+  {
+    url: "rainfall",
+    title: "Rainfall",
+  },
+  {
+    url: "stations",
+    title: "Stations & Graphs",
+  },
+  {
+    url: "issuedwarnings",
+    title: "Issued Warnings",
+  },
+];
+
+
 export const DEFAULT_CONFIG: Config = {
   version: 1,
   dashboardTitle: "FloodSmart dashboard",
@@ -55,32 +83,7 @@ export const DEFAULT_CONFIG: Config = {
     title: "",
     maps: {},
   },
-  tabs: [
-    {
-      url: "alarms",
-      title: "FloodSmart Warnings",
-    },
-    {
-      url: "damalarms",
-      title: "Dam Alarms",
-    },
-    {
-      url: "waterlevel",
-      title: "Flood Model",
-    },
-    {
-      url: "rainfall",
-      title: "Rainfall",
-    },
-    {
-      url: "stations",
-      title: "Stations & Graphs",
-    },
-    {
-      url: "issuedwarnings",
-      title: "Issued Warnings",
-    },
-  ],
+  tabs: DEFAULT_TABS,
   infoImage: "",
   infoText: "",
 };
