@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { MapContainer, Pane, TileLayer, WMSTileLayer } from "react-leaflet";
 import { getCorrectTextColor } from "./Legend";
 import { BoundingBox } from "../util/bounds";
@@ -9,6 +9,7 @@ import { useRectContext } from "../providers/RectProvider";
 import { TimeContext } from "../providers/TimeProvider";
 import { useRasterMetadata } from "../api/hooks";
 import MapSelectBox from "./MapSelectBox";
+import MapMultipleSelectBox from "./MapMultipleSelectBox";
 import FloodModelPopup from "./FloodModelPopup";
 import LizardRasterLegend from "./LizardRasterLegend";
 
@@ -34,12 +35,12 @@ function FloodModelMap() {
   };
 
   const [currentPeriod, setCurrentPeriod] = useState<string>("T0");
-  const [extraRasterTitle, setExtraRasterTitle] = useState<string>("");
+  const [extraRasterTitles, setExtraRasterTitles] = useState<string[]>([]);
 
-  const extraRaster = allExtraRasters[extraRasterTitle] || null;
-  const extraRasterResponse = useRasterMetadata(
-    extraRaster && extraRaster.uuid ? [extraRaster.uuid] : []
-  );
+  const selectedExtraRasters = extraRasterTitles.map(title => allExtraRasters[title] || null);
+  const selectedExtraRastersResponses = useRasterMetadata(selectedExtraRasters.filter(
+    extraRaster => extraRaster && extraRaster.uuid
+  ).map(extraRaster => extraRaster.uuid));
 
   if (!rect.width || !rect.height) return null; // Too early
 
@@ -47,7 +48,7 @@ function FloodModelMap() {
   const mapBackgrounds = getMapBackgrounds(mapbox_access_token);
 
   let wmsLayer = null;
-  let extraRasterLayer = null;
+  let extraRasterLayers: JSX.Element[] = [];
   let buildingsLayer = null;
   let legend = null;
   let raster = null;
@@ -96,10 +97,10 @@ function FloodModelMap() {
     );
   }
 
-  if (extraRasterResponse.success && extraRasterResponse.data.length > 0) {
-    const extraRasterMetadata = extraRasterResponse.data[0];
+  if (selectedExtraRastersResponses.success && selectedExtraRastersResponses.data.length > 0) {
+    const extraRastersMetadata = selectedExtraRastersResponses.data;
 
-    extraRasterLayer = (
+    extraRasterLayers = extraRastersMetadata.map(extraRasterMetadata => (
       <WMSTileLayer
         key={extraRasterMetadata.wms_info.layer}
         url={extraRasterMetadata.wms_info.endpoint}
@@ -109,7 +110,7 @@ function FloodModelMap() {
         opacity={0.6}
         transparent
       />
-    );
+    ));
   }
 
   return (
@@ -130,24 +131,25 @@ function FloodModelMap() {
           setValue={setCurrentPeriod}
         />
         {Object.keys(extraRasters.maps).length > 0 ? (
-          <MapSelectBox
+          <MapMultipleSelectBox
+            title={extraRasters.title}
             options={Object.values(allExtraRasters).map((extent) => [extent.title, extent.title])}
-            currentValue={extraRasterTitle}
-            setValue={setExtraRasterTitle}
+            currentValues={extraRasterTitles}
+            setValues={setExtraRasterTitles}
           />
         ) : null}
-        {extraRasterLayer ? (
+        {selectedExtraRasters.filter(extraRaster => extraRaster && extraRaster.uuid).map(extraRaster => (
           <div
             style={{
-              backgroundColor: allExtraRasters[extraRasterTitle].color,
-              color: getCorrectTextColor(allExtraRasters[extraRasterTitle].color),
+              backgroundColor: allExtraRasters[extraRaster.title].color,
+              color: getCorrectTextColor(allExtraRasters[extraRaster.title].color),
               padding: "0.5rem",
             }}
-            key={extraRasterTitle}
+            key={extraRaster.title}
           >
-            {extraRasters.title}: {extraRasterTitle}
+            {extraRasters.title}: {extraRaster.title}
           </div>
-        ) : null}
+        ))}
       </div>
       {legend}
       <MapContainer
@@ -158,11 +160,11 @@ function FloodModelMap() {
         {/* By default, all these layers are in Leaflet's "tile pane", which has z-index 200. */}
         {/* We want the extra extent layer between the map background and the rest */}
         <TileLayer url={mapBackgrounds[1].url} />
-        {extraRasterLayer ? (
-          <Pane name="extra extent pane" style={{ zIndex: 210 }}>
+        {extraRasterLayers.map((extraRasterLayer, i) => (
+          <Pane key={i} name={"extra extent pane" + i} style={{ zIndex: 210 }}>
             {extraRasterLayer}
           </Pane>
-        ) : null}
+        ))}
         <Pane name="data pane" style={{ zIndex: 220 }}>
           {buildingsLayer}
           {wmsLayer}
