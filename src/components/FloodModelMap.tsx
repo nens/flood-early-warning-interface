@@ -37,10 +37,12 @@ function FloodModelMap() {
   const [currentPeriod, setCurrentPeriod] = useState<string>("T0");
   const [extraRasterTitles, setExtraRasterTitles] = useState<string[]>([]);
 
-  const selectedExtraRasters = extraRasterTitles.map(title => allExtraRasters[title] || null);
-  const selectedExtraRastersResponses = useRasterMetadata(selectedExtraRasters.filter(
-    extraRaster => extraRaster && extraRaster.uuid
-  ).map(extraRaster => extraRaster.uuid));
+  const selectedExtraRasters = extraRasterTitles.map((title) => allExtraRasters[title] || null);
+  const selectedExtraRastersResponses = useRasterMetadata(
+    selectedExtraRasters
+      .filter((extraRaster) => extraRaster && extraRaster.uuid)
+      .map((extraRaster) => extraRaster.uuid)
+  );
 
   if (!rect.width || !rect.height) return null; // Too early
 
@@ -100,7 +102,7 @@ function FloodModelMap() {
   if (selectedExtraRastersResponses.success && selectedExtraRastersResponses.data.length > 0) {
     const extraRastersMetadata = selectedExtraRastersResponses.data;
 
-    extraRasterLayers = extraRastersMetadata.map(extraRasterMetadata => (
+    extraRasterLayers = extraRastersMetadata.map((extraRasterMetadata) => (
       <WMSTileLayer
         key={extraRasterMetadata.wms_info.layer}
         url={extraRasterMetadata.wms_info.endpoint}
@@ -138,18 +140,20 @@ function FloodModelMap() {
             setValues={setExtraRasterTitles}
           />
         ) : null}
-        {selectedExtraRasters.filter(extraRaster => extraRaster && extraRaster.uuid).map(extraRaster => (
-          <div
-            style={{
-              backgroundColor: allExtraRasters[extraRaster.title].color,
-              color: getCorrectTextColor(allExtraRasters[extraRaster.title].color),
-              padding: "0.5rem",
-            }}
-            key={extraRaster.title}
-          >
-            {extraRasters.title}: {extraRaster.title}
-          </div>
-        ))}
+        {selectedExtraRasters
+          .filter((extraRaster) => extraRaster && extraRaster.uuid)
+          .map((extraRaster) => (
+            <div
+              style={{
+                backgroundColor: allExtraRasters[extraRaster.title].color,
+                color: getCorrectTextColor(allExtraRasters[extraRaster.title].color),
+                padding: "0.5rem",
+              }}
+              key={extraRaster.title}
+            >
+              {extraRasters.title}: {extraRaster.title}
+            </div>
+          ))}
       </div>
       {legend}
       <MapContainer

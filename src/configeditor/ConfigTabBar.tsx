@@ -17,7 +17,12 @@ function ConfigTabBar({ tabs, current, path }: ConfigTabBarProps) {
     <Box w="200px">
       <VStack align="left">
         {tabs.map(({ url, title }) => (
-          <Box key={url} bg={url === current ? "lime" : undefined} padding="1">
+          <Box
+            key={url}
+            bg={url === current ? "var(--secondary-color)" : undefined}
+            color={url === current ? "var(--white-color)" : undefined}
+            padding="1"
+          >
             <Link key={url} to={`${path}${url}`}>
               {title}
             </Link>

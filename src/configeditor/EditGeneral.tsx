@@ -11,7 +11,11 @@ import {
 import { useConfigEdit } from "./hooks";
 
 function EditGeneral() {
-  const { status, values, setValues, errors, submit } = useConfigEdit(["dashboardTitle", "infoText", "infoImage"]);
+  const { status, values, setValues, errors, submit } = useConfigEdit([
+    "dashboardTitle",
+    "infoText",
+    "infoImage",
+  ]);
 
   return (
     <VStack align="left">
@@ -34,7 +38,9 @@ function EditGeneral() {
           onChange={(event) => setValues({ ...values, infoText: event.target.value })}
           rows={6}
         />
-        <FormLabel htmlFor="infoImage">URL for logos of contributing organisations in the information dialog</FormLabel>
+        <FormLabel htmlFor="infoImage">
+          URL for logos of contributing organisations in the information dialog
+        </FormLabel>
         <Input
           id="infoImage"
           variant="outline"

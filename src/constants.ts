@@ -1,5 +1,7 @@
 import { Config } from "./types/config";
 
+/* Note that for the edit pages to work, the default tabs must always
+   include all available types of tab. */
 export const DEFAULT_TABS = [
   {
     url: "alarms",
@@ -26,7 +28,6 @@ export const DEFAULT_TABS = [
     title: "Issued Warnings",
   },
 ];
-
 
 export const DEFAULT_CONFIG: Config = {
   version: 1,
