@@ -5,17 +5,20 @@ import Modal from "./Modal";
 
 interface InfoModalProps {
   closeFunction: () => void;
+  title: string;
+  markdownText: string;
+  imageUrl: string;
 }
 
 function InfoModal(props: InfoModalProps) {
-  const { closeFunction } = props;
+  const { closeFunction, title, markdownText, imageUrl } = props;
   const { config } = useContext(ConfigContext);
 
   if (!config) return null;
 
   return (
-    <Modal close={closeFunction} title="About this dashboard">
-      {config.infoImage ? (
+    <Modal close={closeFunction} title={title}>
+      {imageUrl ? (
         <img
           alt="Logos of contributing organizations"
           style={{
@@ -23,10 +26,10 @@ function InfoModal(props: InfoModalProps) {
             margin: "auto",
             width: "90%",
           }}
-          src={config.infoImage}
+          src={imageUrl}
         />
       ) : null}
-      <ReactMarkdown children={config.infoText} />
+      <ReactMarkdown children={markdownText} />
     </Modal>
   );
 }

@@ -38,9 +38,9 @@ function timeDiffToString(timestamp: number, now: number) {
   return (hours > 0 ? hours + "h" : "") + minutes + "min";
 }
 
-function PdfIcon({ url }: {url: string}) {
+function PdfIcon({ url }: { url: string }) {
   const clickDiv = (event: MouseEvent<HTMLButtonElement>) => {
-    window.open(url, '_blank');
+    window.open(url, "_blank");
     event.stopPropagation();
   };
 
@@ -48,7 +48,9 @@ function PdfIcon({ url }: {url: string}) {
     <button
       style={{ background: "var(--white-color)", color: "black", padding: 0, margin: 0 }}
       onClick={clickDiv}
-    ><AiOutlineFilePdf size={32}/></button>
+    >
+      <AiOutlineFilePdf size={32} />
+    </button>
   );
 }
 
@@ -95,8 +97,8 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
       <div className={styles.tdCenter}>{dashOrNum(maxForecast.value)}</div>
       <div className={styles.tdCenter}>
         {maxForecast.time !== null
-        ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
-        : "-"}
+          ? timeDiffToString(maxForecast.time.getTime(), now.getTime())
+          : "-"}
       </div>
       <div style={warningStyle} className={`${styles.tdCenter} ${warningClassTd}`}>
         {warningLevel || "-"}
@@ -107,10 +109,18 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
       <div className={styles.tdCenter}>{dashOrNum(thresholds.red)}</div>
       <div className={styles.tdCenter}>
         {/* Yes, hardcoded! */}
-        {dam.properties.name.includes("Lake Parramatta Dam") ? <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Lake Parramatta Dam April 2022.pdf" /> : null}
-        {dam.properties.name.includes("McCoy Park") ? <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - McCoy Park Basin April 2022.pdf" /> : null}
-        {dam.properties.name.includes("Muirfield") ? <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Muirfield Basin Oct 2021.pdf" /> : null}
-        {dam.properties.name.includes("Northmead") ? <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Northmead Basin Oct 2021.pdf" /> : null}
+        {dam.properties.name.includes("Lake Parramatta Dam") ? (
+          <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Lake Parramatta Dam April 2022.pdf" />
+        ) : null}
+        {dam.properties.name.includes("McCoy Park") ? (
+          <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - McCoy Park Basin April 2022.pdf" />
+        ) : null}
+        {dam.properties.name.includes("Muirfield") ? (
+          <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Muirfield Basin Oct 2021.pdf" />
+        ) : null}
+        {dam.properties.name.includes("Northmead") ? (
+          <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Northmead Basin Oct 2021.pdf" />
+        ) : null}
       </div>
       <div className={styles.tdCenter}>
         {hasMessages || isAdmin ? (

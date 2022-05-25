@@ -95,4 +95,5 @@ export interface Config {
   tabs: { url: string; title: string }[];
   infoText: string;
   infoImage: string;
+  emergencyPlansText: string;
 }
