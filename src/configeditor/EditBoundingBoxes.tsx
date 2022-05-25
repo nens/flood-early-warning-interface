@@ -139,6 +139,11 @@ function EditBoundingBoxes() {
 
   return (
     <VStack align="left">
+      <em>
+        <Text>Notes:</Text>
+        <Text>- Values of bounding boxes should be in WGS84 coordinate system.</Text>
+        <Text>- Default field is required and will be used in place of any missing field.</Text>
+      </em>
       <FormControl >
         <FormControl isRequired isInvalid={!!boundingBoxErrors.default}>
           <FormLabel htmlFor="default"><b>Default</b></FormLabel>
