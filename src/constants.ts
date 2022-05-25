@@ -76,7 +76,7 @@ export const DEFAULT_CONFIG: Config = {
   },
   trainingDashboards: [],
   /* Set explicitly to show it is not missing. Undefined means not fixed to a specific moment. */ nowDateTimeUTC:
-                      undefined,
+    undefined,
   fakeData: {},
   rssUrl: "",
   extraRasters: {

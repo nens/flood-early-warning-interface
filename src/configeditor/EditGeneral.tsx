@@ -11,7 +11,7 @@ import {
 import { useConfigEdit } from "./hooks";
 
 function EditGeneral() {
-  const { status, values, setValues, errors, submit } = useConfigEdit(["dashboardTitle", "infoText"]);
+  const { status, values, setValues, errors, submit } = useConfigEdit(["dashboardTitle", "infoText", "infoImage"]);
 
   return (
     <VStack align="left">
@@ -25,13 +25,22 @@ function EditGeneral() {
           onChange={(event) => setValues({ ...values, dashboardTitle: event.target.value })}
         />
         <FormErrorMessage>{errors.dashboardTitle}</FormErrorMessage>
-        <FormLabel htmlFor="infoText">Information</FormLabel>
+        <FormLabel htmlFor="infoText">Information dialog text (use Markdown)</FormLabel>
         <Textarea
           id="infoText"
           variant="outline"
-          placeholder="Text for information modal"
+          placeholder="Text for information dialog in Markdown"
           value={values.infoText || ""}
           onChange={(event) => setValues({ ...values, infoText: event.target.value })}
+          rows={6}
+        />
+        <FormLabel htmlFor="infoImage">URL for logos of contributing organisations in the information dialog</FormLabel>
+        <Input
+          id="infoImage"
+          variant="outline"
+          placeholder="URL for logo image"
+          value={values.infoImage || ""}
+          onChange={(event) => setValues({ ...values, infoImage: event.target.value })}
         />
         <Button onClick={submit} marginTop="4" disabled={status !== "ok"}>
           Submit
