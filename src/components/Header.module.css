@@ -43,7 +43,7 @@ ul.LastModelRun li {
   margin: 0;
 }
 
-.LogoutButton {
+.TextButton {
   font-size: 100%;
   margin: 1rem 0 1rem 0.5rem;
   background: var(--white-color);
@@ -53,7 +53,6 @@ ul.LastModelRun li {
   height: 1rem;
   line-height: 1rem;
   clear: none;
-  width: 5rem;
   cursor: pointer;
 }
 

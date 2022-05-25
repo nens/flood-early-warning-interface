@@ -100,7 +100,7 @@ export function useAssetTypes(assetTypes: string[]) {
 
 export function useRasterAlarms() {
   const fakeData = useFakeData();
-  const hasFakeRasterAlarms = 'rasterAlarms' in fakeData;
+  const hasFakeRasterAlarms = "rasterAlarms" in fakeData;
   const organisation = useOrganisation();
 
   const response = useQuery<Paginated<RasterAlarm>, FetchError>(
@@ -305,7 +305,7 @@ interface MaxLevel {
 
 export function useMaxForecastAtPoint(rasterUuid: string, alarm: RasterAlarm | null): MaxLevel {
   const fakeData = useFakeData();
-  const hasFakeMaxForecast = 'fakeMaxForecast' in fakeData;
+  const hasFakeMaxForecast = "fakeMaxForecast" in fakeData;
   const { now, end } = useContext(TimeContext);
 
   let value = null;
@@ -331,7 +331,11 @@ export function useMaxForecastAtPoint(rasterUuid: string, alarm: RasterAlarm | n
 
   // Figure out where 'max' is in the operation model events array
   // Only look from timestamp 'now'
-  const forecastLevels = useRasterEvents(intersection && !hasFakeMaxForecast ? [intersection] : [], now, end);
+  const forecastLevels = useRasterEvents(
+    intersection && !hasFakeMaxForecast ? [intersection] : [],
+    now,
+    end
+  );
 
   if (!hasFakeMaxForecast && forecastLevels.success && forecastLevels.data.length > 0) {
     const events = forecastLevels.data[0];
@@ -370,7 +374,7 @@ export function useTimeseriesMetadata(uuids: string[]) {
         })
   );
 
-  if (uuids.some(uuid => (`timeseries-metadata-${uuid}` in fakeData))) {
+  if (uuids.some((uuid) => `timeseries-metadata-${uuid}` in fakeData)) {
     return {
       success: true,
       data:
@@ -413,7 +417,7 @@ export function useTimeseriesEvents(
   params = {}
 ): EventsResponse {
   const fakeData = useFakeData();
-  const hasFakeTimeseriesEvents = uuids.some(uuid => (`timeseries-events-${uuid}` in fakeData));
+  const hasFakeTimeseriesEvents = uuids.some((uuid) => `timeseries-events-${uuid}` in fakeData);
 
   let results: any = useQueries(
     hasFakeTimeseriesEvents
