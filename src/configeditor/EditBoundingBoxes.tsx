@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Input,
   Button,
@@ -136,6 +136,21 @@ function EditBoundingBoxes() {
   const damBounds = boundingBoxes.dams ? new BoundingBox(...boundingBoxes.dams) : null;
 
   const boundingBoxErrors = "boundingBoxes" in errors ? errors.boundingBoxes as ErrorObject : {};
+
+  // useEffect when component first mounted to update default bounding boxes
+  // to the value in DEFAULT_CONFIG if it does not have a value yet.
+  useEffect(() => {
+    if (!boundingBoxes.default) {
+      setValues({
+        ...values,
+        boundingBoxes: {
+          ...values.boundingBoxes,
+          default: DEFAULT_CONFIG.boundingBoxes.default
+        }
+      });
+    };
+  // eslint-disable-next-line
+  }, [])
 
   return (
     <VStack align="left">
