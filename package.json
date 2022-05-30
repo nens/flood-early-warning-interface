@@ -1,6 +1,6 @@
 {
   "name": "flood-early-warning-interface",
-  "version": "1.9.1",
+  "version": "1.11.0",
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^1.8.8",

@@ -1,5 +1,6 @@
 import { useContext, MouseEvent } from "react";
 import { BiMessageRoundedDetail } from "react-icons/bi";
+import { AiOutlineFilePdf } from "react-icons/ai";
 
 import { dashOrNum } from "../util/functions";
 import { useClickToTimeseries } from "../util/config";
@@ -35,6 +36,22 @@ function timeDiffToString(timestamp: number, now: number) {
   const hours = (diffMinutes - minutes) / 60;
 
   return (hours > 0 ? hours + "h" : "") + minutes + "min";
+}
+
+function PdfIcon({ url }: { url: string }) {
+  const clickDiv = (event: MouseEvent<HTMLButtonElement>) => {
+    window.open(url, "_blank");
+    event.stopPropagation();
+  };
+
+  return (
+    <button
+      style={{ background: "var(--white-color)", color: "black", padding: 0, margin: 0 }}
+      onClick={clickDiv}
+    >
+      <AiOutlineFilePdf size={32} />
+    </button>
+  );
 }
 
 function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
@@ -91,6 +108,21 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
       <div className={styles.tdCenter}>{dashOrNum(thresholds.amber)}</div>
       <div className={styles.tdCenter}>{dashOrNum(thresholds.red)}</div>
       <div className={styles.tdCenter}>
+        {/* Yes, hardcoded! */}
+        {dam.properties.name.includes("Lake Parramatta Dam") ? (
+          <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Lake Parramatta Dam April 2022.pdf" />
+        ) : null}
+        {dam.properties.name.includes("McCoy Park") ? (
+          <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - McCoy Park Basin April 2022.pdf" />
+        ) : null}
+        {dam.properties.name.includes("Muirfield") ? (
+          <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Muirfield Basin Oct 2021.pdf" />
+        ) : null}
+        {dam.properties.name.includes("Northmead") ? (
+          <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Northmead Basin Oct 2021.pdf" />
+        ) : null}
+      </div>
+      <div className={styles.tdCenter}>
         {hasMessages || isAdmin ? (
           <button
             style={{ background: "var(--white-color)", padding: 0, margin: 0 }}
@@ -132,6 +164,9 @@ function DamAlarmsTable({ dams, damAlarms }: TableProps) {
         </div>
         <div className={styles.thtd}>
           <TriggerHeader level="Red" />
+        </div>
+        <div className={styles.thtd}>
+          <AiOutlineFilePdf />
         </div>
         <div className={styles.thtd}>
           <BiMessageRoundedDetail />

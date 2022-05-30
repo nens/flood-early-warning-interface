@@ -27,7 +27,6 @@ export const DEFAULT_TABS = [
   },
 ];
 
-
 export const DEFAULT_CONFIG: Config = {
   version: 1,
   dashboardTitle: "FloodSmart dashboard",
@@ -86,6 +85,7 @@ export const DEFAULT_CONFIG: Config = {
   tabs: DEFAULT_TABS,
   infoImage: "",
   infoText: "",
+  emergencyPlansText: "",
 };
 
 export function getMapBackgrounds(access_token: string) {
