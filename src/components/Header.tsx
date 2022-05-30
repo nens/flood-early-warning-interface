@@ -47,10 +47,7 @@ function Header({ title }: HeaderProps) {
       </div>
       <div className={styles.RightBlock}>
         {config.emergencyPlansText ? (
-          <div
-            className={styles.TextButton}
-            onClick={() => setShowingModal(EMERGENCY_PLANS_MODAL)}
-          >
+          <div className={styles.TextButton} onClick={() => setShowingModal(EMERGENCY_PLANS_MODAL)}>
             <MdOutlineSimCardAlert />
             Emergency Plans
           </div>

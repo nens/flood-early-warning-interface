@@ -10,7 +10,7 @@ interface PartialConfig {
 }
 
 export interface ErrorObject {
-  [key: string]: string
+  [key: string]: string;
 }
 
 interface ValidationErrors {
@@ -122,26 +122,26 @@ function useUpdateConfig() {
 }
 
 function validateBoundingBoxes(type: string, bounds: BoundingBox | null, errors: ValidationErrors) {
-  if (typeof errors.boundingBoxes === 'string') return;
+  if (typeof errors.boundingBoxes === "string") return;
 
   if (type === "default" && bounds === null) {
     errors.boundingBoxes = {
       ...errors.boundingBoxes,
-      [type]: 'Default field is required.'
-    }
+      [type]: "Default field is required.",
+    };
   }
 
   if (bounds) {
     if (parseFloat(bounds.northmost) < parseFloat(bounds.southmost)) {
       errors.boundingBoxes = {
         ...errors.boundingBoxes,
-        [type]: 'North coordinate must be greater than South coordinate.'
-      }
+        [type]: "North coordinate must be greater than South coordinate.",
+      };
     } else if (parseFloat(bounds.eastmost) < parseFloat(bounds.westmost)) {
       errors.boundingBoxes = {
         ...errors.boundingBoxes,
-        [type]: 'East coordinate must be greater than West coordinate.'
-      }
+        [type]: "East coordinate must be greater than West coordinate.",
+      };
     } else if (
       parseFloat(bounds.westmost) < -180 ||
       parseFloat(bounds.westmost) > 180 ||
@@ -150,8 +150,8 @@ function validateBoundingBoxes(type: string, bounds: BoundingBox | null, errors:
     ) {
       errors.boundingBoxes = {
         ...errors.boundingBoxes,
-        [type]: 'West and East coordinates must be between -180° and 180°.'
-      }
+        [type]: "West and East coordinates must be between -180° and 180°.",
+      };
     } else if (
       parseFloat(bounds.southmost) < -90 ||
       parseFloat(bounds.southmost) > 90 ||
@@ -160,13 +160,13 @@ function validateBoundingBoxes(type: string, bounds: BoundingBox | null, errors:
     ) {
       errors.boundingBoxes = {
         ...errors.boundingBoxes,
-        [type]: 'South and North coordinates must be between -90° and 90°.'
-      }
-    } else if (!bounds.toConfigBbox().every(e => e !== "")) {
+        [type]: "South and North coordinates must be between -90° and 90°.",
+      };
+    } else if (!bounds.toConfigBbox().every((e) => e !== "")) {
       errors.boundingBoxes = {
         ...errors.boundingBoxes,
-        [type]: 'Please fill in all fields.'
-      }
+        [type]: "Please fill in all fields.",
+      };
     }
   }
 }
@@ -180,11 +180,15 @@ function validate(config: PartialConfig) {
 
   if (config.boundingBoxes) {
     // bounding boxes of different types of map
-    const boundingBoxes = config.boundingBoxes as Config['boundingBoxes'];
+    const boundingBoxes = config.boundingBoxes as Config["boundingBoxes"];
     const defaultBounds = boundingBoxes.default ? new BoundingBox(...boundingBoxes.default) : null;
-    const warningAreaBounds = boundingBoxes.warningAreas ? new BoundingBox(...boundingBoxes.warningAreas) : null;
+    const warningAreaBounds = boundingBoxes.warningAreas
+      ? new BoundingBox(...boundingBoxes.warningAreas)
+      : null;
     const rainMapBounds = boundingBoxes.rainMap ? new BoundingBox(...boundingBoxes.rainMap) : null;
-    const floodModelMapBounds = boundingBoxes.floodModelMap ? new BoundingBox(...boundingBoxes.floodModelMap) : null;
+    const floodModelMapBounds = boundingBoxes.floodModelMap
+      ? new BoundingBox(...boundingBoxes.floodModelMap)
+      : null;
     const damBounds = boundingBoxes.dams ? new BoundingBox(...boundingBoxes.dams) : null;
 
     validateBoundingBoxes("default", defaultBounds, errors);
