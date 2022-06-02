@@ -3,6 +3,7 @@ import { BiArrowBack } from "react-icons/bi";
 
 import EnsureAdminAccess from "../components/EnsureAdminAccess";
 import ConfigTabs from "./ConfigTabs";
+import EditBoundingBoxes from "./EditBoundingBoxes";
 import EditGeneral from "./EditGeneral";
 import EditTabs from "./EditTabs";
 
@@ -32,6 +33,7 @@ function ConfigEditor() {
             <ConfigTabs
               definition={[
                 { url: "general", title: "General", component: <EditGeneral /> },
+                { url: "boundingBoxes", title: "Bounding boxes", component: <EditBoundingBoxes /> },
                 { url: "tabs", title: "Tabs", component: <EditTabs /> },
               ]}
               placeholder={<p>Configure the application.</p>}

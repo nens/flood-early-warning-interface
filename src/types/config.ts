@@ -100,4 +100,5 @@ export interface Config {
   tabs: Tab[];
   infoText: string;
   infoImage: string;
+  emergencyPlansText: string;
 }

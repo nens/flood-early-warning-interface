@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { MdOutlineSimCardAlert } from "react-icons/md";
 import LastUpdate from "./LastUpdate";
 import LogoutButton from "./LogoutButton";
 import InfoModal from "./InfoModal";
@@ -10,9 +11,10 @@ import { ConfigContext } from "../providers/ConfigProvider";
 import packageJson from "../../package.json";
 
 const INFO_MODAL = "info_modal";
+const EMERGENCY_PLANS_MODAL = "emergency_plans_modal";
 const SETTINGS_MODAL = "settings_modal";
 
-type ModalType = typeof INFO_MODAL | typeof SETTINGS_MODAL | null;
+type ModalType = typeof INFO_MODAL | typeof SETTINGS_MODAL | typeof EMERGENCY_PLANS_MODAL | null;
 
 interface HeaderProps {
   title: string;
@@ -44,13 +46,34 @@ function Header({ title }: HeaderProps) {
         ) : null}
       </div>
       <div className={styles.RightBlock}>
+        {config.emergencyPlansText ? (
+          <div className={styles.TextButton} onClick={() => setShowingModal(EMERGENCY_PLANS_MODAL)}>
+            <MdOutlineSimCardAlert />
+            Emergency Plans
+          </div>
+        ) : null}
         <LastUpdate />
         {dashboards.length > 0 ? (
           <SettingsButton onClick={() => setShowingModal(SETTINGS_MODAL)} />
         ) : null}
         <LogoutButton />
       </div>
-      {showingModal === INFO_MODAL && <InfoModal closeFunction={() => setShowingModal(null)} />}
+      {showingModal === INFO_MODAL && (
+        <InfoModal
+          closeFunction={() => setShowingModal(null)}
+          title="About this dashboard"
+          markdownText={config.infoText}
+          imageUrl={config.infoImage}
+        />
+      )}
+      {showingModal === EMERGENCY_PLANS_MODAL && (
+        <InfoModal
+          closeFunction={() => setShowingModal(null)}
+          title="Emergency Plans"
+          markdownText={config.emergencyPlansText}
+          imageUrl=""
+        />
+      )}
       {showingModal === SETTINGS_MODAL && (
         <SettingsModal
           closeFunction={() => setShowingModal(null)}

@@ -15,6 +15,7 @@ function EditGeneral() {
     "dashboardTitle",
     "infoText",
     "infoImage",
+    "emergencyPlansText",
   ]);
 
   return (
@@ -47,6 +48,17 @@ function EditGeneral() {
           placeholder="URL for logo image"
           value={values.infoImage || ""}
           onChange={(event) => setValues({ ...values, infoImage: event.target.value })}
+        />
+        <FormLabel htmlFor="emergencyPlansText">
+          Text to show under an "Emergency Plans" button in the header.
+        </FormLabel>
+        <Textarea
+          id="emergencyPlansText"
+          variant="outline"
+          placeholder="Emergency plans modal text"
+          value={values.emergencyPlansText || ""}
+          onChange={(event) => setValues({ ...values, emergencyPlansText: event.target.value })}
+          rows={6}
         />
         <Button onClick={submit} marginTop="4" disabled={status !== "ok"}>
           Submit
