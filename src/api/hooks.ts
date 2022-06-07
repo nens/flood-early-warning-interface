@@ -359,22 +359,23 @@ export function useMaxForecastAtPoint(rasterUuid: string, alarm: RasterAlarm | n
 
 export function useTimeseriesMetadata(uuids: string[]) {
   const fakeData = useFakeData();
+  const hasFakeData = uuids.some((uuid) => `timeseries-metadata-${uuid}` in fakeData);
 
   // useQueries is a way to run a variable number of fetches with
   // a single hook (otherwise it would be against the hooks rule),
   // while also storing the result of each fetch under its own key.
   const results = useQueries(
-    fakeData
-      ? []
-      : uuids.map((uuid) => {
-          return {
-            queryKey: ["timeseries", uuid],
-            queryFn: () => fetchWithError(`/api/v3/timeseries/${uuid}/`),
-          };
+    hasFakeData
+    ? []
+    : uuids.map((uuid) => {
+      return {
+        queryKey: ["timeseries", uuid],
+        queryFn: () => fetchWithError(`/api/v3/timeseries/${uuid}/`),
+      };
         })
   );
 
-  if (uuids.some((uuid) => `timeseries-metadata-${uuid}` in fakeData)) {
+  if (hasFakeData) {
     return {
       success: true,
       data:
