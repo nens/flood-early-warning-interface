@@ -205,7 +205,7 @@ function EditTabs() {
                     disabled={allDisabled}
                   />
                 </GridItem>
-              </>
+              </Fragment>
             );
           })}
         </Grid>
