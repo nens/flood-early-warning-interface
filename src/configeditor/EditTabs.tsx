@@ -105,7 +105,7 @@ function EditTabs() {
           const changeDisabled = hasType && hasSlug && hasTabConfig;
 
           return (
-            <Fragment key={tabkey}>
+            <Fragment key={tabKey}>
               <GridItem>
                 <IconButton
                   variant="outline"
