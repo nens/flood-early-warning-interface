@@ -11,7 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { Config } from "../types/config";
 import { BoundingBox } from "../util/bounds";
-import { ErrorObject, useConfigEdit } from "./hooks";
+import { useConfigEdit } from "./hooks";
+import { ErrorObject } from "./validation";
 import { DEFAULT_CONFIG } from "../constants";
 
 interface LatLngInputProps {

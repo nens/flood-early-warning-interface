@@ -53,6 +53,12 @@ export interface ExtraRasters {
   maps: Record<string, { title: string; uuid: string; color: string }>;
 }
 
+export interface Tab {
+  url: string;
+  slug?: string /* For multiple copies of the same tab */;
+  title: string;
+}
+
 export type BoundingBox = [string, string, string, string];
 
 export interface Config {
@@ -92,7 +98,7 @@ export interface Config {
   fakeData: FakeData;
   rssUrl: string;
   extraRasters: ExtraRasters;
-  tabs: { url: string; title: string }[];
+  tabs: Tab[];
   infoText: string;
   infoImage: string;
   emergencyPlansText: string;
