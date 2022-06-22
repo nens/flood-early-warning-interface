@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import {
   Button,
   Heading,
@@ -105,8 +105,8 @@ function EditTabs() {
           const changeDisabled = hasType && hasSlug && hasTabConfig;
 
           return (
-            <>
-              <GridItem key={`${tabKey}-up`}>
+            <Fragment key={tabkey}>
+              <GridItem>
                 <IconButton
                   variant="outline"
                   aria-label="Move up"
@@ -115,7 +115,7 @@ function EditTabs() {
                   onClick={() => moveUp(idx)}
                 />
               </GridItem>
-              <GridItem key={`${tabKey}-down`}>
+              <GridItem>
                 <IconButton
                   variant="outline"
                   aria-label="Move down"
@@ -124,7 +124,7 @@ function EditTabs() {
                   onClick={() => moveDown(idx)}
                 />
               </GridItem>
-              <GridItem key={`${tabKey}-tab`}>
+              <GridItem>
                 <Select
                   value={tab.url}
                   placeholder="-- Select tab type --"
@@ -138,21 +138,21 @@ function EditTabs() {
                   ))}
                 </Select>
               </GridItem>
-              <GridItem key={`${tabKey}-slug`}>
+              <GridItem>
                 <Input
                   value={tab.slug || ""}
                   disabled={allDisabled || changeDisabled || !needsSlug}
                   onChange={(e) => changeSlug(idx, e.target.value)}
                 />
               </GridItem>
-              <GridItem key={`${tabKey}-title`}>
+              <GridItem>
                 <Input
                   value={tab.title}
                   onChange={(e) => changeTitle(idx, e.target.value)}
                   disabled={allDisabled}
                 />
               </GridItem>
-              <GridItem key={`${tabKey}-trashcan`}>
+              <GridItem>
                 <IconButton
                   variant="outline"
                   aria-label="delete"
@@ -161,10 +161,10 @@ function EditTabs() {
                   disabled={allDisabled}
                 />
               </GridItem>
-              <GridItem key={`${tabKey}-errors`}>
+              <GridItem>
                 <Text color="red.600">{errors[tabKey] || null}</Text>
               </GridItem>
-            </>
+            </Fragment>
           );
         })}
       </Grid>
@@ -186,17 +186,17 @@ function EditTabs() {
           {deletedTabs.map((tab, idx) => {
             const tabKey = getTabKey(tab);
             return (
-              <>
-                <GridItem key={`${tabKey}-tab`}>
+              <Fragment key={tabKey}>
+                <GridItem>
                   <Input defaultValue={tab.url} disabled />
                 </GridItem>
-                <GridItem key={`${tabKey}-slug`}>
+                <GridItem>
                   <Input defaultValue={tab.slug} disabled />
                 </GridItem>
-                <GridItem key={`${tabKey}-title`}>
+                <GridItem>
                   <Input defaultValue={tab.title} disabled />
                 </GridItem>
-                <GridItem key={`${tabKey}-undo`}>
+                <GridItem>
                   <IconButton
                     variant="outline"
                     aria-label="undo"
