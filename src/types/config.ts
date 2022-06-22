@@ -61,6 +61,17 @@ export interface Tab {
 
 export type BoundingBox = [string, string, string, string];
 
+export interface TableTabGeneralConfig {
+  tableTitleLeft?: string;
+  tableTitleRight?: string;
+  mapTitleLeft?: string;
+  mapTitleRight?: string;
+}
+
+export interface TableTabConfig {
+  general?: TableTabGeneralConfig;
+}
+
 export interface Config {
   version?: 1;
   boundingBoxes: {
@@ -99,6 +110,9 @@ export interface Config {
   rssUrl: string;
   extraRasters: ExtraRasters;
   tabs: Tab[];
+  tableTabConfigs: {
+    [tableKey: string]: TableTabConfig;
+  },
   infoText: string;
   infoImage: string;
   emergencyPlansText: string;

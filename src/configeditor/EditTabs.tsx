@@ -21,7 +21,7 @@ import { getTabKey } from "../providers/ConfigProvider";
 import { useConfigEdit } from "./hooks";
 
 function EditTabs() {
-  const { status, values, setValues, errors, submit } = useConfigEdit(["tabs", "tabConfigs"]);
+  const { status, values, setValues, errors, submit } = useConfigEdit(["tabs", "tableTabConfigs"]);
 
   const tabs = values.tabs as Tab[];
   const setTabs = (newTabs: Tab[]) => setValues({ ...values, tabs: newTabs });
@@ -100,7 +100,7 @@ function EditTabs() {
           const hasType = !!tab.url;
           const needsSlug = hasType && tab.url === "table";
           const hasSlug = !needsSlug || !!tab.slug;
-          const hasTabConfig = !!(values.tabConfigs && values.tabConfigs[tabKey]);
+          const hasTabConfig = !!(values.tableTabConfigs && values.tableTabConfigs[tabKey]);
 
           const changeDisabled = hasType && hasSlug && hasTabConfig;
 

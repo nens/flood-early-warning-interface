@@ -98,6 +98,7 @@ export const DEFAULT_CONFIG: Config = {
   infoImage: "",
   infoText: "",
   emergencyPlansText: "",
+  tableTabConfigs: {},
 };
 
 export function getMapBackgrounds(access_token: string) {
