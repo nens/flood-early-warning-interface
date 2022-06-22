@@ -366,12 +366,12 @@ export function useTimeseriesMetadata(uuids: string[]) {
   // while also storing the result of each fetch under its own key.
   const results = useQueries(
     hasFakeData
-    ? []
-    : uuids.map((uuid) => {
-      return {
-        queryKey: ["timeseries", uuid],
-        queryFn: () => fetchWithError(`/api/v3/timeseries/${uuid}/`),
-      };
+      ? []
+      : uuids.map((uuid) => {
+          return {
+            queryKey: ["timeseries", uuid],
+            queryFn: () => fetchWithError(`/api/v3/timeseries/${uuid}/`),
+          };
         })
   );
 

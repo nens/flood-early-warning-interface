@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Config } from "../types/config";
+import { Config, Tab } from "../types/config";
 import { useConfig, Wrapped } from "../api/hooks";
 import { Organisation } from "../types/api";
 import { WithChildren } from "../types/util";
@@ -80,5 +80,7 @@ export function useFakeData() {
     return {};
   }
 }
+
+export const getTabKey = (tab: Tab) => (tab.slug ? `${tab.url}-${tab.slug}` : tab.url);
 
 export default ConfigProvider;

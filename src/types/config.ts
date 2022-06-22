@@ -55,8 +55,9 @@ export interface ExtraRasters {
 
 export interface Tab {
   url: string;
+  slug?: string /* For multiple copies of the same tab */;
   title: string;
-};
+}
 
 export type BoundingBox = [string, string, string, string];
 

@@ -29,6 +29,16 @@ export const DEFAULT_TABS = [
   },
 ];
 
+export const ALL_TAB_URLS = [
+  "alarms" /* Deprecated */,
+  "damalarms" /* Deprecated */,
+  "table" /* New */,
+  "waterlevel",
+  "rainfall",
+  "stations",
+  "issuedwarnings",
+];
+
 export const DEFAULT_CONFIG: Config = {
   version: 1,
   dashboardTitle: "FloodSmart dashboard",
