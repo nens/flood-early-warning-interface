@@ -188,13 +188,13 @@ function EditTabs() {
             return (
               <>
                 <GridItem key={`${tabKey}-tab`}>
-                  <Input value={tab.url} disabled />
+                  <Input defaultValue={tab.url} disabled />
                 </GridItem>
                 <GridItem key={`${tabKey}-slug`}>
-                  <Input value={tab.slug} disabled />
+                  <Input defaultValue={tab.slug} disabled />
                 </GridItem>
                 <GridItem key={`${tabKey}-title`}>
-                  <Input value={tab.title} />
+                  <Input defaultValue={tab.title} disabled />
                 </GridItem>
                 <GridItem key={`${tabKey}-undo`}>
                   <IconButton
