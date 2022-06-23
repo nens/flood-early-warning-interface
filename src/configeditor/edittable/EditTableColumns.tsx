@@ -26,15 +26,69 @@ function EditTableColumns({ tabKey }: EditTableColumnsProps) {
   return (
     <>
       <VStack align="left">
-        <Checkbox id="columnCurrentLevelTs" variant="outline" checked={currentGeneralConfig.columnCurrentLevelTs}>Current level based on timeseries</Checkbox>
-        <Checkbox id="columnCurrentLevelR" variant="outline" checked={currentGeneralConfig.columnCurrentLevelR}>Current level based on operational model</Checkbox>
-        <Checkbox id="columnMaxForecast" variant="outline" checked={currentGeneralConfig.columnMaxForecast}>Max forecast based on operational model</Checkbox>
-        <Checkbox id="columnTimeToMax" variant="outline" checked={currentGeneralConfig.columnTimeToMax}>Time to max based on operational model</Checkbox>
-        <Checkbox id="columnRssWarning" variant="outline" checked={currentGeneralConfig.columnRssWarning}>"Partner Warning" based on RSS feed</Checkbox>
-        <Checkbox id="columnTriggerLevel" variant="outline" checked={currentGeneralConfig.columnTriggerLevel}>Currently triggered threshold level, if any</Checkbox>
-        <Checkbox id="columnAlarmThresholds" variant="outline" checked={currentGeneralConfig.columnAlarmThresholds}>One column per threshold showing the configured levels</Checkbox>
-        <Checkbox id="columnDownloadLinks" variant="outline" checked={currentGeneralConfig.columnDownloadLinks}>A column with icons for downloadable files</Checkbox>
-        <Checkbox id="columnAdminMessages" variant="outline" checked={currentGeneralConfig.columnAdminMessages}>Allow admins to post messages belonging to rows and others to view them</Checkbox>
+        <Checkbox
+          id="columnCurrentLevelTs"
+          variant="outline"
+          checked={currentGeneralConfig.columnCurrentLevelTs}
+        >
+          Current level based on timeseries
+        </Checkbox>
+        <Checkbox
+          id="columnCurrentLevelR"
+          variant="outline"
+          checked={currentGeneralConfig.columnCurrentLevelR}
+        >
+          Current level based on operational model
+        </Checkbox>
+        <Checkbox
+          id="columnMaxForecast"
+          variant="outline"
+          checked={currentGeneralConfig.columnMaxForecast}
+        >
+          Max forecast based on operational model
+        </Checkbox>
+        <Checkbox
+          id="columnTimeToMax"
+          variant="outline"
+          checked={currentGeneralConfig.columnTimeToMax}
+        >
+          Time to max based on operational model
+        </Checkbox>
+        <Checkbox
+          id="columnRssWarning"
+          variant="outline"
+          checked={currentGeneralConfig.columnRssWarning}
+        >
+          "Partner Warning" based on RSS feed
+        </Checkbox>
+        <Checkbox
+          id="columnTriggerLevel"
+          variant="outline"
+          checked={currentGeneralConfig.columnTriggerLevel}
+        >
+          Currently triggered threshold level, if any
+        </Checkbox>
+        <Checkbox
+          id="columnAlarmThresholds"
+          variant="outline"
+          checked={currentGeneralConfig.columnAlarmThresholds}
+        >
+          One column per threshold showing the configured levels
+        </Checkbox>
+        <Checkbox
+          id="columnDownloadLinks"
+          variant="outline"
+          checked={currentGeneralConfig.columnDownloadLinks}
+        >
+          A column with icons for downloadable files
+        </Checkbox>
+        <Checkbox
+          id="columnAdminMessages"
+          variant="outline"
+          checked={currentGeneralConfig.columnAdminMessages}
+        >
+          Allow admins to post messages belonging to rows and others to view them
+        </Checkbox>
       </VStack>
       <Button onClick={submit} disabled={allDisabled} mt={4}>
         Submit

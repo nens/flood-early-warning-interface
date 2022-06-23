@@ -97,70 +97,76 @@ function EditTableRow({ tabKey }: EditTableRowProps) {
             placeholder="GeoJSON"
             value={currentRow.mapGeometry || ""}
             onChange={(event) => setValueInRow("mapGeometry", event.target.value)}
-        />
-        <IconButton size="s" icon={<BsJustify />} aria-label="autoindent" onClick={autoIndent} />
+          />
+          <IconButton size="s" icon={<BsJustify />} aria-label="autoindent" onClick={autoIndent} />
 
-        <FormLabel htmlFor="latitude" mt={4}>
-          Latitude (used for map points, raster queries)
-        </FormLabel>
-        <NumberInput
-          value={"" + (currentRow.lat || 0)}
-          precision={4}
-          onChange={(e) => setValueInRow("lat", parseFloat(e))}
-          isDisabled={allDisabled}
-        >
-          <NumberInputField />
-        </NumberInput>
-        <FormLabel htmlFor="longitude" mt={4}>
-          Longitude (used for map points, raster queries)
-        </FormLabel>
-        <NumberInput
-          value={"" + (currentRow.lng || 0)}
-          precision={4}
-          onChange={(e) => setValueInRow("lng", parseFloat(e))}
-          isDisabled={allDisabled}
-        >
-          <NumberInputField />
-        </NumberInput>
+          <FormLabel htmlFor="latitude" mt={4}>
+            Latitude (used for map points, raster queries)
+          </FormLabel>
+          <NumberInput
+            value={"" + (currentRow.lat || 0)}
+            precision={4}
+            onChange={(e) => setValueInRow("lat", parseFloat(e))}
+            isDisabled={allDisabled}
+          >
+            <NumberInputField />
+          </NumberInput>
+          <FormLabel htmlFor="longitude" mt={4}>
+            Longitude (used for map points, raster queries)
+          </FormLabel>
+          <NumberInput
+            value={"" + (currentRow.lng || 0)}
+            precision={4}
+            onChange={(e) => setValueInRow("lng", parseFloat(e))}
+            isDisabled={allDisabled}
+          >
+            <NumberInputField />
+          </NumberInput>
 
-        <FormLabel htmlFor="alarmUuid" mt={4}>UUID of the alarm (either timeseries or raster)</FormLabel>
-        <Input
-          id="alarmUuid"
-          variant="outline"
-          placeholder="Alarm UUID"
-          value={currentRow.alarmUuid || ""}
-          onChange={(event) => setValueInRow("alarmUuid", event.target.value || null)}
-        />
+          <FormLabel htmlFor="alarmUuid" mt={4}>
+            UUID of the alarm (either timeseries or raster)
+          </FormLabel>
+          <Input
+            id="alarmUuid"
+            variant="outline"
+            placeholder="Alarm UUID"
+            value={currentRow.alarmUuid || ""}
+            onChange={(event) => setValueInRow("alarmUuid", event.target.value || null)}
+          />
 
-        <FormLabel htmlFor="timeseries" mt={4}>UUID of timeseries, for current level</FormLabel>
-        <Input
-          id="timeseries"
-          variant="outline"
-          placeholder="Timeseries UUID"
-          value={currentRow.timeseries || ""}
-          onChange={(event) => setValueInRow("timeseries", event.target.value || null)}
-        />
+          <FormLabel htmlFor="timeseries" mt={4}>
+            UUID of timeseries, for current level
+          </FormLabel>
+          <Input
+            id="timeseries"
+            variant="outline"
+            placeholder="Timeseries UUID"
+            value={currentRow.timeseries || ""}
+            onChange={(event) => setValueInRow("timeseries", event.target.value || null)}
+          />
 
-        <FormLabel htmlFor="clickUrl" mt={4}>Relative URL to follow on click, e.g. stations/21/</FormLabel>
-        <Input
-          id="clickUrl"
-          variant="outline"
-          placeholder="Click URL"
-          value={currentRow.clickUrl || ""}
-          onChange={(event) => setValueInRow("clickUrl", event.target.value || null)}
-        />
+          <FormLabel htmlFor="clickUrl" mt={4}>
+            Relative URL to follow on click, e.g. stations/21/
+          </FormLabel>
+          <Input
+            id="clickUrl"
+            variant="outline"
+            placeholder="Click URL"
+            value={currentRow.clickUrl || ""}
+            onChange={(event) => setValueInRow("clickUrl", event.target.value || null)}
+          />
 
-        <If test={currentRowUuid in tableErrors}>
-          <Text m="4" color="red.600">
-            {tableErrors[currentRowUuid]}
-          </Text>
-        </If>
-        <Button onClick={submit} disabled={allDisabled} m={4}>
-          Submit
-        </Button>
-        <If test={allDisabled}>
-          <Spinner />
-        </If>
+          <If test={currentRowUuid in tableErrors}>
+            <Text m="4" color="red.600">
+              {tableErrors[currentRowUuid]}
+            </Text>
+          </If>
+          <Button onClick={submit} disabled={allDisabled} m={4}>
+            Submit
+          </Button>
+          <If test={allDisabled}>
+            <Spinner />
+          </If>
         </>
       ) : null}
     </>
