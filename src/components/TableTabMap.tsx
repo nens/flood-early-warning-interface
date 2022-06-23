@@ -14,7 +14,7 @@ import { HoverAndSelectContext } from "../providers/HoverAndSelectProvider";
 import { LatLng, LatLngExpression } from "leaflet";
 
 function geojsonToLatLngs(ps: Position[]): LatLngExpression[] {
-  return ps.map(point => [point[1], point[0]] as LatLngExpression);
+  return ps.map((point) => [point[1], point[0]] as LatLngExpression);
 }
 
 interface TableTabMapProps {
@@ -38,14 +38,14 @@ function TableTabMap({ tabConfig }: TableTabMapProps) {
       style={{ height: rect.height, width: rect.width }}
     >
       <TileLayer url={mapBackgrounds[1].url} />
-      {tabConfig.rows.map(row => (
+      {tabConfig.rows.map((row) => (
         <FeaturesForRow key={row.uuid} row={row} />
       ))}
     </MapContainer>
   );
 }
 
-function FeaturesForRow({row}: {row: TableTabRowConfig}) {
+function FeaturesForRow({ row }: { row: TableTabRowConfig }) {
   // Draw map things for this feature.
   let features: Feature[] = [];
   try {

@@ -22,10 +22,18 @@ function TableTab({ tab }: TableTabProps) {
   return (
     <HoverAndSelectProvider>
       <div className={styles.TileList}>
-        <Tile title={tabConfig.general.tableTitleLeft || ""} size="large" rightText={tabConfig.general.tableTitleRight}>
+        <Tile
+          title={tabConfig.general.tableTitleLeft || ""}
+          size="large"
+          rightText={tabConfig.general.tableTitleRight}
+        >
           <TableTabTable tabConfig={tabConfig} />
         </Tile>
-        <Tile title={tabConfig.general.mapTitleLeft || ""} rightText={tabConfig.general.tableTitleRight} size="large">
+        <Tile
+          title={tabConfig.general.mapTitleLeft || ""}
+          rightText={tabConfig.general.tableTitleRight}
+          size="large"
+        >
           <TableTabMap tabConfig={tabConfig} />
         </Tile>
       </div>

@@ -24,7 +24,7 @@ function EditTabs() {
   const { status, values, updateValues, errors, submit } = useConfigEdit();
 
   const tabs = values.tabs as Tab[];
-  const setTabs = (newTabs: Tab[]) => updateValues({tabs: newTabs });
+  const setTabs = (newTabs: Tab[]) => updateValues({ tabs: newTabs });
 
   const [deletedTabs, setDeletedTabs] = useState<Tab[]>([]);
 

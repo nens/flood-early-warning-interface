@@ -145,7 +145,6 @@ function validateTab(tab: Tab, errors: ValidationErrors) {
   }
 }
 
-
 function validateTableTabConfigs(tableTabConfigs: TableTabConfigs, errors: ValidationErrors) {
   // We run this for all table tab configs, but the assumption is that there is only
   // one (the one being edited) that can have errors. Little bit hacky but otherwise
@@ -160,7 +159,7 @@ function validateTableTabConfigs(tableTabConfigs: TableTabConfigs, errors: Valid
 }
 
 function validateTableRows(rows: TableTabRowConfig[], errors: ErrorObject) {
-  rows.forEach(row => {
+  rows.forEach((row) => {
     let error = "";
     if (!row.name) error += "Each row must have a name.";
 
@@ -176,7 +175,7 @@ function validateTableRows(rows: TableTabRowConfig[], errors: ErrorObject) {
     if (error) errors[row.uuid] = error;
   });
 
-  if (duplicates(rows.map(row => row.name))) {
+  if (duplicates(rows.map((row) => row.name))) {
     errors.all = "Row names must be unique.";
   }
 }

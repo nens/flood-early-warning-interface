@@ -13,14 +13,12 @@ interface TableRowProps {
   row: TableTabRowConfig;
 }
 
-function TableRow({tabConfig, row}: TableRowProps) {
+function TableRow({ tabConfig, row }: TableRowProps) {
   const highlight = false;
 
   return (
-    <div
-      className={`${styles.tr} ${highlight ? styles.tr_highlight : ""}`}
-    >
-    <div className={styles.tdLeft}>{row.name}</div>
+    <div className={`${styles.tr} ${highlight ? styles.tr_highlight : ""}`}>
+      <div className={styles.tdLeft}>{row.name}</div>
     </div>
   );
 }
@@ -31,12 +29,8 @@ function TableTabTable({ tabConfig }: TableTabTableProps) {
       <div className={styles.tr}>
         <div className={styles.thtd}>{tabConfig.general.nameColumnHeader}</div>
       </div>
-      {tabConfig.rows.map(row => (
-        <TableRow
-          key={row.uuid}
-          tabConfig={tabConfig}
-          row={row}
-        />
+      {tabConfig.rows.map((row) => (
+        <TableRow key={row.uuid} tabConfig={tabConfig} row={row} />
       ))}
     </div>
   );

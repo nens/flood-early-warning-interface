@@ -9,15 +9,17 @@ interface EditTableGeneralProps {
   tabKey: string;
 }
 
-function EditTableGeneral({tabKey}: EditTableGeneralProps) {
+function EditTableGeneral({ tabKey }: EditTableGeneralProps) {
   const { status, values, setValues, submit } = useConfigEdit();
 
   const currentConfig = getTableConfig(values.tableTabConfigs, tabKey);
   const currentGeneralConfig = currentConfig.general;
 
-  const setGeneral = (general: TableTabGeneralConfig) => setValues(changeTableConfig(values, tabKey, {...currentConfig, general}));
+  const setGeneral = (general: TableTabGeneralConfig) =>
+    setValues(changeTableConfig(values, tabKey, { ...currentConfig, general }));
 
-  const setValueInGeneral = (key: keyof TableTabGeneralConfig, value: string) => setGeneral({...currentGeneralConfig, [key]: value});
+  const setValueInGeneral = (key: keyof TableTabGeneralConfig, value: string) =>
+    setGeneral({ ...currentGeneralConfig, [key]: value });
 
   const allDisabled = status === "fetching";
 

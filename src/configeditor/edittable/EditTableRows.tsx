@@ -1,13 +1,5 @@
 import { Fragment } from "react";
-import {
-  Button,
-  Grid,
-  GridItem,
-  IconButton,
-  Input,
-  Spinner,
-  Text,
-} from "@chakra-ui/react";
+import { Button, Grid, GridItem, IconButton, Input, Spinner, Text } from "@chakra-ui/react";
 import { BsFillArrowUpSquareFill, BsFillArrowDownSquareFill, BsTrashFill } from "react-icons/bs";
 
 import { TableTabRowConfig } from "../../types/config";
@@ -23,7 +15,7 @@ interface EditTableRowsProps {
 function getEmptyRow(): TableTabRowConfig {
   return {
     // @ts-ignore
-    uuid: (crypto.randomUUID() as unknown as string),
+    uuid: crypto.randomUUID() as unknown as string,
     name: "New item",
     mapGeometry: null,
     alarmUuid: null,
@@ -32,17 +24,18 @@ function getEmptyRow(): TableTabRowConfig {
     lat: null,
     lng: null,
   };
-};
+}
 
-function EditTableRows({tabKey}: EditTableRowsProps) {
+function EditTableRows({ tabKey }: EditTableRowsProps) {
   const { status, values, errors, setValues, submit } = useConfigEdit();
 
-  const tableErrors: ErrorObject = errors?.tableTabConfigs as ErrorObject ?? {};
+  const tableErrors: ErrorObject = (errors?.tableTabConfigs as ErrorObject) ?? {};
 
   const currentConfig = getTableConfig(values.tableTabConfigs, tabKey);
   const currentRows = currentConfig.rows ?? [];
 
-  const setRows = (rows: TableTabRowConfig[]) => setValues(changeTableConfig(values, tabKey, {...currentConfig, rows}));
+  const setRows = (rows: TableTabRowConfig[]) =>
+    setValues(changeTableConfig(values, tabKey, { ...currentConfig, rows }));
 
   const allDisabled = status === "fetching";
 
@@ -84,7 +77,9 @@ function EditTableRows({tabKey}: EditTableRowsProps) {
                 value={row.name}
                 disabled={allDisabled}
                 placeholder="Row name"
-                onChange={(e) => setRows(change(currentRows, idx, {...row, name: e.target.value}))}
+                onChange={(e) =>
+                  setRows(change(currentRows, idx, { ...row, name: e.target.value }))
+                }
               />
             </GridItem>
             <GridItem>

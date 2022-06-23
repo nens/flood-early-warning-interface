@@ -19,10 +19,14 @@ function ConfigEditor() {
   ];
 
   // Add a config tab for each configurable tab.
-  config.tabs.forEach(tab => {
+  config.tabs.forEach((tab) => {
     if (tab.url === "table" && tab.slug) {
       const tabKey = getTabKey(tab);
-      tabs.push({url: tabKey, title: `Table ${tab.slug}`, component: <EditTableTab tabKey={tabKey} />});
+      tabs.push({
+        url: tabKey,
+        title: `Table ${tab.slug}`,
+        component: <EditTableTab tabKey={tabKey} />,
+      });
     }
   });
 
@@ -48,10 +52,7 @@ function ConfigEditor() {
             FloodSmart configuration pages
           </Heading>
           <Box w="80%" marginLeft="10%" marginTop="1rem" color="var(--primary-color)">
-            <ConfigTabs
-              definition={tabs}
-              placeholder={<p>Configure the application.</p>}
-            />
+            <ConfigTabs definition={tabs} placeholder={<p>Configure the application.</p>} />
           </Box>
         </Box>
       </ChakraProvider>
