@@ -5,6 +5,7 @@ export const EMPTY_TABLE_TAB_CONFIG: TableTabConfig = {
     nameColumnHeader: "Name",
   },
   rows: [],
+  thresholds: [],
 }
 
 

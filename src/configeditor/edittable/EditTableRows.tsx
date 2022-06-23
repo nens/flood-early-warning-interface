@@ -26,7 +26,6 @@ function getEmptyRow(): TableTabRowConfig {
     uuid: (crypto.randomUUID() as unknown as string),
     name: "New item",
     mapGeometry: null,
-    alarmType: null,
     alarmUuid: null,
     timeseries: null,
     clickUrl: null,

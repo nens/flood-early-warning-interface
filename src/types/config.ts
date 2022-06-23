@@ -67,6 +67,7 @@ export interface TableTabGeneralConfig {
   tableTitleRight?: string;
   mapTitleLeft?: string;
   mapTitleRight?: string;
+  alarmType?: "raster" | "timeseries" | "none";
 }
 
 export interface TableTabRowConfig {
@@ -75,8 +76,7 @@ export interface TableTabRowConfig {
   uuid: string; /* Invisible to user, but very handy to have */
   name: string; /* Must be unique in table */
   mapGeometry: string | null; /* Valid GeoJSON Feature or FeatureCollection */
-  alarmType: "raster" | "timeseries" | null;
-  alarmUuid: string | null; /* Only set if type is also set */
+  alarmUuid: string | null; /* Can be timeseries or raster */
   timeseries: string | null; /* UUID; for current level column */
   clickUrl: string | null; /* For click to a chart, e.g. stations/21 */
   /* These must either be both set or neither. Used to show a clickable point on the
@@ -85,9 +85,17 @@ export interface TableTabRowConfig {
   lng: number | null; /* Longitude */
 }
 
+export interface TableTabAlarmThreshold {
+  uuid: string;
+  warning_level: string;
+  value: number;
+  color: string;
+}
+
 export interface TableTabConfig {
   general: TableTabGeneralConfig;
   rows: TableTabRowConfig[];
+  thresholds: TableTabAlarmThreshold[];
 }
 
 export interface TableTabConfigs {
