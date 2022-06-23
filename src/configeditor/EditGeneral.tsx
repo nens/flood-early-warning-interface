@@ -11,12 +11,7 @@ import {
 import { useConfigEdit } from "./hooks";
 
 function EditGeneral() {
-  const { status, values, setValues, errors, submit } = useConfigEdit([
-    "dashboardTitle",
-    "infoText",
-    "infoImage",
-    "emergencyPlansText",
-  ]);
+  const { status, values, updateValues, errors, submit } = useConfigEdit();
 
   return (
     <VStack align="left">
@@ -27,7 +22,7 @@ function EditGeneral() {
           variant="outline"
           placeholder="Dashboard title"
           value={values.dashboardTitle || ""}
-          onChange={(event) => setValues({ ...values, dashboardTitle: event.target.value })}
+          onChange={(event) => updateValues({dashboardTitle: event.target.value })}
         />
         <FormErrorMessage>{errors.dashboardTitle}</FormErrorMessage>
         <FormLabel htmlFor="infoText">Information dialog text (use Markdown)</FormLabel>
@@ -36,7 +31,7 @@ function EditGeneral() {
           variant="outline"
           placeholder="Text for information dialog in Markdown"
           value={values.infoText || ""}
-          onChange={(event) => setValues({ ...values, infoText: event.target.value })}
+          onChange={(event) => updateValues({infoText: event.target.value })}
           rows={6}
         />
         <FormLabel htmlFor="infoImage">
@@ -47,7 +42,7 @@ function EditGeneral() {
           variant="outline"
           placeholder="URL for logo image"
           value={values.infoImage || ""}
-          onChange={(event) => setValues({ ...values, infoImage: event.target.value })}
+          onChange={(event) => updateValues({infoImage: event.target.value })}
         />
         <FormLabel htmlFor="emergencyPlansText">
           Text to show under an "Emergency Plans" button in the header.
@@ -57,7 +52,7 @@ function EditGeneral() {
           variant="outline"
           placeholder="Emergency plans modal text"
           value={values.emergencyPlansText || ""}
-          onChange={(event) => setValues({ ...values, emergencyPlansText: event.target.value })}
+          onChange={(event) => updateValues({emergencyPlansText: event.target.value })}
           rows={6}
         />
         <Button onClick={submit} marginTop="4" disabled={status !== "ok"}>

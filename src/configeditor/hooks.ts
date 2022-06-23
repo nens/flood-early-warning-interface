@@ -1,17 +1,13 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useQueryClient } from "react-query";
 import { useConfigContext, ConfigContext, useOrganisation } from "../providers/ConfigProvider";
 import { useOrganisationUser } from "../api/hooks";
 import { Config } from "../types/config";
 import { validate, ValidationErrors } from "./validation";
 
-export interface PartialConfig {
-  [key: string]: any;
-}
-
 // Hook used by the EditXxx components to store edited values,
 // show a spinner, validate fields, and so on.
-export function useConfigEdit(fields: string[]) {
+export function useConfigEdit() {
   const currentConfig = useConfigContext();
   const updateConfig = useUpdateConfig(); // See below
 
@@ -19,27 +15,28 @@ export function useConfigEdit(fields: string[]) {
 
   const [status, setStatus] = useState("ok");
 
-  const defaultValues: PartialConfig = Object.fromEntries(
-    Object.entries(currentConfig)
-      .filter(([key, value]) => fields.indexOf(key) !== -1)
-      // JSON stringify/parse so that we are sure the real value isn't mutated
-      .map(([key, value]) => [key, JSON.parse(JSON.stringify(value))])
-  );
+  // We keep a copy of the config, so that edits don't immediately update the
+  // live one.
+  const [values, setValues] = useState<Config>(JSON.parse(JSON.stringify(currentConfig)));
+  // But if the config changes, we must update our state too or run into race conditions.
+  useEffect(() => setValues(JSON.parse(JSON.stringify(currentConfig))), [currentConfig]);
 
-  const [values, setValues] = useState<PartialConfig>(defaultValues);
   const [errors, setErrors] = useState<null | ValidationErrors>(null);
 
   const submit = () => {
-    const candidateConfig: PartialConfig = { ...currentConfig, ...values };
+    const candidateConfig: Config = { ...currentConfig, ...values };
     const validationErrors = validate(candidateConfig);
     setErrors(validationErrors);
 
     const validationOk = checkValidation(candidateConfig, validationErrors);
     if (validationOk) {
       setStatus("fetching");
-      updateConfig(candidateConfig as Config).then((error) => {
+      updateConfig(candidateConfig).then((error) => {
         if (error === null) {
           setStatus("ok");
+          // Set errors back to null so they don't immediately show up again
+          // once the user continues editing.
+          setErrors(null);
         } else {
           setStatus("error");
         }
@@ -47,20 +44,23 @@ export function useConfigEdit(fields: string[]) {
     }
   };
 
-  const setValuesAndValidate = (values: PartialConfig) => {
+  const setValuesAndValidate = (values: Config) => {
     setValues(values);
     // Once the form has been validated once (say by pressing submit), we then
     // re-validate on every change.
     if (errors !== null) {
-      const candidateConfig: PartialConfig = { ...currentConfig, ...values };
+      const candidateConfig: Config = { ...currentConfig, ...values };
       setErrors(validate(candidateConfig));
     }
   };
+
+  const updateValues = (partialValues: Partial<Config>) => setValuesAndValidate({...values, partialValues} as Config);
 
   return {
     status,
     values,
     setValues: setValuesAndValidate,
+    updateValues,
     errors: errors || {},
     submit,
   };
@@ -113,6 +113,6 @@ function useUpdateConfig() {
   };
 }
 
-function checkValidation(config: PartialConfig, errors: ValidationErrors): config is Config {
+function checkValidation(config: Config, errors: ValidationErrors): config is Config {
   return errors !== null && errors !== undefined && Object.keys(errors).length === 0;
 }

@@ -1,8 +1,7 @@
 import { BoundingBox } from "../util/bounds";
-import { Config } from "../types/config";
+import { Config, TableTabConfigs, TableTabRowConfig } from "../types/config";
 import { getTabKey } from "../providers/ConfigProvider";
 import { Tab } from "../types/config";
-import { PartialConfig } from "./hooks";
 
 export interface ErrorObject {
   [key: string]: string;
@@ -16,7 +15,7 @@ function duplicates(strings: string[]) {
   return new Set(strings).size !== strings.length;
 }
 
-export function validate(config: PartialConfig) {
+export function validate(config: Config) {
   const errors: ValidationErrors = {};
 
   if (config.dashboardTitle === "") {
@@ -47,6 +46,7 @@ export function validate(config: PartialConfig) {
     validateTabs(config.tabs, errors);
   }
 
+  validateTableTabConfigs(config.tableTabConfigs, errors);
   return errors;
 }
 
@@ -104,6 +104,7 @@ function validateTabs(tabs: Tab[], errors: ValidationErrors) {
   // Per-tab errors
   tabs.forEach((tab) => validateTab(tab, errors));
 
+  // Errors for all tabs
   let error = "";
 
   if (tabs.length === 0) {
@@ -141,5 +142,41 @@ function validateTab(tab: Tab, errors: ValidationErrors) {
 
   if (error) {
     errors[tabKey] = error;
+  }
+}
+
+
+function validateTableTabConfigs(tableTabConfigs: TableTabConfigs, errors: ValidationErrors) {
+  // We run this for all table tab configs, but the assumption is that there is only
+  // one (the one being edited) that can have errors. Little bit hacky but otherwise
+  // the error object becomes more complicated still...
+  const tableTabErrors: ErrorObject = {};
+  Object.values(tableTabConfigs).forEach((tableTabConfig) => {
+    validateTableRows(tableTabConfig.rows ?? [], tableTabErrors);
+  });
+  if (Object.keys(tableTabErrors).length) {
+    errors.tableTabConfigs = tableTabErrors;
+  }
+}
+
+function validateTableRows(rows: TableTabRowConfig[], errors: ErrorObject) {
+  rows.forEach(row => {
+    let error = "";
+    if (!row.name) error += "Each row must have a name.";
+
+    if (row.mapGeometry) {
+      let content = null;
+      try {
+        content = JSON.parse(row.mapGeometry);
+      } catch (e) {
+        error += "Invalid JSON.";
+      }
+    }
+
+    if (error) errors[row.uuid] = error;
+  });
+
+  if (duplicates(rows.map(row => row.name))) {
+    errors.all = "Row names must be unique.";
   }
 }

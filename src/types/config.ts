@@ -62,14 +62,36 @@ export interface Tab {
 export type BoundingBox = [string, string, string, string];
 
 export interface TableTabGeneralConfig {
+  nameColumnHeader: string;
   tableTitleLeft?: string;
   tableTitleRight?: string;
   mapTitleLeft?: string;
   mapTitleRight?: string;
 }
 
+export interface TableTabRowConfig {
+  /* Note there is no further structure here, much easier for config pages */
+  /* And use "null" instead of being optional so they can be unset using spreads */
+  uuid: string; /* Invisible to user, but very handy to have */
+  name: string; /* Must be unique in table */
+  mapGeometry: string | null; /* Valid GeoJSON Feature or FeatureCollection */
+  alarmType: "raster" | "timeseries" | null;
+  alarmUuid: string | null; /* Only set if type is also set */
+  timeseries: string | null; /* UUID; for current level column */
+  clickUrl: string | null; /* For click to a chart, e.g. stations/21 */
+  /* These must either be both set or neither. Used to show a clickable point on the
+     map, and for looking up the water level in the flood model map. */
+  lat: number | null; /* Latitude */
+  lng: number | null; /* Longitude */
+}
+
 export interface TableTabConfig {
-  general?: TableTabGeneralConfig;
+  general: TableTabGeneralConfig;
+  rows: TableTabRowConfig[];
+}
+
+export interface TableTabConfigs {
+  [tableKey: string]: TableTabConfig;
 }
 
 export interface Config {
@@ -110,9 +132,7 @@ export interface Config {
   rssUrl: string;
   extraRasters: ExtraRasters;
   tabs: Tab[];
-  tableTabConfigs: {
-    [tableKey: string]: TableTabConfig;
-  },
+  tableTabConfigs: TableTabConfigs,
   infoText: string;
   infoImage: string;
   emergencyPlansText: string;

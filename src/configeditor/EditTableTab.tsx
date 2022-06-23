@@ -10,6 +10,8 @@ import {
 } from '@chakra-ui/react'
 
 import EditTableGeneral from "./edittable/EditTableGeneral";
+import EditTableRows from "./edittable/EditTableRows";
+import EditTableRow from "./edittable/EditTableRow";
 
 interface EditTableTabProps {
   tabKey: string;
@@ -35,12 +37,15 @@ function AccordionPart({title, children}: {title: string, children: ReactNode}) 
 
 function EditTableTab({ tabKey }: EditTableTabProps) {
   return (
-    <Accordion defaultIndex={[0]} allowToggle>
+    <Accordion defaultIndex={[0]} allowToggle >
       <AccordionPart title="General settings">
         <EditTableGeneral tabKey={tabKey} />
       </AccordionPart>
       <AccordionPart title="Rows">
-        Rows
+        <EditTableRows tabKey={tabKey} />
+      </AccordionPart>
+      <AccordionPart title="Row Properties">
+        <EditTableRow tabKey={tabKey} />
       </AccordionPart>
     </Accordion>
   );

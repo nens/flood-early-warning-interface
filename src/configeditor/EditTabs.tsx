@@ -21,10 +21,10 @@ import { getTabKey } from "../providers/ConfigProvider";
 import { useConfigEdit } from "./hooks";
 
 function EditTabs() {
-  const { status, values, setValues, errors, submit } = useConfigEdit(["tabs", "tableTabConfigs"]);
+  const { status, values, updateValues, errors, submit } = useConfigEdit();
 
   const tabs = values.tabs as Tab[];
-  const setTabs = (newTabs: Tab[]) => setValues({ ...values, tabs: newTabs });
+  const setTabs = (newTabs: Tab[]) => updateValues({tabs: newTabs });
 
   const [deletedTabs, setDeletedTabs] = useState<Tab[]>([]);
 

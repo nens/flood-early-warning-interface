@@ -1,20 +1,21 @@
 import { Button, FormLabel, Input, Spinner } from "@chakra-ui/react";
 
-import { TableTabGeneralConfig } from "../../types/config";
+import { TableTabConfig, TableTabGeneralConfig } from "../../types/config";
 import { useConfigEdit } from "../hooks";
 import If from "../../components/If";
+import { getTableConfig, changeTableConfig } from "./tabUtils";
 
 interface EditTableGeneralProps {
   tabKey: string;
 }
 
 function EditTableGeneral({tabKey}: EditTableGeneralProps) {
-  const { status, values, setValues, submit } = useConfigEdit(["tableTabConfigs"]);
+  const { status, values, setValues, submit } = useConfigEdit();
 
-  const currentConfig = values.tableTabConfigs[tabKey] || {};
-  const currentGeneralConfig: Partial<TableTabGeneralConfig> = currentConfig.general || {};
+  const currentConfig = getTableConfig(values.tableTabConfigs, tabKey);
+  const currentGeneralConfig = currentConfig.general;
 
-  const setGeneral = (general: TableTabGeneralConfig) => setValues({...values, tableTabConfigs: { [tabKey]: {...currentConfig, general} }});
+  const setGeneral = (general: TableTabGeneralConfig) => setValues(changeTableConfig(values, tabKey, {...currentConfig, general}));
 
   const setValueInGeneral = (key: keyof TableTabGeneralConfig, value: string) => setGeneral({...currentGeneralConfig, [key]: value});
 
@@ -22,6 +23,14 @@ function EditTableGeneral({tabKey}: EditTableGeneralProps) {
 
   return (
     <>
+      <FormLabel htmlFor="tableTitleLeft">Header of name column (only mandatory column)</FormLabel>
+      <Input
+        id="nameColumnHeader"
+        variant="outline"
+        placeholder="Name column header"
+        value={currentGeneralConfig.nameColumnHeader || ""}
+        onChange={(event) => setValueInGeneral("nameColumnHeader", event.target.value)}
+      />
       <FormLabel htmlFor="tableTitleLeft">Table title left</FormLabel>
       <Input
         id="tableTitleLeft"
