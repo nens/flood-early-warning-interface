@@ -10,6 +10,8 @@ import {
 } from "@chakra-ui/react";
 
 import EditTableGeneral from "./edittable/EditTableGeneral";
+import EditTableColumns from "./edittable/EditTableColumns";
+import EditTableAlarms from "./edittable/EditTableAlarms";
 import EditTableRows from "./edittable/EditTableRows";
 import EditTableRow from "./edittable/EditTableRow";
 
@@ -42,6 +44,12 @@ function EditTableTab({ tabKey }: EditTableTabProps) {
     <Accordion defaultIndex={[0]} allowToggle>
       <AccordionPart title="General settings">
         <EditTableGeneral tabKey={tabKey} />
+      </AccordionPart>
+      <AccordionPart title="Columns">
+        <EditTableColumns tabKey={tabKey} />
+      </AccordionPart>
+      <AccordionPart title="Alarm thresholds">
+        <EditTableAlarms tabKey={tabKey} />
       </AccordionPart>
       <AccordionPart title="Rows">
         <EditTableRows tabKey={tabKey} />

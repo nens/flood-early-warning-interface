@@ -99,6 +99,7 @@ export const DEFAULT_CONFIG: Config = {
   infoText: "",
   emergencyPlansText: "",
   tableTabConfigs: {},
+  waterlevelUnit: "mAHD",
 };
 
 export function getMapBackgrounds(access_token: string) {

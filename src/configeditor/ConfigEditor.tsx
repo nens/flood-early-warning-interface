@@ -6,6 +6,7 @@ import { getTabKey, useConfigContext } from "../providers/ConfigProvider";
 import ConfigTabs, { ConfigTabDefinition } from "./ConfigTabs";
 import EditBoundingBoxes from "./EditBoundingBoxes";
 import EditGeneral from "./EditGeneral";
+import EditData from "./EditData";
 import EditTableTab from "./EditTableTab";
 import EditTabs from "./EditTabs";
 
@@ -14,6 +15,7 @@ function ConfigEditor() {
 
   const tabs: ConfigTabDefinition[] = [
     { url: "general", title: "General", component: <EditGeneral /> },
+    { url: "data", title: "Data", component: <EditData /> },
     { url: "boundingBoxes", title: "Bounding boxes", component: <EditBoundingBoxes /> },
     { url: "tabs", title: "Tabs", component: <EditTabs /> },
   ];

@@ -1,6 +1,7 @@
 import {
   Input,
   Button,
+  Heading,
   VStack,
   FormControl,
   FormLabel,
@@ -16,8 +17,14 @@ function EditGeneral() {
   return (
     <VStack align="left">
       <FormControl isInvalid={!!errors.dashboardTitle}>
-        <FormLabel htmlFor="dashboardTitle">Dashboard title</FormLabel>
+        <Heading size="l" m={4}>
+          Texts and logos
+        </Heading>
+        <FormLabel htmlFor="dashboardTitle" m={4}>
+          Dashboard title
+        </FormLabel>
         <Input
+          m={4}
           id="dashboardTitle"
           variant="outline"
           placeholder="Dashboard title"
@@ -25,8 +32,11 @@ function EditGeneral() {
           onChange={(event) => updateValues({ dashboardTitle: event.target.value })}
         />
         <FormErrorMessage>{errors.dashboardTitle}</FormErrorMessage>
-        <FormLabel htmlFor="infoText">Information dialog text (use Markdown)</FormLabel>
+        <FormLabel htmlFor="infoText" m={4}>
+          Information dialog text (use Markdown)
+        </FormLabel>
         <Textarea
+          m={4}
           id="infoText"
           variant="outline"
           placeholder="Text for information dialog in Markdown"
@@ -34,20 +44,22 @@ function EditGeneral() {
           onChange={(event) => updateValues({ infoText: event.target.value })}
           rows={6}
         />
-        <FormLabel htmlFor="infoImage">
+        <FormLabel htmlFor="infoImage" m={4}>
           URL for logos of contributing organisations in the information dialog
         </FormLabel>
         <Input
+          m={4}
           id="infoImage"
           variant="outline"
           placeholder="URL for logo image"
           value={values.infoImage || ""}
           onChange={(event) => updateValues({ infoImage: event.target.value })}
         />
-        <FormLabel htmlFor="emergencyPlansText">
+        <FormLabel htmlFor="emergencyPlansText" m={4}>
           Text to show under an "Emergency Plans" button in the header.
         </FormLabel>
         <Textarea
+          m={4}
           id="emergencyPlansText"
           variant="outline"
           placeholder="Emergency plans modal text"
@@ -55,14 +67,14 @@ function EditGeneral() {
           onChange={(event) => updateValues({ emergencyPlansText: event.target.value })}
           rows={6}
         />
-        <Button onClick={submit} marginTop="4" disabled={status !== "ok"}>
-          Submit
-        </Button>
         {status === "error" ? (
           <Text color="red">
             An error occurred. Maybe someone else also updated the configuration.
           </Text>
         ) : null}
+        <Button onClick={submit} marginTop="4" disabled={status !== "ok"} m={4}>
+          Submit
+        </Button>
       </FormControl>
     </VStack>
   );

@@ -1,4 +1,4 @@
-import { Button, FormLabel, Input, Spinner } from "@chakra-ui/react";
+import { Button, FormLabel, Input, Spinner, Select } from "@chakra-ui/react";
 
 import { TableTabConfig, TableTabGeneralConfig } from "../../types/config";
 import { useConfigEdit } from "../hooks";
@@ -65,6 +65,18 @@ function EditTableGeneral({ tabKey }: EditTableGeneralProps) {
         value={currentGeneralConfig.mapTitleRight || ""}
         onChange={(event) => setValueInGeneral("mapTitleRight", event.target.value)}
       />
+      <FormLabel htmlFor="alarmType">Alarm type</FormLabel>
+      <Select
+        id="alarmType"
+        variant="outline"
+        placeholder="-- Select Alarm Type --"
+        value={currentGeneralConfig.alarmType || "none"}
+        onChange={(event) => setValueInGeneral("alarmType", event.target.value)}
+      >
+        <option value="raster">Raster alarm</option>
+        <option value="timeseries">Timeseries alarm</option>
+        <option value="none">None</option>
+      </Select>
       <Button onClick={submit} disabled={allDisabled} mt={4}>
         Submit
       </Button>

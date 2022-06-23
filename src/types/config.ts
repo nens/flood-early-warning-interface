@@ -68,6 +68,15 @@ export interface TableTabGeneralConfig {
   mapTitleLeft?: string;
   mapTitleRight?: string;
   alarmType?: "raster" | "timeseries" | "none";
+  columnCurrentLevelTs?: boolean /* From timeseries */;
+  columnCurrentLevelR?: boolean /* From operational model */;
+  columnMaxForecast?: boolean /* From operational model */;
+  columnTimeToMax?: boolean /* From operational model */;
+  columnTriggerLevel?: boolean /* From alarm */;
+  columnRssWarning?: boolean /* From RSS */;
+  columnAlarmThresholds?: boolean /* From alarm UUIDs of rows */;
+  columnDownloadLinks?: boolean;
+  columnAdminMessages?: boolean;
 }
 
 export interface TableTabRowConfig {
@@ -85,7 +94,7 @@ export interface TableTabRowConfig {
   lng: number | null /* Longitude */;
 }
 
-export interface TableTabAlarmThreshold {
+export interface TableTabThresholdConfig {
   uuid: string;
   warning_level: string;
   value: number;
@@ -95,7 +104,7 @@ export interface TableTabAlarmThreshold {
 export interface TableTabConfig {
   general: TableTabGeneralConfig;
   rows: TableTabRowConfig[];
-  thresholds: TableTabAlarmThreshold[];
+  thresholds: TableTabThresholdConfig[];
 }
 
 export interface TableTabConfigs {
@@ -144,4 +153,5 @@ export interface Config {
   infoText: string;
   infoImage: string;
   emergencyPlansText: string;
+  waterlevelUnit?: string;
 }
