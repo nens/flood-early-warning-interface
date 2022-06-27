@@ -97,7 +97,6 @@ export interface TableTabRowConfig {
 export interface TableTabThresholdConfig {
   uuid: string;
   warning_level: string;
-  value: number;
   color: string;
 }
 

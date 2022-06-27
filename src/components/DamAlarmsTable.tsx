@@ -65,7 +65,8 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
   const currentLevel = useCurrentLevelTimeseries(dam.properties.timeseries);
   const maxForecast = useMaxForecastAtPoint(
     operationalModelLevel,
-    dam.properties.has_level_forecast && alarm ? alarm : null
+    dam.properties.has_level_forecast && alarm ? alarm.geometry : null,
+    alarm?.uuid
   );
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;

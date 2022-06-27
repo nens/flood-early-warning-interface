@@ -18,7 +18,7 @@ function EditTableColumns({ tabKey }: EditTableColumnsProps) {
   const setColumns = (general: TableTabGeneralConfig) =>
     setValues(changeTableConfig(values, tabKey, { ...currentConfig, general }));
 
-  const setValueInColumns = (key: keyof TableTabGeneralConfig, value: string) =>
+  const setValueInColumns = (key: keyof TableTabGeneralConfig, value: boolean) =>
     setColumns({ ...currentGeneralConfig, [key]: value });
 
   const allDisabled = status === "fetching";
@@ -29,63 +29,72 @@ function EditTableColumns({ tabKey }: EditTableColumnsProps) {
         <Checkbox
           id="columnCurrentLevelTs"
           variant="outline"
-          checked={currentGeneralConfig.columnCurrentLevelTs}
+          isChecked={currentGeneralConfig.columnCurrentLevelTs}
+          onChange={(e) => setValueInColumns("columnCurrentLevelTs", e.target.checked)}
         >
           Current level based on timeseries
         </Checkbox>
         <Checkbox
           id="columnCurrentLevelR"
           variant="outline"
-          checked={currentGeneralConfig.columnCurrentLevelR}
+          isChecked={currentGeneralConfig.columnCurrentLevelR}
+          onChange={(e) => setValueInColumns("columnCurrentLevelR", e.target.checked)}
         >
           Current level based on operational model
         </Checkbox>
         <Checkbox
           id="columnMaxForecast"
           variant="outline"
-          checked={currentGeneralConfig.columnMaxForecast}
+          isChecked={currentGeneralConfig.columnMaxForecast}
+          onChange={(e) => setValueInColumns("columnMaxForecast", e.target.checked)}
         >
           Max forecast based on operational model
         </Checkbox>
         <Checkbox
           id="columnTimeToMax"
           variant="outline"
-          checked={currentGeneralConfig.columnTimeToMax}
+          isChecked={currentGeneralConfig.columnTimeToMax}
+          onChange={(e) => setValueInColumns("columnTimeToMax", e.target.checked)}
         >
           Time to max based on operational model
         </Checkbox>
         <Checkbox
           id="columnRssWarning"
           variant="outline"
-          checked={currentGeneralConfig.columnRssWarning}
+          isChecked={currentGeneralConfig.columnRssWarning}
+          onChange={(e) => setValueInColumns("columnRssWarning", e.target.checked)}
         >
           "Partner Warning" based on RSS feed
         </Checkbox>
         <Checkbox
           id="columnTriggerLevel"
           variant="outline"
-          checked={currentGeneralConfig.columnTriggerLevel}
+          isChecked={currentGeneralConfig.columnTriggerLevel}
+          onChange={(e) => setValueInColumns("columnTriggerLevel", e.target.checked)}
         >
           Currently triggered threshold level, if any
         </Checkbox>
         <Checkbox
           id="columnAlarmThresholds"
           variant="outline"
-          checked={currentGeneralConfig.columnAlarmThresholds}
+          isChecked={currentGeneralConfig.columnAlarmThresholds}
+          onChange={(e) => setValueInColumns("columnAlarmThresholds", e.target.checked)}
         >
           One column per threshold showing the configured levels
         </Checkbox>
         <Checkbox
           id="columnDownloadLinks"
           variant="outline"
-          checked={currentGeneralConfig.columnDownloadLinks}
+          isChecked={currentGeneralConfig.columnDownloadLinks}
+          onChange={(e) => setValueInColumns("columnDownloadLinks", e.target.checked)}
         >
           A column with icons for downloadable files
         </Checkbox>
         <Checkbox
           id="columnAdminMessages"
           variant="outline"
-          checked={currentGeneralConfig.columnAdminMessages}
+          isChecked={currentGeneralConfig.columnAdminMessages}
+          onChange={(e) => setValueInColumns("columnAdminMessages", e.target.checked)}
         >
           Allow admins to post messages belonging to rows and others to view them
         </Checkbox>

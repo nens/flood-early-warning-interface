@@ -60,7 +60,10 @@ export function useRSSFeed() {
       }
       return parsedItems;
     },
-    QUERY_OPTIONS
+    {
+      ...QUERY_OPTIONS,
+      enabled: !!config.rssUrl,
+    }
   );
 
   return rssResponse;
@@ -69,7 +72,7 @@ export function useRSSFeed() {
 export function useRssItemsForArea(area: string) {
   const rssResponse = useRSSFeed();
 
-  if (rssResponse.isSuccess && rssResponse.data) {
+  if (area && rssResponse.isSuccess && rssResponse.data) {
     return rssResponse.data.filter((item) => item.area === area);
   } else {
     return [];

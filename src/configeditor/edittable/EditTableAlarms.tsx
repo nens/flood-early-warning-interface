@@ -32,7 +32,6 @@ function getEmptyThreshold(): TableTabThresholdConfig {
     // @ts-ignore
     uuid: crypto.randomUUID() as unknown as string,
     warning_level: "",
-    value: 0,
     color: "#ff0000",
   };
 }
@@ -75,7 +74,6 @@ function EditTableAlarms({ tabKey }: EditTableAlarmsProps) {
             return {
               ...getEmptyThreshold(),
               warning_level: t.warning_level,
-              value: t.value,
             } as TableTabThresholdConfig;
           })
         );
@@ -110,7 +108,7 @@ function EditTableAlarms({ tabKey }: EditTableAlarmsProps) {
         Add Threshold
       </Button>
       <Grid
-        templateColumns="40px 40px 200px 200px 200px 40px 1fr"
+        templateColumns="40px 40px 200px 200px 40px 1fr"
         templateRows={`repeat(${currentThresholds.length} 1fr)`}
         gap={4}
         m={4}
@@ -146,26 +144,6 @@ function EditTableAlarms({ tabKey }: EditTableAlarmsProps) {
                   )
                 }
               />
-            </GridItem>
-            <GridItem>
-              <NumberInput
-                value={threshold.value}
-                placeholder="Threshold value"
-                precision={2}
-                step={0.2}
-                onChange={(e) =>
-                  setThresholds(
-                    change(currentThresholds, idx, { ...threshold, value: parseFloat(e) })
-                  )
-                }
-                isDisabled={allDisabled}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
             </GridItem>
             <GridItem>
               <Input

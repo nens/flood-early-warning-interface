@@ -27,7 +27,7 @@ function TableTab({ tab }: TableTabProps) {
           size="large"
           rightText={tabConfig.general.tableTitleRight}
         >
-          <TableTabTable tabConfig={tabConfig} />
+          <TableTabTable config={config} tabConfig={tabConfig} />
         </Tile>
         <Tile
           title={tabConfig.general.mapTitleLeft || ""}

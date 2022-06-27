@@ -16,6 +16,8 @@ import {
   Organisation,
   Timeseries,
 } from "../types/api";
+import { Point } from "geojson";
+
 import { Config, MaxForecast } from "../types/config";
 import { RasterIntersection } from "../types/tiles";
 import { combineUrlAndParams } from "../util/http";
@@ -169,6 +171,40 @@ export function useRasterAlarmTriggers() {
   return triggers;
 }
 
+export function useAlarm(
+  uuid: string | null,
+  alarmType?: "raster" | "timeseries" | "none"
+): RasterAlarm | null {
+  // Fetch metadata of either a raster alarm or a timeseries alarm
+  // Caution: Return type is RasterAlarm, because most of the metadata is the same!
+  const enabledRaster = !!(uuid && alarmType === "raster");
+  const enabledTimeseries = !!(uuid && alarmType === "timeseries");
+
+  const rasterAlarmResponse = useQuery(
+    ["rasteralarm", uuid],
+    () => fetchWithError(`/api/v4/rasteralarms/${uuid}/`),
+    { enabled: enabledRaster }
+  ) as QueryObserverResult<RasterAlarm, FetchError>;
+
+  const timeseriesAlarmResponse = useQuery(
+    ["timeseriesalarm", uuid],
+    () => fetchWithError(`/api/v4/timeseriesalarms/${uuid}/`),
+    { enabled: enabledTimeseries }
+  ) as QueryObserverResult<RasterAlarm, FetchError>;
+
+  if (enabledRaster && rasterAlarmResponse.isSuccess && rasterAlarmResponse.data) {
+    return rasterAlarmResponse.data;
+  } else if (
+    enabledTimeseries &&
+    timeseriesAlarmResponse.isSuccess &&
+    timeseriesAlarmResponse.data
+  ) {
+    return timeseriesAlarmResponse.data;
+  } else {
+    return null;
+  }
+}
+
 // We use different client config objects (for the configuration of the whole app, and for
 // messages), they have a number of fields in common.
 export interface Wrapped<T> {
@@ -250,6 +286,8 @@ export function useRasterEvents(
   end: Date,
   filters = {}
 ): EventsResponse {
+  console.log("useRasterEvents intersections", intersections, start, end, filters);
+
   const results = useQueries(
     intersections.map(({ uuid, geometry }: RasterIntersection) => {
       const coordinates = geometry.coordinates;
@@ -303,31 +341,33 @@ interface MaxLevel {
   value: number | null;
 }
 
-export function useMaxForecastAtPoint(rasterUuid: string, alarm: RasterAlarm | null): MaxLevel {
+export function useMaxForecastAtPoint(
+  rasterUuid: string,
+  point: Point | null,
+  cacheKey?: string
+): MaxLevel {
   const fakeData = useFakeData();
-  const hasFakeMaxForecast = "fakeMaxForecast" in fakeData;
+  const hasFakeMaxForecast = false; // "fakeMaxForecast" in fakeData;
   const { now, end } = useContext(TimeContext);
 
   let value = null;
   let time: Date | null = null;
 
-  const uuid: string | null = alarm && alarm.uuid ? alarm.uuid : null;
-
   if (hasFakeMaxForecast) {
     const forecast = fakeData.fakeMaxForecast as MaxForecast;
-    if (uuid && forecast[uuid]) {
-      value = forecast[uuid].value;
-      time = new Date(now.getTime() + forecast[uuid].timeToMax * 1000);
+    if (cacheKey && forecast[cacheKey]) {
+      value = forecast[cacheKey].value;
+      time = new Date(now.getTime() + forecast[cacheKey].timeToMax * 1000);
     }
   }
+  console.log("Point", point);
 
-  const intersection: RasterIntersection | null =
-    alarm && alarm.geometry
-      ? {
-          uuid: rasterUuid,
-          geometry: alarm.geometry,
-        }
-      : null;
+  const intersection: RasterIntersection | null = point
+    ? {
+        uuid: rasterUuid,
+        geometry: point,
+      }
+    : null;
 
   // Figure out where 'max' is in the operation model events array
   // Only look from timestamp 'now'
@@ -394,6 +434,8 @@ export function useTimeseriesMetadata(uuids: string[]) {
 
 export function useCurrentLevelTimeseries(uuid: string) {
   // Fetch metadata of a single timeseries and return current level.
+  // If uuid is falsy (empty string), useTimeseriesMetadata will return an empty array,
+  // and this hook returns null.
   const fakeData = useFakeData();
   const hasFakeTimeseries = `timeseries-metadata-${uuid}` in fakeData;
 
