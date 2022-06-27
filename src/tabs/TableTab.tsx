@@ -2,6 +2,7 @@ import styles from "../components/Tile.module.css";
 import TableTabTable from "../components/TableTabTable";
 import TableTabMap from "../components/TableTabMap";
 import Tile from "../components/Tile";
+import MessagesOverlay from "../components/MessagesOverlay";
 
 import { getTabKey, useConfigContext } from "../providers/ConfigProvider";
 import { Tab, TableTabConfig } from "../types/config";
@@ -35,6 +36,7 @@ function TableTab({ tab }: TableTabProps) {
           size="large"
         >
           <TableTabMap tabConfig={tabConfig} />
+          <MessagesOverlay />
         </Tile>
       </div>
     </HoverAndSelectProvider>

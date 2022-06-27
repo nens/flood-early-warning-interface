@@ -92,6 +92,7 @@ export interface TableTabRowConfig {
      map, and for looking up the water level in the flood model map. */
   lat: number | null /* Latitude */;
   lng: number | null /* Longitude */;
+  downloadUrl: string | null /* Link to downloadable PDF */;
 }
 
 export interface TableTabThresholdConfig {

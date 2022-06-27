@@ -1,8 +1,9 @@
 interface TriggerHeaderProps {
   level: string;
+  configColor?: string;
 }
 
-function TriggerHeader({ level }: TriggerHeaderProps) {
+function TriggerHeader({ level, configColor }: TriggerHeaderProps) {
   const color = `var(--trigger-${level.toLowerCase()})`;
 
   return (
@@ -10,7 +11,7 @@ function TriggerHeader({ level }: TriggerHeaderProps) {
       {level}&nbsp;
       <span
         style={{
-          color,
+          color: configColor ?? color,
           background: level.toLowerCase() === "white" ? "var(--primary-color)" : undefined,
         }}
       >

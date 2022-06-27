@@ -156,6 +156,17 @@ function EditTableRow({ tabKey }: EditTableRowProps) {
             onChange={(event) => setValueInRow("clickUrl", event.target.value || null)}
           />
 
+          <FormLabel htmlFor="downloadUrl" mt={4}>
+            URL to downloadable file (PDF)
+          </FormLabel>
+          <Input
+            id="downloadUrl"
+            variant="outline"
+            placeholder="Download URL"
+            value={currentRow.downloadUrl || ""}
+            onChange={(event) => setValueInRow("clickUrl", event.target.value || null)}
+          />
+
           <If test={currentRowUuid in tableErrors}>
             <Text m="4" color="red.600">
               {tableErrors[currentRowUuid]}

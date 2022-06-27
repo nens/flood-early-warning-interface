@@ -21,6 +21,7 @@ function getEmptyRow(): TableTabRowConfig {
     alarmUuid: null,
     timeseries: null,
     clickUrl: null,
+    downloadUrl: null,
     lat: null,
     lng: null,
   };

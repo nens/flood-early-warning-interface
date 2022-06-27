@@ -286,8 +286,6 @@ export function useRasterEvents(
   end: Date,
   filters = {}
 ): EventsResponse {
-  console.log("useRasterEvents intersections", intersections, start, end, filters);
-
   const results = useQueries(
     intersections.map(({ uuid, geometry }: RasterIntersection) => {
       const coordinates = geometry.coordinates;
@@ -341,15 +339,30 @@ interface MaxLevel {
   value: number | null;
 }
 
+function useRasterEventsAtPoint(rasterUuid: string, point: Point | null, now: Date, end: Date) {
+  const intersections: RasterIntersection[] = point
+    ? [
+        {
+          uuid: rasterUuid,
+          geometry: point,
+        },
+      ]
+    : [];
+
+  const eventsResponse = useRasterEvents(intersections, now, end);
+
+  return eventsResponse;
+}
+
 export function useMaxForecastAtPoint(
   rasterUuid: string,
   point: Point | null,
   cacheKey?: string
 ): MaxLevel {
-  const fakeData = useFakeData();
-  const hasFakeMaxForecast = false; // "fakeMaxForecast" in fakeData;
   const { now, end } = useContext(TimeContext);
 
+  const fakeData = useFakeData();
+  const hasFakeMaxForecast = "fakeMaxForecast" in fakeData;
   let value = null;
   let time: Date | null = null;
 
@@ -360,25 +373,18 @@ export function useMaxForecastAtPoint(
       time = new Date(now.getTime() + forecast[cacheKey].timeToMax * 1000);
     }
   }
-  console.log("Point", point);
 
-  const intersection: RasterIntersection | null = point
-    ? {
-        uuid: rasterUuid,
-        geometry: point,
-      }
-    : null;
-
-  // Figure out where 'max' is in the operation model events array
-  // Only look from timestamp 'now'
-  const forecastLevels = useRasterEvents(
-    intersection && !hasFakeMaxForecast ? [intersection] : [],
+  const eventsResponse = useRasterEventsAtPoint(
+    rasterUuid,
+    hasFakeMaxForecast ? null : point,
     now,
     end
   );
 
-  if (!hasFakeMaxForecast && forecastLevels.success && forecastLevels.data.length > 0) {
-    const events = forecastLevels.data[0];
+  // Figure out where 'max' is in the operation model events array
+  // Only look from timestamp 'now'
+  if (!hasFakeMaxForecast && eventsResponse.success && eventsResponse.data.length > 0) {
+    const events = eventsResponse.data[0];
 
     if (events !== null && events.length > 0) {
       // Round value to cm, so we don't see a max in the future that shows as the same as
@@ -395,6 +401,23 @@ export function useMaxForecastAtPoint(
   }
 
   return { time, value };
+}
+
+export function useCurrentRasterValueAtPoint(rasterUuid: string, point: Point | null) {
+  const { now, end } = useContext(TimeContext);
+
+  const eventsResponse = useRasterEventsAtPoint(
+    rasterUuid,
+    point,
+    now,
+    end
+  );
+
+  if (eventsResponse.success && eventsResponse.data && eventsResponse.data.length > 0 && eventsResponse.data[0].length > 0) {
+    return eventsResponse.data[0][0];
+  } else {
+    return null;
+  }
 }
 
 export function useTimeseriesMetadata(uuids: string[]) {
