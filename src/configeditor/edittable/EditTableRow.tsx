@@ -16,7 +16,8 @@ import { BsJustify } from "react-icons/bs";
 
 import { TableTabRowConfig } from "../../types/config";
 import { useConfigEdit } from "../hooks";
-import { getTableConfig, changeTableConfig, change } from "./tabUtils";
+import { getTableConfig, changeTableConfig } from "./tabUtils";
+import { change } from "../../util/functions";
 import { ErrorObject } from "../validation";
 import If from "../../components/If";
 

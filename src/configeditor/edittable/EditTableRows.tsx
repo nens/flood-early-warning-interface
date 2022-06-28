@@ -5,7 +5,8 @@ import { BsFillArrowUpSquareFill, BsFillArrowDownSquareFill, BsTrashFill } from 
 import { TableTabRowConfig } from "../../types/config";
 import { useConfigEdit } from "../hooks";
 import If from "../../components/If";
-import { getTableConfig, changeTableConfig, moveUp, moveDown, change, remove } from "./tabUtils";
+import { getTableConfig, changeTableConfig } from "./tabUtils";
+import { moveUp, moveDown, remove, change } from "../../util/functions";
 import { ErrorObject } from "../validation";
 
 interface EditTableRowsProps {

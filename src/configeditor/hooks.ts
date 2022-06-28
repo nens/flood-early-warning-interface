@@ -55,7 +55,7 @@ export function useConfigEdit() {
   };
 
   const updateValues = (partialValues: Partial<Config>) =>
-    setValuesAndValidate({ ...values, partialValues } as Config);
+    setValuesAndValidate({ ...values, ...partialValues } as Config);
 
   return {
     status,

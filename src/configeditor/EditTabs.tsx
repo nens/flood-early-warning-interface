@@ -17,56 +17,42 @@ import If from "../components/If";
 import { Tab } from "../types/config";
 import { ALL_TAB_URLS } from "../constants";
 import { getTabKey } from "../providers/ConfigProvider";
-
+import { moveUp, moveDown, remove, change } from "../util/functions";
 import { useConfigEdit } from "./hooks";
 
 function EditTabs() {
   const { status, values, updateValues, errors, submit } = useConfigEdit();
 
   const tabs = values.tabs as Tab[];
-  const setTabs = (newTabs: Tab[]) => updateValues({ tabs: newTabs });
+  console.log("tabs", tabs);
+
+  const setTabs = (newTabs: Tab[]) => {
+    console.log("newTabs", newTabs);
+    updateValues({ tabs: newTabs });
+  };
 
   const [deletedTabs, setDeletedTabs] = useState<Tab[]>([]);
 
-  const swapTabs = (idx0: number, idx1: number) =>
-    setTabs(tabs.map((tab, idx) => (idx === idx0 ? tabs[idx1] : idx === idx1 ? tabs[idx0] : tab)));
-
-  const moveUp = (idx: number) => idx > 0 && swapTabs(idx, idx - 1);
-  const moveDown = (idx: number) => idx < tabs.length - 1 && swapTabs(idx, idx + 1);
-
   const removeTab = (idx: number) => {
     setDeletedTabs([...deletedTabs, tabs[idx]]);
-    setTabs(tabs.slice(0, idx).concat(tabs.slice(idx + 1)));
+    setTabs(remove(tabs, idx));
   };
 
   const undoRemove = (idx: number) => {
     setTabs(tabs.concat([deletedTabs[idx]]));
-    setDeletedTabs(deletedTabs.slice(0, idx).concat(deletedTabs.slice(idx + 1)));
+    setDeletedTabs(remove(deletedTabs, idx));
   };
 
   const changeTitle = (idx: number, title: string) =>
-    setTabs(
-      tabs
-        .slice(0, idx)
-        .concat({ ...tabs[idx], title })
-        .concat(tabs.slice(idx + 1))
-    );
+    setTabs(change(tabs, idx, { ...tabs[idx], title }));
 
   const changeSlug = (idx: number, slug: string) =>
-    setTabs(
-      tabs
-        .slice(0, idx)
-        .concat({ ...tabs[idx], slug })
-        .concat(tabs.slice(idx + 1))
-    );
+    setTabs(change(tabs, idx, { ...tabs[idx], slug }));
 
-  const changeUrl = (idx: number, url: string) =>
-    setTabs(
-      tabs
-        .slice(0, idx)
-        .concat({ ...tabs[idx], url })
-        .concat(tabs.slice(idx + 1))
-    );
+  const changeUrl = (idx: number, url: string) => setTabs(change(tabs, idx, { ...tabs[idx], url }));
+
+  const moveTabUp = (idx: number) => setTabs(moveUp(tabs, idx));
+  const moveTabDown = (idx: number) => setTabs(moveDown(tabs, idx));
 
   const addTab = () => setTabs(tabs.concat([{ url: "", title: "" }]));
 
@@ -112,7 +98,7 @@ function EditTabs() {
                   aria-label="Move up"
                   icon={<BsFillArrowUpSquareFill />}
                   disabled={allDisabled}
-                  onClick={() => moveUp(idx)}
+                  onClick={() => moveTabUp(idx)}
                 />
               </GridItem>
               <GridItem>
@@ -121,7 +107,7 @@ function EditTabs() {
                   aria-label="Move down"
                   icon={<BsFillArrowDownSquareFill />}
                   disabled={allDisabled}
-                  onClick={() => moveDown(idx)}
+                  onClick={() => moveTabDown(idx)}
                 />
               </GridItem>
               <GridItem>

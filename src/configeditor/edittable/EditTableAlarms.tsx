@@ -8,18 +8,14 @@ import {
   Input,
   Spinner,
   Text,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { BsFillArrowUpSquareFill, BsFillArrowDownSquareFill, BsTrashFill } from "react-icons/bs";
 import { fetchWithError } from "../../api/hooks";
 
 import { TableTabThresholdConfig } from "../../types/config";
 import { ErrorObject } from "../validation";
-import { getTableConfig, changeTableConfig, moveUp, moveDown, change, remove } from "./tabUtils";
+import { getTableConfig, changeTableConfig } from "./tabUtils";
+import { moveUp, moveDown, change, remove } from "../../util/functions";
 import { useConfigEdit } from "../hooks";
 import If from "../../components/If";
 
