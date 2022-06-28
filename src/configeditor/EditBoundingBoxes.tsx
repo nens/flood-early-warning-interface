@@ -26,8 +26,8 @@ interface LatLngInputProps {
 interface EditSingleBoundingBoxesProps {
   type: string;
   bounds: BoundingBox | null;
-  values: any;
-  setValues: any;
+  values: Config;
+  updateValues: (values: Partial<Config>) => void;
   error: boolean;
 }
 
@@ -48,7 +48,7 @@ function LatLngInput(props: LatLngInputProps) {
 }
 
 function EditSingleBoundingBoxes(props: EditSingleBoundingBoxesProps) {
-  const { type, bounds, values, setValues, error } = props;
+  const { type, bounds, values, updateValues, error } = props;
 
   const onChange = (value: string, field: "westmost" | "southmost" | "eastmost" | "northmost") => {
     if (!bounds) {
@@ -60,8 +60,7 @@ function EditSingleBoundingBoxes(props: EditSingleBoundingBoxesProps) {
           : field === "eastmost"
           ? new BoundingBox("", "", value, "")
           : new BoundingBox("", "", "", value);
-      setValues({
-        ...values,
+      updateValues({
         boundingBoxes: {
           ...values.boundingBoxes,
           [type]: newBounds.toConfigBbox(),
@@ -70,8 +69,7 @@ function EditSingleBoundingBoxes(props: EditSingleBoundingBoxesProps) {
     } else {
       const newBounds = bounds.setField(field, value);
       const configBbox = newBounds.toConfigBbox();
-      setValues({
-        ...values,
+      updateValues({
         boundingBoxes: {
           ...values.boundingBoxes,
           [type]: !configBbox.every((e) => e === "") ? configBbox : undefined,
@@ -114,8 +112,7 @@ function EditSingleBoundingBoxes(props: EditSingleBoundingBoxesProps) {
         key={type}
         title={"Clear input"}
         onClick={() =>
-          setValues({
-            ...values,
+          updateValues({
             boundingBoxes: {
               ...values.boundingBoxes,
               [type]: undefined,
@@ -130,10 +127,10 @@ function EditSingleBoundingBoxes(props: EditSingleBoundingBoxesProps) {
 }
 
 function EditBoundingBoxes() {
-  const { status, values, setValues, errors, submit } = useConfigEdit(["boundingBoxes"]);
+  const { status, values, updateValues, errors, submit } = useConfigEdit();
 
   // bounding boxes of different types of map
-  const boundingBoxes = values.boundingBoxes as Config["boundingBoxes"];
+  const boundingBoxes = values.boundingBoxes;
   const defaultBounds = boundingBoxes.default ? new BoundingBox(...boundingBoxes.default) : null;
   const warningAreaBounds = boundingBoxes.warningAreas
     ? new BoundingBox(...boundingBoxes.warningAreas)
@@ -150,8 +147,7 @@ function EditBoundingBoxes() {
   // to the value in DEFAULT_CONFIG if it does not have a value yet.
   useEffect(() => {
     if (!boundingBoxes.default) {
-      setValues({
-        ...values,
+      updateValues({
         boundingBoxes: {
           ...values.boundingBoxes,
           default: DEFAULT_CONFIG.boundingBoxes.default,
@@ -177,7 +173,7 @@ function EditBoundingBoxes() {
             type="default"
             bounds={defaultBounds}
             values={values}
-            setValues={setValues}
+            updateValues={updateValues}
             error={!!boundingBoxErrors.default}
           />
           <FormErrorMessage>{boundingBoxErrors.default}</FormErrorMessage>
@@ -190,7 +186,7 @@ function EditBoundingBoxes() {
             type="warningAreas"
             bounds={warningAreaBounds}
             values={values}
-            setValues={setValues}
+            updateValues={updateValues}
             error={!!boundingBoxErrors.warningAreas}
           />
           <FormErrorMessage>{boundingBoxErrors.warningAreas}</FormErrorMessage>
@@ -203,7 +199,7 @@ function EditBoundingBoxes() {
             type="dams"
             bounds={damBounds}
             values={values}
-            setValues={setValues}
+            updateValues={updateValues}
             error={!!boundingBoxErrors.dams}
           />
           <FormErrorMessage>{boundingBoxErrors.dams}</FormErrorMessage>
@@ -216,7 +212,7 @@ function EditBoundingBoxes() {
             type="floodModelMap"
             bounds={floodModelMapBounds}
             values={values}
-            setValues={setValues}
+            updateValues={updateValues}
             error={!!boundingBoxErrors.floodModelMap}
           />
           <FormErrorMessage>{boundingBoxErrors.floodModelMap}</FormErrorMessage>
@@ -229,7 +225,7 @@ function EditBoundingBoxes() {
             type="rainMap"
             bounds={rainMapBounds}
             values={values}
-            setValues={setValues}
+            updateValues={updateValues}
             error={!!boundingBoxErrors.rainMap}
           />
           <FormErrorMessage>{boundingBoxErrors.rainMap}</FormErrorMessage>

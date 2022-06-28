@@ -27,7 +27,7 @@ interface RowProps {
   operationalModelLevel: string;
 }
 
-function timeDiffToString(timestamp: number, now: number) {
+export function timeDiffToString(timestamp: number, now: number) {
   // Show difference in hours and minutes. Timestamp > now.
   const diffMinutes = Math.round((timestamp - now) / 1000 / 60);
 
@@ -46,7 +46,11 @@ function WarningAreaRow({ warningArea, alarm, now, operationalModelLevel }: RowP
   const isAdmin = useUserHasRole("admin");
 
   const currentLevel = useCurrentLevelTimeseries(warningArea.properties.timeseries);
-  const maxForecast = useMaxForecastAtPoint(operationalModelLevel, alarm || null);
+  const maxForecast = useMaxForecastAtPoint(
+    operationalModelLevel,
+    alarm?.geometry ?? null,
+    alarm?.uuid
+  );
 
   const warningLevel = alarm ? alarm.latest_trigger.warning_level : null;
   const latestEWNRssItem = useLatestItemForArea(warningArea.properties.name);

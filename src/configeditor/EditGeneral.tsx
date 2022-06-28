@@ -1,6 +1,7 @@
 import {
   Input,
   Button,
+  Heading,
   VStack,
   FormControl,
   FormLabel,
@@ -11,63 +12,92 @@ import {
 import { useConfigEdit } from "./hooks";
 
 function EditGeneral() {
-  const { status, values, setValues, errors, submit } = useConfigEdit([
-    "dashboardTitle",
-    "infoText",
-    "infoImage",
-    "emergencyPlansText",
-  ]);
+  const { status, values, updateValues, errors, submit } = useConfigEdit();
 
   return (
     <VStack align="left">
       <FormControl isInvalid={!!errors.dashboardTitle}>
-        <FormLabel htmlFor="dashboardTitle">Dashboard title</FormLabel>
+        <Heading size="l" m={4}>
+          Texts and logos
+        </Heading>
+        <FormLabel htmlFor="dashboardTitle" m={4}>
+          Dashboard title
+        </FormLabel>
         <Input
+          m={4}
           id="dashboardTitle"
           variant="outline"
           placeholder="Dashboard title"
           value={values.dashboardTitle || ""}
-          onChange={(event) => setValues({ ...values, dashboardTitle: event.target.value })}
+          onChange={(event) => updateValues({ dashboardTitle: event.target.value })}
         />
         <FormErrorMessage>{errors.dashboardTitle}</FormErrorMessage>
-        <FormLabel htmlFor="infoText">Information dialog text (use Markdown)</FormLabel>
+        <FormLabel htmlFor="infoText" m={4}>
+          Information dialog text (use Markdown)
+        </FormLabel>
         <Textarea
+          m={4}
           id="infoText"
           variant="outline"
           placeholder="Text for information dialog in Markdown"
           value={values.infoText || ""}
-          onChange={(event) => setValues({ ...values, infoText: event.target.value })}
+          onChange={(event) => updateValues({ infoText: event.target.value })}
           rows={6}
         />
-        <FormLabel htmlFor="infoImage">
+        <FormLabel htmlFor="infoImage" m={4}>
           URL for logos of contributing organisations in the information dialog
         </FormLabel>
         <Input
+          m={4}
           id="infoImage"
           variant="outline"
           placeholder="URL for logo image"
           value={values.infoImage || ""}
-          onChange={(event) => setValues({ ...values, infoImage: event.target.value })}
+          onChange={(event) => updateValues({ infoImage: event.target.value })}
         />
-        <FormLabel htmlFor="emergencyPlansText">
+        <FormLabel htmlFor="emergencyPlansText" m={4}>
           Text to show under an "Emergency Plans" button in the header.
         </FormLabel>
         <Textarea
+          m={4}
           id="emergencyPlansText"
           variant="outline"
           placeholder="Emergency plans modal text"
           value={values.emergencyPlansText || ""}
-          onChange={(event) => setValues({ ...values, emergencyPlansText: event.target.value })}
+          onChange={(event) => updateValues({ emergencyPlansText: event.target.value })}
           rows={6}
         />
-        <Button onClick={submit} marginTop="4" disabled={status !== "ok"}>
-          Submit
-        </Button>
+        <FormLabel htmlFor="chartPeriodStart" m={4}>
+          Start of the time period in chart, in hours before now.
+        </FormLabel>
+        <Input
+          m={4}
+          id="chartPeriodStart"
+          variant="outline"
+          placeholder="Chart period start, in hours"
+          value={values.chartPeriodStart ?? ""}
+          onChange={(event) => updateValues({ chartPeriodStart: parseInt(event.target.value, 10) || undefined })}
+        />
+        <FormLabel htmlFor="chartPeriodEnd" m={4}>
+          End of the time period in chart, in hours before now.
+        </FormLabel>
+        <Input
+          m={4}
+          id="chartPeriodEnd"
+          variant="outline"
+          placeholder="Chart period end, in hours"
+          value={values.chartPeriodEnd ?? ""}
+          onChange={(event) => updateValues({ chartPeriodEnd: parseInt(event.target.value, 10) || undefined })}
+        />
+
         {status === "error" ? (
           <Text color="red">
             An error occurred. Maybe someone else also updated the configuration.
           </Text>
         ) : null}
+        <Button onClick={submit} marginTop="4" disabled={status !== "ok"} m={4}>
+          Submit
+        </Button>
       </FormControl>
     </VStack>
   );

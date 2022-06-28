@@ -24,7 +24,12 @@ function InfoModal(props: InfoModalProps) {
           src={imageUrl}
         />
       ) : null}
-      <ReactMarkdown children={markdownText} />
+      <ReactMarkdown children={markdownText}
+                     components={{
+                       /* Open links in new tab */
+                       a: ({children, ...props}) => <a target="_blank" {...props}>{children}</a>
+                     }}
+      />
     </Modal>
   );
 }

@@ -35,6 +35,9 @@ function roundDown(d: Date) {
 function TimeProvider({ children }: WithChildren<{}>) {
   const config = useConfigContext();
 
+  const timePeriodStart = config.chartPeriodStart ?? 24;
+  const timePeriodEnd = config.chartPeriodStart ?? 12;
+
   const configuredNow = config.nowDateTimeUTC ? new Date(config.nowDateTimeUTC) : null;
 
   // Now is real time, updated every 5 minutes
@@ -44,7 +47,7 @@ function TimeProvider({ children }: WithChildren<{}>) {
 
   const getPeriod = (d: Date) => {
     const ms = d.getTime();
-    return [new Date(ms - 24 * HOUR_IN_MS), new Date(ms + 12 * HOUR_IN_MS)];
+    return [new Date(ms - timePeriodStart * HOUR_IN_MS), new Date(ms + timePeriodEnd * HOUR_IN_MS)];
   };
 
   const isDateEdited = editedNow !== null;

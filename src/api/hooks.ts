@@ -6,7 +6,9 @@ import { useQuery, useQueries, QueryObserverResult, UseQueryResult } from "react
 import {
   Paginated,
   Bootstrap,
+  Alarm,
   RasterAlarm,
+  TimeseriesAlarm,
   Trigger,
   Raster,
   Event,
@@ -16,6 +18,8 @@ import {
   Organisation,
   Timeseries,
 } from "../types/api";
+import { Point } from "geojson";
+
 import { Config, MaxForecast } from "../types/config";
 import { RasterIntersection } from "../types/tiles";
 import { combineUrlAndParams } from "../util/http";
@@ -125,37 +129,89 @@ export function useRasterAlarms() {
   };
 }
 
-export function useRasterAlarmTriggers() {
-  const alarmsResponse = useRasterAlarms();
+export function useTimeseriesAlarms() {
+  const organisation = useOrganisation();
 
-  const triggersResponse = useQueries(
-    (alarmsResponse.status === "success" ? alarmsResponse.data?.results || [] : []).map((alarm) => {
+  const response = useQuery<Paginated<TimeseriesAlarm>, FetchError>(
+    "timeseriesalarms",
+    () =>
+      fetchWithError(
+        `/api/v4/timeseriesalarms/?organisation__uuid=${organisation.uuid}&page_size=1000`
+      ),
+    { ...QUERY_OPTIONS, refetchInterval: 300000 }
+  );
+
+  return {
+    status: response.status,
+    data: response.isSuccess ? response.data.results : [],
+  };
+}
+
+export function useTimeseriesAlarmsByTimeseries(timeseriesIds: string[]) {
+  /* Return all TimeseriesAlarms that are related to any of the given timeseriesIds. */
+  const alarms = useTimeseriesAlarms();
+
+  return {
+    status: alarms.status,
+    data: alarms.data.filter((alarm) => {
+      /* Note that the "timeseries" field of TimeseriesAlarms contains a *URL*, not a UUID. */
+      /* We use a "includes" check, as the URL does always contain the UUID. */
+      return (
+        alarm && alarm.timeseries && timeseriesIds.some((tsid) => alarm.timeseries.includes(tsid))
+      );
+    }),
+  };
+}
+
+export function useAlarmTriggers() {
+  const rasterAlarmsResponse = useRasterAlarms();
+  const timeseriesAlarmsResponse = useTimeseriesAlarms();
+
+  const rasterTriggersResponse = useQueries(
+    (rasterAlarmsResponse.status === "success" ? rasterAlarmsResponse.data?.results || [] : []).map(
+      (alarm) => {
+        return {
+          queryKey: ["rastertriggers", alarm.uuid],
+          queryFn: () =>
+            fetchWithError(`/api/v4/rasteralarms/${alarm.uuid}/triggers/?page_size=1000`),
+        };
+      }
+    )
+  ) as QueryObserverResult<Paginated<Trigger>, FetchError>[];
+
+  const timeseriesTriggersResponse = useQueries(
+    timeseriesAlarmsResponse.data.map((tsAlarm) => {
       return {
-        queryKey: ["rastertriggers", alarm.uuid],
+        queryKey: ["timeseriestriggers", tsAlarm.uuid],
         queryFn: () =>
-          fetchWithError(`/api/v4/rasteralarms/${alarm.uuid}/triggers/?page_size=1000`),
+          fetchWithError(`/api/v4/timeseriesalarms/${tsAlarm.uuid}/triggers/?page_size=1000`),
       };
     })
   ) as QueryObserverResult<Paginated<Trigger>, FetchError>[];
 
-  if (alarmsResponse.status !== "success") {
+  if (rasterAlarmsResponse.status !== "success" || timeseriesAlarmsResponse.status !== "success") {
     return [];
   }
 
+  const responses = rasterTriggersResponse.concat(timeseriesTriggersResponse);
+  const alarms = (rasterAlarmsResponse.data!.results as Alarm[]).concat(
+    timeseriesAlarmsResponse.data as Alarm[]
+  );
+
   if (
-    !triggersResponse.every((response) => response.isSuccess) ||
-    !triggersResponse.length ||
-    triggersResponse.length !== alarmsResponse.data!.results.length
+    !responses.every((response) => response.isSuccess) ||
+    !responses.length ||
+    responses.length !== alarms.length
   ) {
     return [];
   }
 
-  const triggers: { alarm: RasterAlarm; trigger: Trigger }[] = [];
+  const triggers: { alarm: Alarm; trigger: Trigger }[] = [];
 
-  for (let i = 0; i < triggersResponse.length; i++) {
-    const alarm = alarmsResponse.data!.results[i]!;
+  for (let i = 0; i < responses.length; i++) {
+    const alarm = alarms[i];
 
-    for (const trigger of triggersResponse[i].data!.results as Trigger[]) {
+    for (const trigger of responses[i].data!.results as Trigger[]) {
       triggers.push({
         alarm,
         trigger,
@@ -164,9 +220,44 @@ export function useRasterAlarmTriggers() {
   }
 
   // Sort on trigger id, highest first -- so latest first
+  // XXX
+  // This leads to nonsensical results if timeseries and raster alarms are mixed!
   triggers.sort((trig1, trig2) => trig2.trigger.id - trig1.trigger.id);
 
   return triggers;
+}
+
+export function useAlarm(
+  uuid: string | null,
+  alarmType?: "raster" | "timeseries" | "none"
+): Alarm | null {
+  // Fetch metadata of either a raster alarm or a timeseries alarm
+  const enabledRaster = !!(uuid && alarmType === "raster");
+  const enabledTimeseries = !!(uuid && alarmType === "timeseries");
+
+  const rasterAlarmResponse = useQuery(
+    ["rasteralarm", uuid],
+    () => fetchWithError(`/api/v4/rasteralarms/${uuid}/`),
+    { enabled: enabledRaster }
+  ) as QueryObserverResult<RasterAlarm, FetchError>;
+
+  const timeseriesAlarmResponse = useQuery(
+    ["timeseriesalarm", uuid],
+    () => fetchWithError(`/api/v4/timeseriesalarms/${uuid}/`),
+    { enabled: enabledTimeseries }
+  ) as QueryObserverResult<RasterAlarm, FetchError>;
+
+  if (enabledRaster && rasterAlarmResponse.isSuccess && rasterAlarmResponse.data) {
+    return rasterAlarmResponse.data as Alarm;
+  } else if (
+    enabledTimeseries &&
+    timeseriesAlarmResponse.isSuccess &&
+    timeseriesAlarmResponse.data
+  ) {
+    return timeseriesAlarmResponse.data as Alarm;
+  } else {
+    return null;
+  }
 }
 
 // We use different client config objects (for the configuration of the whole app, and for
@@ -303,42 +394,52 @@ interface MaxLevel {
   value: number | null;
 }
 
-export function useMaxForecastAtPoint(rasterUuid: string, alarm: RasterAlarm | null): MaxLevel {
-  const fakeData = useFakeData();
-  const hasFakeMaxForecast = "fakeMaxForecast" in fakeData;
+function useRasterEventsAtPoint(rasterUuid: string, point: Point | null, now: Date, end: Date) {
+  const intersections: RasterIntersection[] = point
+    ? [
+        {
+          uuid: rasterUuid,
+          geometry: point,
+        },
+      ]
+    : [];
+
+  const eventsResponse = useRasterEvents(intersections, now, end);
+
+  return eventsResponse;
+}
+
+export function useMaxForecastAtPoint(
+  rasterUuid: string,
+  point: Point | null,
+  cacheKey?: string
+): MaxLevel {
   const { now, end } = useContext(TimeContext);
 
+  const fakeData = useFakeData();
+  const hasFakeMaxForecast = "fakeMaxForecast" in fakeData;
   let value = null;
   let time: Date | null = null;
 
-  const uuid: string | null = alarm && alarm.uuid ? alarm.uuid : null;
-
   if (hasFakeMaxForecast) {
     const forecast = fakeData.fakeMaxForecast as MaxForecast;
-    if (uuid && forecast[uuid]) {
-      value = forecast[uuid].value;
-      time = new Date(now.getTime() + forecast[uuid].timeToMax * 1000);
+    if (cacheKey && forecast[cacheKey]) {
+      value = forecast[cacheKey].value;
+      time = new Date(now.getTime() + forecast[cacheKey].timeToMax * 1000);
     }
   }
 
-  const intersection: RasterIntersection | null =
-    alarm && alarm.geometry
-      ? {
-          uuid: rasterUuid,
-          geometry: alarm.geometry,
-        }
-      : null;
-
-  // Figure out where 'max' is in the operation model events array
-  // Only look from timestamp 'now'
-  const forecastLevels = useRasterEvents(
-    intersection && !hasFakeMaxForecast ? [intersection] : [],
+  const eventsResponse = useRasterEventsAtPoint(
+    rasterUuid,
+    hasFakeMaxForecast ? null : point,
     now,
     end
   );
 
-  if (!hasFakeMaxForecast && forecastLevels.success && forecastLevels.data.length > 0) {
-    const events = forecastLevels.data[0];
+  // Figure out where 'max' is in the operation model events array
+  // Only look from timestamp 'now'
+  if (!hasFakeMaxForecast && eventsResponse.success && eventsResponse.data.length > 0) {
+    const events = eventsResponse.data[0];
 
     if (events !== null && events.length > 0) {
       // Round value to cm, so we don't see a max in the future that shows as the same as
@@ -355,6 +456,23 @@ export function useMaxForecastAtPoint(rasterUuid: string, alarm: RasterAlarm | n
   }
 
   return { time, value };
+}
+
+export function useCurrentRasterValueAtPoint(rasterUuid: string, point: Point | null) {
+  const { now, end } = useContext(TimeContext);
+
+  const eventsResponse = useRasterEventsAtPoint(rasterUuid, point, now, end);
+
+  if (
+    eventsResponse.success &&
+    eventsResponse.data &&
+    eventsResponse.data.length > 0 &&
+    eventsResponse.data[0].length > 0
+  ) {
+    return eventsResponse.data[0][0];
+  } else {
+    return null;
+  }
 }
 
 export function useTimeseriesMetadata(uuids: string[]) {
@@ -394,6 +512,8 @@ export function useTimeseriesMetadata(uuids: string[]) {
 
 export function useCurrentLevelTimeseries(uuid: string) {
   // Fetch metadata of a single timeseries and return current level.
+  // If uuid is falsy (empty string), useTimeseriesMetadata will return an empty array,
+  // and this hook returns null.
   const fakeData = useFakeData();
   const hasFakeTimeseries = `timeseries-metadata-${uuid}` in fakeData;
 

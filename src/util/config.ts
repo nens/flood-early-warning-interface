@@ -2,7 +2,8 @@
 import { useConfigContext } from "../providers/ConfigProvider";
 import { useRouteMatch, useHistory } from "react-router";
 import { useCallback } from "react";
-import { Timeseries } from "../types/api";
+import { Alarm, Timeseries } from "../types/api";
+import { TableTabConfig } from "../types/config";
 
 export function useIsTimeseriesClickable(timeseries: Timeseries[]) {
   // Return first timeseries that has a chart
@@ -53,3 +54,19 @@ export function useClickToTimeseries(timeseries: string, iframe: boolean = false
 
   return tile ? callback : null;
 }
+
+/* Given an alarm and a warning level, find the threshold */
+export const alarmThresholdForLevel = (alarm: Alarm | null, warningLevel: string) => {
+  const theThreshold = alarm?.thresholds.find(
+    (t) => t.warning_level.toLowerCase() === warningLevel.toLowerCase()
+  );
+  return theThreshold ?? null;
+};
+
+/* Given a config of a table tab and a warning level, find the threshold's config */
+export const configThresholdForLevel = (tabConfig: TableTabConfig, warningLevel: string) => {
+  const theThreshold = tabConfig.thresholds.find(
+    (t) => warningLevel && t.warning_level.toLowerCase() === warningLevel.toLowerCase()
+  );
+  return theThreshold ?? null;
+};

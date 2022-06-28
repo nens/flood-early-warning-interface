@@ -42,24 +42,30 @@ export interface Bootstrap {
   };
 }
 
-export interface RasterAlarm {
+export interface Alarm {
   uuid: string;
   name: string;
   thresholds: {
     value: number;
     warning_level: string;
   }[];
-  intersection: {
-    raster: string; // Note: that is the raster's *URL*, not it's uuid
-  };
-  timeseries: string;
   latest_trigger: {
     trigger_time: string;
     value: number;
     value_time: string;
     warning_level: string | null;
   };
+}
+
+export interface RasterAlarm extends Alarm {
+  intersection: {
+    raster: string; // Note: that is the raster's *URL*, not it's uuid
+  };
   geometry: Point;
+}
+
+export interface TimeseriesAlarm extends Alarm {
+  timeseries: string;
 }
 
 export interface Trigger {
