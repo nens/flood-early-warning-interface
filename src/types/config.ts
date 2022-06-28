@@ -146,6 +146,8 @@ export interface Config {
   flood_warning_areas: FeatureCollection<Polygon, WarningAreaProperties>;
   trainingDashboards: TrainingDashboard[];
   nowDateTimeUTC?: string;
+  chartPeriodStart: number; /* Hours before now */
+  chartPeriodEnd: number; /* Hours after now */
   fakeData: FakeData;
   rssUrl: string;
   extraRasters: ExtraRasters;

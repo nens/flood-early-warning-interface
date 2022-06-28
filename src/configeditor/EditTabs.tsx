@@ -1,6 +1,7 @@
 import { useState, Fragment } from "react";
 import {
   Button,
+  Checkbox,
   Heading,
   Grid,
   GridItem,
@@ -24,12 +25,7 @@ function EditTabs() {
   const { status, values, updateValues, errors, submit } = useConfigEdit();
 
   const tabs = values.tabs as Tab[];
-  console.log("tabs", tabs);
-
-  const setTabs = (newTabs: Tab[]) => {
-    console.log("newTabs", newTabs);
-    updateValues({ tabs: newTabs });
-  };
+  const setTabs = (newTabs: Tab[]) => updateValues({ tabs: newTabs });
 
   const [deletedTabs, setDeletedTabs] = useState<Tab[]>([]);
 
@@ -51,6 +47,9 @@ function EditTabs() {
 
   const changeUrl = (idx: number, url: string) => setTabs(change(tabs, idx, { ...tabs[idx], url }));
 
+  const changeDraft = (idx: number, draft: boolean) =>
+    setTabs(change(tabs, idx, { ...tabs[idx], draft }));
+
   const moveTabUp = (idx: number) => setTabs(moveUp(tabs, idx));
   const moveTabDown = (idx: number) => setTabs(moveDown(tabs, idx));
 
@@ -71,7 +70,7 @@ function EditTabs() {
         other pages), its type (and potentially slug) can not be changed anymore.
       </Text>
       <Grid
-        templateColumns="40px 40px 300px 200px 400px 40px 1fr"
+        templateColumns="40px 40px 300px 150px 400px 75px 40px 1fr"
         templateRows={`repeat(${tabs.length} 1fr)`}
         gap={4}
         m={4}
@@ -137,6 +136,14 @@ function EditTabs() {
                   onChange={(e) => changeTitle(idx, e.target.value)}
                   disabled={allDisabled}
                 />
+              </GridItem>
+              <GridItem>
+                <Checkbox
+                  isChecked={!!tab.draft}
+                  onChange={(e) => changeDraft(idx, e.target.checked)}
+                >
+                  Draft
+                </Checkbox>
               </GridItem>
               <GridItem>
                 <IconButton

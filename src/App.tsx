@@ -7,7 +7,7 @@ import ConfigProvider, { useConfigContext } from "./providers/ConfigProvider";
 import ConfigEditor from "./configeditor/ConfigEditor";
 import TimeProvider from "./providers/TimeProvider";
 
-import { QUERY_OPTIONS } from "./api/hooks";
+import { QUERY_OPTIONS, useUserHasRole } from "./api/hooks";
 import Tabs, { TabDefinition } from "./components/Tabs";
 import AlarmsTab from "./tabs/AlarmsTab";
 import DamAlarmsTab from "./tabs/DamAlarmsTab";
@@ -71,6 +71,7 @@ const tabComponents: { [url: string]: (tab: Tab) => React.ReactNode } = {
 
 function AppWithAuthentication() {
   const config = useConfigContext();
+  const isAdmin = useUserHasRole("admin");
 
   const title = config.dashboardTitle || "FloodSmart Parramatta Dashboard";
 
@@ -83,6 +84,7 @@ function AppWithAuthentication() {
   }, [title]);
 
   const tabsWithComponents: TabDefinition[] = config.tabs
+    .filter((tab) => !tab.draft || isAdmin)
     .map((tab) => {
       return {
         title: tab.title,

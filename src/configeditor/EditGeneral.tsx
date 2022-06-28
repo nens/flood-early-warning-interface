@@ -67,6 +67,29 @@ function EditGeneral() {
           onChange={(event) => updateValues({ emergencyPlansText: event.target.value })}
           rows={6}
         />
+        <FormLabel htmlFor="chartPeriodStart" m={4}>
+          Start of the time period in chart, in hours before now.
+        </FormLabel>
+        <Input
+          m={4}
+          id="chartPeriodStart"
+          variant="outline"
+          placeholder="Chart period start, in hours"
+          value={values.chartPeriodStart ?? ""}
+          onChange={(event) => updateValues({ chartPeriodStart: parseInt(event.target.value, 10) || undefined })}
+        />
+        <FormLabel htmlFor="chartPeriodEnd" m={4}>
+          End of the time period in chart, in hours before now.
+        </FormLabel>
+        <Input
+          m={4}
+          id="chartPeriodEnd"
+          variant="outline"
+          placeholder="Chart period end, in hours"
+          value={values.chartPeriodEnd ?? ""}
+          onChange={(event) => updateValues({ chartPeriodEnd: parseInt(event.target.value, 10) || undefined })}
+        />
+
         {status === "error" ? (
           <Text color="red">
             An error occurred. Maybe someone else also updated the configuration.
