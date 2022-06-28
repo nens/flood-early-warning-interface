@@ -86,7 +86,7 @@ function TableRow({ now, config, tabConfig, row }: TableRowProps) {
   );
   const currentLevelRaster = useCurrentRasterValueAtPoint(
     config.rasters.operationalModelLevel,
-    row.lng && row.lat ? { type: "Point", coordinates: [row.lng, row.lat] } : null,
+    row.lng && row.lat ? { type: "Point", coordinates: [row.lng, row.lat] } : null
   );
   const alarm = useAlarm(row.alarmUuid ?? null, tabConfig.general.alarmType);
   const latestRssItem = useLatestItemForArea(row.name);

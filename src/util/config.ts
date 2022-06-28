@@ -55,7 +55,6 @@ export function useClickToTimeseries(timeseries: string, iframe: boolean = false
   return tile ? callback : null;
 }
 
-
 /* Given an alarm and a warning level, find the threshold */
 export const alarmThresholdForLevel = (alarm: Alarm | null, warningLevel: string) => {
   const theThreshold = alarm?.thresholds.find(

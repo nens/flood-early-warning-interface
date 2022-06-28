@@ -156,8 +156,10 @@ export function useTimeseriesAlarmsByTimeseries(timeseriesIds: string[]) {
     data: alarms.data.filter((alarm) => {
       /* Note that the "timeseries" field of TimeseriesAlarms contains a *URL*, not a UUID. */
       /* We use a "includes" check, as the URL does always contain the UUID. */
-      return alarm && alarm.timeseries && timeseriesIds.some(tsid => alarm.timeseries.includes(tsid));
-    })
+      return (
+        alarm && alarm.timeseries && timeseriesIds.some((tsid) => alarm.timeseries.includes(tsid))
+      );
+    }),
   };
 }
 
@@ -166,21 +168,24 @@ export function useAlarmTriggers() {
   const timeseriesAlarmsResponse = useTimeseriesAlarms();
 
   const rasterTriggersResponse = useQueries(
-    (rasterAlarmsResponse.status === "success" ? rasterAlarmsResponse.data?.results || [] : []).map((alarm) => {
-      return {
-        queryKey: ["rastertriggers", alarm.uuid],
-        queryFn: () =>
-          fetchWithError(`/api/v4/rasteralarms/${alarm.uuid}/triggers/?page_size=1000`),
-      };
-    })
+    (rasterAlarmsResponse.status === "success" ? rasterAlarmsResponse.data?.results || [] : []).map(
+      (alarm) => {
+        return {
+          queryKey: ["rastertriggers", alarm.uuid],
+          queryFn: () =>
+            fetchWithError(`/api/v4/rasteralarms/${alarm.uuid}/triggers/?page_size=1000`),
+        };
+      }
+    )
   ) as QueryObserverResult<Paginated<Trigger>, FetchError>[];
 
   const timeseriesTriggersResponse = useQueries(
-    (timeseriesAlarmsResponse.data).map(tsAlarm => {
+    timeseriesAlarmsResponse.data.map((tsAlarm) => {
       return {
         queryKey: ["timeseriestriggers", tsAlarm.uuid],
-        queryFn: () => fetchWithError(`/api/v4/timeseriesalarms/${tsAlarm.uuid}/triggers/?page_size=1000`),
-      }
+        queryFn: () =>
+          fetchWithError(`/api/v4/timeseriesalarms/${tsAlarm.uuid}/triggers/?page_size=1000`),
+      };
     })
   ) as QueryObserverResult<Paginated<Trigger>, FetchError>[];
 
@@ -189,7 +194,9 @@ export function useAlarmTriggers() {
   }
 
   const responses = rasterTriggersResponse.concat(timeseriesTriggersResponse);
-  const alarms = (rasterAlarmsResponse.data!.results as Alarm[]).concat(timeseriesAlarmsResponse.data as Alarm[]);
+  const alarms = (rasterAlarmsResponse.data!.results as Alarm[]).concat(
+    timeseriesAlarmsResponse.data as Alarm[]
+  );
 
   if (
     !responses.every((response) => response.isSuccess) ||
@@ -455,14 +462,14 @@ export function useMaxForecastAtPoint(
 export function useCurrentRasterValueAtPoint(rasterUuid: string, point: Point | null) {
   const { now, end } = useContext(TimeContext);
 
-  const eventsResponse = useRasterEventsAtPoint(
-    rasterUuid,
-    point,
-    now,
-    end
-  );
+  const eventsResponse = useRasterEventsAtPoint(rasterUuid, point, now, end);
 
-  if (eventsResponse.success && eventsResponse.data && eventsResponse.data.length > 0 && eventsResponse.data[0].length > 0) {
+  if (
+    eventsResponse.success &&
+    eventsResponse.data &&
+    eventsResponse.data.length > 0 &&
+    eventsResponse.data[0].length > 0
+  ) {
     return eventsResponse.data[0][0];
   } else {
     return null;

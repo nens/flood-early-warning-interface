@@ -68,7 +68,6 @@ export interface TimeseriesAlarm extends Alarm {
   timeseries: string;
 }
 
-
 export interface Trigger {
   id: number;
   trigger_time: string; // ISO timestamp

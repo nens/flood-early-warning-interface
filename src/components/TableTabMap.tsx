@@ -42,13 +42,29 @@ function TableTabMap({ tabConfig }: TableTabMapProps) {
     >
       <TileLayer url={mapBackgrounds[1].url} />
       {tabConfig.rows.map((row) => (
-        <FeaturesForRow key={row.uuid} tabConfig={tabConfig} row={row} area={hover} setArea={setHover} />
+        <FeaturesForRow
+          key={row.uuid}
+          tabConfig={tabConfig}
+          row={row}
+          area={hover}
+          setArea={setHover}
+        />
       ))}
     </MapContainer>
   );
 }
 
-function FeaturesForRow({ tabConfig, row, area, setArea }: { tabConfig: TableTabConfig; row: TableTabRowConfig, area: Area, setArea: (area: Area) => void; }) {
+function FeaturesForRow({
+  tabConfig,
+  row,
+  area,
+  setArea,
+}: {
+  tabConfig: TableTabConfig;
+  row: TableTabRowConfig;
+  area: Area;
+  setArea: (area: Area) => void;
+}) {
   const hover = row.uuid === area?.id;
   const alarm = useAlarm(row.alarmUuid);
 
@@ -74,7 +90,7 @@ function FeaturesForRow({ tabConfig, row, area, setArea }: { tabConfig: TableTab
 
   const eventHandlers: L.LeafletEventHandlerFnMap = {
     click: rowClick,
-    mouseover: () => setArea({id: row.uuid, name: row.name}),
+    mouseover: () => setArea({ id: row.uuid, name: row.name }),
     mouseout: () => setArea(null),
   };
 
@@ -99,7 +115,7 @@ function FeaturesForRow({ tabConfig, row, area, setArea }: { tabConfig: TableTab
             <Polyline
               key={row.uuid + idx + hover}
               positions={geojsonToLatLngs(feature.geometry.coordinates)}
-              pathOptions={{opacity: hover ? 1 : 0.5, color: "#00ff00"}}
+              pathOptions={{ opacity: hover ? 1 : 0.5, color: "#00ff00" }}
               eventHandlers={eventHandlers}
               color={color}
             >

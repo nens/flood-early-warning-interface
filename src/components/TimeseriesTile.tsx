@@ -602,7 +602,9 @@ function TimeseriesTile({ tile, full = false }: Props) {
       : []
   ).filter((r) => r !== null) as RasterAlarm[];
 
-  const allAlarms: Alarm[] = (rasterAlarms as Alarm[]).concat(timeseriesAlarmsResponse.data as Alarm[]);
+  const allAlarms: Alarm[] = (rasterAlarms as Alarm[]).concat(
+    timeseriesAlarmsResponse.data as Alarm[]
+  );
 
   // Note: always concat timeseries first, then rasters, as config items like
   // tile.colors and tile.legendStrings depend on that.
