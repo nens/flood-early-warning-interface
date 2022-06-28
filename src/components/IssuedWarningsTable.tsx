@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { RasterAlarm, Trigger } from "../types/api";
-import { useRasterAlarms, useRasterAlarmTriggers } from "../api/hooks";
+import { Alarm, Trigger } from "../types/api";
+import { useRasterAlarms, useAlarmTriggers } from "../api/hooks";
 import { dashOrNum } from "../util/functions";
 
 import styles from "./IssuedWarningsTable.module.css";
 
 interface AlarmTrigger {
-  alarm: RasterAlarm;
+  alarm: Alarm;
   trigger: Trigger;
 }
 
@@ -71,7 +71,7 @@ function IssuedWarningsTable() {
   const [ordering, setOrdering] = useState<string>(defaultOrdering);
 
   const rasterAlarms = useRasterAlarms();
-  const response = useRasterAlarmTriggers();
+  const response = useAlarmTriggers();
 
   if (!rasterAlarms.data || !rasterAlarms.data.results || !rasterAlarms.data.results.length) {
     return null;

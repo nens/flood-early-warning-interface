@@ -6,6 +6,7 @@ import { useQuery, useQueries, QueryObserverResult, UseQueryResult } from "react
 import {
   Paginated,
   Bootstrap,
+  Alarm,
   RasterAlarm,
   TimeseriesAlarm,
   Trigger,
@@ -160,11 +161,12 @@ export function useTimeseriesAlarmsByTimeseries(timeseriesIds: string[]) {
   };
 }
 
-export function useRasterAlarmTriggers() {
-  const alarmsResponse = useRasterAlarms();
+export function useAlarmTriggers() {
+  const rasterAlarmsResponse = useRasterAlarms();
+  const timeseriesAlarmsResponse = useTimeseriesAlarms();
 
-  const triggersResponse = useQueries(
-    (alarmsResponse.status === "success" ? alarmsResponse.data?.results || [] : []).map((alarm) => {
+  const rasterTriggersResponse = useQueries(
+    (rasterAlarmsResponse.status === "success" ? rasterAlarmsResponse.data?.results || [] : []).map((alarm) => {
       return {
         queryKey: ["rastertriggers", alarm.uuid],
         queryFn: () =>
@@ -173,24 +175,36 @@ export function useRasterAlarmTriggers() {
     })
   ) as QueryObserverResult<Paginated<Trigger>, FetchError>[];
 
-  if (alarmsResponse.status !== "success") {
+  const timeseriesTriggersResponse = useQueries(
+    (timeseriesAlarmsResponse.data).map(tsAlarm => {
+      return {
+        queryKey: ["timeseriestriggers", tsAlarm.uuid],
+        queryFn: () => fetchWithError(`/api/v4/timeseriesalarms/${tsAlarm.uuid}/triggers/?page_size=1000`),
+      }
+    })
+  ) as QueryObserverResult<Paginated<Trigger>, FetchError>[];
+
+  if (rasterAlarmsResponse.status !== "success" || timeseriesAlarmsResponse.status !== "success") {
     return [];
   }
 
+  const responses = rasterTriggersResponse.concat(timeseriesTriggersResponse);
+  const alarms = (rasterAlarmsResponse.data!.results as Alarm[]).concat(timeseriesAlarmsResponse.data as Alarm[]);
+
   if (
-    !triggersResponse.every((response) => response.isSuccess) ||
-    !triggersResponse.length ||
-    triggersResponse.length !== alarmsResponse.data!.results.length
+    !responses.every((response) => response.isSuccess) ||
+    !responses.length ||
+    responses.length !== alarms.length
   ) {
     return [];
   }
 
-  const triggers: { alarm: RasterAlarm; trigger: Trigger }[] = [];
+  const triggers: { alarm: Alarm; trigger: Trigger }[] = [];
 
-  for (let i = 0; i < triggersResponse.length; i++) {
-    const alarm = alarmsResponse.data!.results[i]!;
+  for (let i = 0; i < responses.length; i++) {
+    const alarm = alarms[i];
 
-    for (const trigger of triggersResponse[i].data!.results as Trigger[]) {
+    for (const trigger of responses[i].data!.results as Trigger[]) {
       triggers.push({
         alarm,
         trigger,
@@ -199,6 +213,8 @@ export function useRasterAlarmTriggers() {
   }
 
   // Sort on trigger id, highest first -- so latest first
+  // XXX
+  // This leads to nonsensical results if timeseries and raster alarms are mixed!
   triggers.sort((trig1, trig2) => trig2.trigger.id - trig1.trigger.id);
 
   return triggers;
