@@ -7,6 +7,7 @@ import {
   Paginated,
   Bootstrap,
   RasterAlarm,
+  TimeseriesAlarm,
   Trigger,
   Raster,
   Event,
@@ -124,6 +125,38 @@ export function useRasterAlarms() {
   return {
     status: response.status,
     data: response.data,
+  };
+}
+
+export function useTimeseriesAlarms() {
+  const organisation = useOrganisation();
+
+  const response = useQuery<Paginated<TimeseriesAlarm>, FetchError>(
+    "timeseriesalarms",
+    () =>
+      fetchWithError(
+        `/api/v4/timeseriesalarms/?organisation__uuid=${organisation.uuid}&page_size=1000`
+      ),
+    { ...QUERY_OPTIONS, refetchInterval: 300000 }
+  );
+
+  return {
+    status: response.status,
+    data: response.isSuccess ? response.data.results : [],
+  };
+}
+
+export function useTimeseriesAlarmsByTimeseries(timeseriesIds: string[]) {
+  /* Return all TimeseriesAlarms that are related to any of the given timeseriesIds. */
+  const alarms = useTimeseriesAlarms();
+
+  return {
+    status: alarms.status,
+    data: alarms.data.filter((alarm) => {
+      /* Note that the "timeseries" field of TimeseriesAlarms contains a *URL*, not a UUID. */
+      /* We use a "includes" check, as the URL does always contain the UUID. */
+      return alarm && alarm.timeseries && timeseriesIds.some(tsid => alarm.timeseries.includes(tsid));
+    })
   };
 }
 

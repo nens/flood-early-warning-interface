@@ -57,6 +57,7 @@ export interface Tab {
   url: string;
   slug?: string /* For multiple copies of the same tab */;
   title: string;
+  draft?: boolean; /* Admin only */
 }
 
 export type BoundingBox = [string, string, string, string];

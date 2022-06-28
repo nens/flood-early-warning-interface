@@ -3,7 +3,7 @@ import Plot from "react-plotly.js";
 import { PlotData, Shape, Layout } from "plotly.js";
 
 import { BackgroundColorShape, ChartTile, LegendStyle, Threshold, Timeline } from "../types/tiles";
-import { ObservationType, Events, RasterAlarm } from "../types/api";
+import { ObservationType, Events, RasterAlarm, Alarm } from "../types/api";
 import { RectResult } from "../util/hooks";
 import { isSamePoint } from "../util/bounds";
 import { RectContext } from "../providers/RectProvider";
@@ -14,6 +14,7 @@ import {
   useRasterEvents,
   useTimeseriesMetadata,
   useTimeseriesEvents,
+  useTimeseriesAlarmsByTimeseries,
 } from "../api/hooks";
 
 interface Props {
@@ -206,7 +207,7 @@ function getThresholdLine(threshold: Threshold, yref: string) {
   };
 }
 
-function getAlarmLines(alarm: RasterAlarm, yref: string) {
+function getAlarmLines(alarm: Alarm, yref: string) {
   return alarm.thresholds.map((threshold) => {
     const color =
       (alarm.latest_trigger.warning_level === threshold.warning_level
@@ -245,7 +246,7 @@ function getThresholdAnnotation(threshold: Threshold, yref: string) {
   };
 }
 
-function getAlarmAnnotations(alarm: RasterAlarm, yref: string) {
+function getAlarmAnnotations(alarm: Alarm, yref: string) {
   return alarm.thresholds.map((threshold) => {
     let active = "";
     let label = "";
@@ -274,7 +275,7 @@ function getAnnotationsAndShapes(
   axes: Axes,
   now: Date,
   thresholds: Threshold[],
-  rasterAlarms: RasterAlarm[],
+  alarms: Alarm[],
   timelines: Timeline[],
   backgroundColorShapes: BackgroundColorShape[],
   full: boolean
@@ -289,7 +290,7 @@ function getAnnotationsAndShapes(
     getThresholdLine(th, axes.length === 2 && axes[1].unit === th.unitReference ? "y2" : "y")
   );
 
-  const rasterAlarmLines = rasterAlarms
+  const alarmLines = alarms
     .map((alarm) => getAlarmLines(alarm, axes.length === 2 && axes[1].unit === "mAHD" ? "y2" : "y"))
     .flat();
 
@@ -297,7 +298,7 @@ function getAnnotationsAndShapes(
     getThresholdAnnotation(th, axes.length === 2 && axes[1].unit === th.unitReference ? "y2" : "y")
   );
 
-  const rasterAlarmAnnotations = rasterAlarms
+  const alarmAnnotations = alarms
     .map((alarm) =>
       getAlarmAnnotations(alarm, axes.length === 2 && axes[1].unit === "mAHD" ? "y2" : "y")
     )
@@ -375,8 +376,8 @@ function getAnnotationsAndShapes(
       annotations.push(thAnnot);
     });
   }
-  rasterAlarmLines.forEach((line) => shapes.push(line));
-  rasterAlarmAnnotations.forEach((annot) => annotations.push(annot));
+  alarmLines.forEach((line) => shapes.push(line));
+  alarmAnnotations.forEach((annot) => annotations.push(annot));
 
   return { annotations, shapes };
 }
@@ -456,7 +457,7 @@ function _getLayout(
   axes: Axes,
   thresholds: Threshold[],
   timelines: Timeline[],
-  rasterAlarms: RasterAlarm[],
+  alarms: Alarm[],
   backgroundColorShapes: BackgroundColorShape[],
   tileLegend?: LegendStyle
 ) {
@@ -467,7 +468,7 @@ function _getLayout(
     axes,
     now,
     thresholds,
-    rasterAlarms,
+    alarms,
     timelines,
     backgroundColorShapes,
     full
@@ -560,6 +561,7 @@ function TimeseriesTile({ tile, full = false }: Props) {
   const timeseriesEvents = useTimeseriesEvents(tile.timeseries || [], start, end);
 
   const rasterAlarmsResponse = useRasterAlarms();
+  const timeseriesAlarmsResponse = useTimeseriesAlarmsByTimeseries(tile.timeseries || []);
 
   // Reverse these historical timeseries so they show in the right order in the chart
   const historicalTimeseries =
@@ -599,6 +601,8 @@ function TimeseriesTile({ tile, full = false }: Props) {
         })
       : []
   ).filter((r) => r !== null) as RasterAlarm[];
+
+  const allAlarms: Alarm[] = (rasterAlarms as Alarm[]).concat(timeseriesAlarmsResponse.data as Alarm[]);
 
   // Note: always concat timeseries first, then rasters, as config items like
   // tile.colors and tile.legendStrings depend on that.
@@ -644,7 +648,7 @@ function TimeseriesTile({ tile, full = false }: Props) {
     axes,
     tile.thresholds || [],
     tile.timelines || [],
-    rasterAlarms,
+    allAlarms,
     tile.backgroundColorShapes || []
   );
 

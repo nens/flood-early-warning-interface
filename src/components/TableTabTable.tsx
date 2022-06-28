@@ -17,6 +17,7 @@ import {
 import { useMessages } from "../api/messages";
 import { Config } from "../types/config";
 import { timeDiffToString } from "./AlarmsTable";
+import { alarmThresholdForLevel, configThresholdForLevel } from "../util/config";
 
 import styles from "./AlarmsTable.module.css";
 
@@ -52,7 +53,7 @@ function PdfIcon({ url }: { url: string }) {
   );
 }
 
-function useClickOnTableRow(row: TableTabRowConfig, iframe: boolean) {
+export function useClickOnTableRow(row: TableTabRowConfig, iframe: boolean) {
   const { url } = useRouteMatch();
   const history = useHistory();
 
@@ -101,22 +102,8 @@ function TableRow({ now, config, tabConfig, row }: TableRowProps) {
     event.stopPropagation(); // Otherwise the row's onClick is triggered.
   };
 
-  const alarmThresholdForLevel = (warningLevel: string) => {
-    const theThreshold = alarm?.thresholds.find(
-      (t) => t.warning_level.toLowerCase() === warningLevel.toLowerCase()
-    );
-    return theThreshold ?? null;
-  };
-
-  const configThresholdForLevel = (warningLevel: string) => {
-    const theThreshold = tabConfig.thresholds.find(
-      (t) => t.warning_level.toLowerCase() === warningLevel.toLowerCase()
-    );
-    return theThreshold ?? null;
-  };
-
   const triggerLevel = alarm?.latest_trigger.warning_level
-    ? configThresholdForLevel(alarm.latest_trigger.warning_level)
+    ? configThresholdForLevel(tabConfig, alarm.latest_trigger.warning_level)
     : null;
 
   let rssWarning = "-";
@@ -126,7 +113,7 @@ function TableRow({ now, config, tabConfig, row }: TableRowProps) {
     rssWarning = latestRssItem.warning;
     // Find the right color for a warning string like "Minor Flood Warning"
     const firstWordOfRssWarning = rssWarning.toLowerCase().split(" ")[0];
-    const threshold = configThresholdForLevel(firstWordOfRssWarning);
+    const threshold = configThresholdForLevel(tabConfig, firstWordOfRssWarning);
 
     if (threshold) {
       rssWarningColor = threshold.color;
@@ -173,7 +160,7 @@ function TableRow({ now, config, tabConfig, row }: TableRowProps) {
       <If test={!!tabConfig.general.columnAlarmThresholds}>
         {tabConfig.thresholds.map((threshold) => (
           <div key={threshold.uuid} className={styles.thtd}>
-            {alarmThresholdForLevel(threshold.warning_level)?.value?.toFixed(2) ?? "-"}
+            {alarmThresholdForLevel(alarm, threshold.warning_level)?.value?.toFixed(2) ?? "-"}
           </div>
         ))}
       </If>
