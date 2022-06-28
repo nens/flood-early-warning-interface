@@ -230,9 +230,8 @@ export function useAlarmTriggers() {
 export function useAlarm(
   uuid: string | null,
   alarmType?: "raster" | "timeseries" | "none"
-): RasterAlarm | null {
+): Alarm | null {
   // Fetch metadata of either a raster alarm or a timeseries alarm
-  // Caution: Return type is RasterAlarm, because most of the metadata is the same!
   const enabledRaster = !!(uuid && alarmType === "raster");
   const enabledTimeseries = !!(uuid && alarmType === "timeseries");
 
@@ -249,13 +248,13 @@ export function useAlarm(
   ) as QueryObserverResult<RasterAlarm, FetchError>;
 
   if (enabledRaster && rasterAlarmResponse.isSuccess && rasterAlarmResponse.data) {
-    return rasterAlarmResponse.data;
+    return rasterAlarmResponse.data as Alarm;
   } else if (
     enabledTimeseries &&
     timeseriesAlarmResponse.isSuccess &&
     timeseriesAlarmResponse.data
   ) {
-    return timeseriesAlarmResponse.data;
+    return timeseriesAlarmResponse.data as Alarm;
   } else {
     return null;
   }
