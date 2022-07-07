@@ -76,7 +76,9 @@ function EditGeneral() {
           variant="outline"
           placeholder="Chart period start, in hours"
           value={values.chartPeriodStart ?? ""}
-          onChange={(event) => updateValues({ chartPeriodStart: parseInt(event.target.value, 10) || undefined })}
+          onChange={(event) =>
+            updateValues({ chartPeriodStart: parseInt(event.target.value, 10) || undefined })
+          }
         />
         <FormLabel htmlFor="chartPeriodEnd" m={4}>
           End of the time period in chart, in hours before now.
@@ -87,7 +89,9 @@ function EditGeneral() {
           variant="outline"
           placeholder="Chart period end, in hours"
           value={values.chartPeriodEnd ?? ""}
-          onChange={(event) => updateValues({ chartPeriodEnd: parseInt(event.target.value, 10) || undefined })}
+          onChange={(event) =>
+            updateValues({ chartPeriodEnd: parseInt(event.target.value, 10) || undefined })
+          }
         />
 
         {status === "error" ? (

@@ -111,9 +111,8 @@ function FeaturesForRow({
             <Polyline
               key={row.uuid + idx + hover}
               positions={geojsonToLatLngs(feature.geometry.coordinates)}
-              pathOptions={{ opacity: hover ? 1 : 0.5, color: "#00ff00" }}
+              pathOptions={{ opacity: hover ? 1 : 0.5, color }}
               eventHandlers={eventHandlers}
-              color={color}
             >
               <Tooltip permanent>{row.name}</Tooltip>
             </Polyline>

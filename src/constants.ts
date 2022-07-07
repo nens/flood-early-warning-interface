@@ -100,8 +100,8 @@ export const DEFAULT_CONFIG: Config = {
   emergencyPlansText: "",
   tableTabConfigs: {},
   waterlevelUnit: "mAHD",
-  chartPeriodStart: 24, /* Hours before now */
-  chartPeriodEnd: 12, /* Hours after now */
+  chartPeriodStart: 24 /* Hours before now */,
+  chartPeriodEnd: 12 /* Hours after now */,
 };
 
 export function getMapBackgrounds(access_token: string) {
