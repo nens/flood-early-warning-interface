@@ -13,7 +13,7 @@ import { BsFillArrowUpSquareFill, BsFillArrowDownSquareFill, BsTrashFill } from 
 import { fetchWithError } from "../../api/hooks";
 
 import { TableTabThresholdConfig } from "../../types/config";
-import { ErrorObject } from "../validation";
+import { getError } from "../validation";
 import { getTableConfig, changeTableConfig } from "./tabUtils";
 import { moveUp, moveDown, change, remove } from "../../util/functions";
 import { useConfigEdit } from "../hooks";
@@ -36,9 +36,11 @@ function EditTableAlarms({ tabKey }: EditTableAlarmsProps) {
   const { status, values, errors, setValues, submit } = useConfigEdit();
   const [uuid, setUuid] = useState<string>("");
 
-  const allDisabled = status === "fetching";
+  const errorByUuid = (uuid: string) =>
+    getError(errors, ["tableTabConfigs", tabKey, "thresholds", uuid]);
+  const errorAll = getError(errors, ["tableTabConfigs", tabKey, "thresholds"]);
 
-  const tableErrors: ErrorObject = (errors?.tableTabConfigs as ErrorObject) ?? {};
+  const allDisabled = status === "fetching";
 
   const currentConfig = getTableConfig(values.tableTabConfigs, tabKey);
   const currentThresholds = currentConfig.thresholds ?? [];
@@ -163,14 +165,14 @@ function EditTableAlarms({ tabKey }: EditTableAlarmsProps) {
               />
             </GridItem>
             <GridItem>
-              <Text color="red.600">{tableErrors[threshold.uuid] ?? null}</Text>
+              <Text color="red.600">{errorByUuid(threshold.uuid) ?? null}</Text>
             </GridItem>
           </Fragment>
         ))}
       </Grid>
-      <If test={"all" in tableErrors}>
+      <If test={!!errorAll}>
         <Text m="4" color="red.600">
-          {tableErrors.all}
+          {errorAll}
         </Text>
       </If>
       <Button onClick={submit} disabled={allDisabled} m={4}>

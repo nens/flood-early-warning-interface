@@ -18,7 +18,7 @@ import { TableTabRowConfig } from "../../types/config";
 import { useConfigEdit } from "../hooks";
 import { getTableConfig, changeTableConfig } from "./tabUtils";
 import { change } from "../../util/functions";
-import { ErrorObject } from "../validation";
+import { getError } from "../validation";
 import If from "../../components/If";
 
 interface EditTableRowProps {
@@ -30,8 +30,10 @@ function EditTableRow({ tabKey }: EditTableRowProps) {
 
   const allDisabled = status === "fetching";
 
-  const tableErrors: ErrorObject = (errors?.tableTabConfigs as ErrorObject) ?? {};
-
+  const errorByRowUuid = (rowUuid: string) =>
+    getError(errors, ["tableTabConfigs", tabKey, "rows", rowUuid]);
+  const errorByRowUuidField = (rowUuid: string, field: string) =>
+    getError(errors, ["tableTabConfigs", tabKey, "rows", rowUuid, field]);
   const currentConfig = getTableConfig(values.tableTabConfigs, tabKey);
   const currentRows = currentConfig.rows ?? [];
 
@@ -99,6 +101,9 @@ function EditTableRow({ tabKey }: EditTableRowProps) {
             value={currentRow.mapGeometry || ""}
             onChange={(event) => setValueInRow("mapGeometry", event.target.value)}
           />
+          <Text m="4" color="red.600">
+            {errorByRowUuidField(currentRowUuid, "mapGeometry")}
+          </Text>
           <IconButton size="s" icon={<BsJustify />} aria-label="autoindent" onClick={autoIndent} />
 
           <FormLabel htmlFor="latitude" mt={4}>
@@ -168,9 +173,9 @@ function EditTableRow({ tabKey }: EditTableRowProps) {
             onChange={(event) => setValueInRow("clickUrl", event.target.value || null)}
           />
 
-          <If test={currentRowUuid in tableErrors}>
+          <If test={!!errorByRowUuid(currentRowUuid)}>
             <Text m="4" color="red.600">
-              {tableErrors[currentRowUuid]}
+              {errorByRowUuid(currentRowUuid)}
             </Text>
           </If>
           <Button onClick={submit} disabled={allDisabled} m={4}>
