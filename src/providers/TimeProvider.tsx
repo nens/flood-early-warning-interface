@@ -36,7 +36,7 @@ function TimeProvider({ children }: WithChildren<{}>) {
   const config = useConfigContext();
 
   const timePeriodStart = config.chartPeriodStart ?? 24;
-  const timePeriodEnd = config.chartPeriodStart ?? 12;
+  const timePeriodEnd = config.chartPeriodEnd ?? 12;
 
   const configuredNow = config.nowDateTimeUTC ? new Date(config.nowDateTimeUTC) : null;
 

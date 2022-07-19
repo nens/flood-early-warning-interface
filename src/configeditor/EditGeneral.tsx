@@ -81,7 +81,7 @@ function EditGeneral() {
           }
         />
         <FormLabel htmlFor="chartPeriodEnd" m={4}>
-          End of the time period in chart, in hours before now.
+          End of the time period in chart, in hours after now.
         </FormLabel>
         <Input
           m={4}
