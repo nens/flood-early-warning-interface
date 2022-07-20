@@ -43,7 +43,7 @@ interface MyNumberInputProps extends Omit<NumberInputProps, "value" | "onChange"
   onChange: (value: number) => void;
 }
 
-function MyNumberInput({value, onChange, precision, min, max, ...props}: MyNumberInputProps) {
+function MyNumberInput({ value, onChange, precision, min, max, ...props }: MyNumberInputProps) {
   const currentValueWithPrecision = (value: number | undefined | null): string => {
     const v = value ?? 0;
     if (precision !== undefined) {
@@ -51,7 +51,7 @@ function MyNumberInput({value, onChange, precision, min, max, ...props}: MyNumbe
     } else {
       return "" + v;
     }
-  }
+  };
 
   const [currentValue, setCurrentValue] = useState(currentValueWithPrecision(value));
 
@@ -92,7 +92,7 @@ function MyNumberInput({value, onChange, precision, min, max, ...props}: MyNumbe
     if (typeof numberValue === "number") {
       onChange(numberValue);
     }
-  }
+  };
 
   return (
     <NumberInput
