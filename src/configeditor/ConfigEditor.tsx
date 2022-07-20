@@ -5,6 +5,7 @@ import EnsureAdminAccess from "../components/EnsureAdminAccess";
 import { getTabKey, useConfigContext } from "../providers/ConfigProvider";
 import ConfigTabs, { ConfigTabDefinition } from "./ConfigTabs";
 import EditBoundingBoxes from "./EditBoundingBoxes";
+import EditFloodModelTab from "./EditFloodModelTab";
 import EditGeneral from "./EditGeneral";
 import EditData from "./EditData";
 import EditTableTab from "./EditTableTab";
@@ -28,6 +29,13 @@ function ConfigEditor() {
         url: tabKey,
         title: `Table ${tab.slug}`,
         component: <EditTableTab tabKey={tabKey} />,
+      });
+    } else if (tab.url === "waterlevel") {
+      // Add config for 'flood model tab'
+      tabs.push({
+        url: "waterlevel",
+        title: "Flood model tab",
+        component: <EditFloodModelTab />,
       });
     }
   });

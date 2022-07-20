@@ -112,6 +112,8 @@ export interface TableTabConfigs {
   [tableKey: string]: TableTabConfig;
 }
 
+export type TimePeriod = [string, number];
+
 export interface Config {
   version?: 1;
   boundingBoxes: {
@@ -157,4 +159,5 @@ export interface Config {
   infoImage: string;
   emergencyPlansText: string;
   waterlevelUnit?: string;
+  floodModelTimePeriods?: TimePeriod[];
 }

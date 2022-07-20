@@ -102,6 +102,13 @@ export const DEFAULT_CONFIG: Config = {
   waterlevelUnit: "mAHD",
   chartPeriodStart: 24 /* Hours before now */,
   chartPeriodEnd: 12 /* Hours after now */,
+  floodModelTimePeriods: [
+    /* Times are in minutes */
+    ["T0", 0],
+    ["T0 + 4h", 4 * 60],
+    ["T0 + 8h", 8 * 60],
+    ["T0 + 12h", 12 * 60],
+  ],
 };
 
 export function getMapBackgrounds(access_token: string) {

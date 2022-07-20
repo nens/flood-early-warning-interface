@@ -12,29 +12,25 @@ import MapSelectBox from "./MapSelectBox";
 import MapMultipleSelectBox from "./MapMultipleSelectBox";
 import FloodModelPopup from "./FloodModelPopup";
 import LizardRasterLegend from "./LizardRasterLegend";
-
-type TimePeriod = [string, number];
-
-const TIME_PERIODS: TimePeriod[] = [
-  ["T0", 0],
-  ["T0 + 4h", 4 * 60 * 60 * 1000],
-  ["T0 + 8h", 8 * 60 * 60 * 1000],
-  ["T0 + 12h", 12 * 60 * 60 * 1000],
-];
+import If from "./If";
 
 function FloodModelMap() {
   const { boundingBoxes, mapbox_access_token, rasters, wmsLayers } = useConfigContext();
   const rect = useRectContext();
   const rasterResponse = useRasterMetadata([rasters.operationalModelDepth]);
   const { now } = useContext(TimeContext);
-  const { extraRasters } = useConfigContext();
+  const { extraRasters, floodModelTimePeriods } = useConfigContext();
+
+  const timePeriods = floodModelTimePeriods ?? [];
 
   const allExtraRasters: ExtraRasters["maps"] = {
     "": { title: extraRasters.title, uuid: "", color: "" },
     ...extraRasters.maps,
   };
 
-  const [currentPeriod, setCurrentPeriod] = useState<string>("T0");
+  const [currentPeriod, setCurrentPeriod] = useState<string>(
+    timePeriods.length > 0 ? timePeriods[0][0] : ""
+  );
   const [extraRasterTitles, setExtraRasterTitles] = useState<string[]>([]);
 
   const selectedExtraRasters = extraRasterTitles.map((title) => allExtraRasters[title] || null);
@@ -56,9 +52,9 @@ function FloodModelMap() {
   let raster = null;
   let time = now;
 
-  const selectedTimePeriod = TIME_PERIODS.find((period) => period[0] === currentPeriod);
+  const selectedTimePeriod = timePeriods.find((period) => period[0] === currentPeriod);
   if (selectedTimePeriod) {
-    time = new Date(time.getTime() + selectedTimePeriod[1]);
+    time = new Date(time.getTime() + selectedTimePeriod[1] * 60 * 1000); // Minutes to ms
   }
 
   if (rasterResponse.success && rasterResponse.data.length > 0) {
@@ -127,19 +123,21 @@ function FloodModelMap() {
           flexDirection: "column",
         }}
       >
-        <MapSelectBox
-          options={TIME_PERIODS.map((period) => [period[0], period[0]])}
-          currentValue={currentPeriod}
-          setValue={setCurrentPeriod}
-        />
-        {Object.keys(extraRasters.maps).length > 0 ? (
+        <If test={timePeriods.length > 0}>
+          <MapSelectBox
+            options={timePeriods.map((period) => [period[0], period[0]])}
+            currentValue={currentPeriod}
+            setValue={setCurrentPeriod}
+          />
+        </If>
+        <If test={Object.keys(extraRasters.maps).length > 0}>
           <MapMultipleSelectBox
             title={extraRasters.title}
             options={Object.values(allExtraRasters).map((extent) => [extent.title, extent.title])}
             currentValues={extraRasterTitles}
             setValues={setExtraRasterTitles}
           />
-        ) : null}
+        </If>
         {selectedExtraRasters
           .filter((extraRaster) => extraRaster && extraRaster.uuid)
           .map((extraRaster) => (

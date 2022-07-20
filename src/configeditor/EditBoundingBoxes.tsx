@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import {
-  Input,
   Button,
   VStack,
+  NumberInputField,
+  NumberInput,
   FormControl,
   FormLabel,
   Text,
@@ -20,7 +21,7 @@ interface LatLngInputProps {
   field: string;
   value: string;
   error: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (valueString: string) => void;
 }
 
 interface EditSingleBoundingBoxesProps {
@@ -35,14 +36,18 @@ function LatLngInput(props: LatLngInputProps) {
   return (
     <FormControl isInvalid={props.error}>
       <FormLabel htmlFor={props.field}>{props.title}</FormLabel>
-      <Input
+      <NumberInput
         id={props.field}
-        type="number"
         variant="outline"
         value={props.value}
         onChange={props.onChange}
+        precision={4}
+        min={-360}
+        max={360}
         size="sm"
-      />
+      >
+        <NumberInputField />
+      </NumberInput>
     </FormControl>
   );
 }
@@ -84,28 +89,28 @@ function EditSingleBoundingBoxes(props: EditSingleBoundingBoxesProps) {
         title="West"
         field="westmost"
         value={bounds ? bounds.westmost : ""}
-        onChange={(e) => onChange(e.target.value, "westmost")}
+        onChange={(value) => onChange(value, "westmost")}
         error={error}
       />
       <LatLngInput
         title="South"
         field="southmost"
         value={bounds ? bounds.southmost : ""}
-        onChange={(e) => onChange(e.target.value, "southmost")}
+        onChange={(value) => onChange(value, "southmost")}
         error={error}
       />
       <LatLngInput
         title="East"
         field="eastmost"
         value={bounds ? bounds.eastmost : ""}
-        onChange={(e) => onChange(e.target.value, "eastmost")}
+        onChange={(value) => onChange(value, "eastmost")}
         error={error}
       />
       <LatLngInput
         title="North"
         field="northmost"
         value={bounds ? bounds.northmost : ""}
-        onChange={(e) => onChange(e.target.value, "northmost")}
+        onChange={(value) => onChange(value, "northmost")}
         error={error}
       />
       <button

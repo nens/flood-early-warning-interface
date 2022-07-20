@@ -63,6 +63,13 @@ export function validate(config: Config) {
     validateTabs(config.tabs, errors);
   }
 
+  if (config.floodModelTimePeriods) {
+    const labels = config.floodModelTimePeriods.map((period) => period[0]);
+    if (duplicates(labels)) {
+      addError(errors, ["floodModelTimePeriods"], "Time period labels should all be unique.");
+    }
+  }
+
   validateTableTabConfigs(config.tableTabConfigs, errors);
   return errors;
 }
