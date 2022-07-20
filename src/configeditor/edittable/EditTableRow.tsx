@@ -4,8 +4,6 @@ import {
   Spinner,
   FormLabel,
   Input,
-  NumberInput,
-  NumberInputField,
   Text,
   Button,
   Heading,
@@ -14,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { BsJustify } from "react-icons/bs";
 
+import NumberInput from "../inputs/NumberInput";
 import { TableTabRowConfig } from "../../types/config";
 import { useConfigEdit } from "../hooks";
 import { getTableConfig, changeTableConfig } from "./tabUtils";
@@ -110,24 +109,24 @@ function EditTableRow({ tabKey }: EditTableRowProps) {
             Latitude (used for map points, raster queries)
           </FormLabel>
           <NumberInput
-            value={"" + (currentRow.lat || 0)}
+            value={currentRow.lat || 0}
             precision={4}
-            onChange={(e) => setValueInRow("lat", parseFloat(e))}
+            onChange={(e) => setValueInRow("lat", e)}
             isDisabled={allDisabled}
-          >
-            <NumberInputField />
-          </NumberInput>
+            min={-180}
+            max={180}
+          />
           <FormLabel htmlFor="longitude" mt={4}>
             Longitude (used for map points, raster queries)
           </FormLabel>
           <NumberInput
-            value={"" + (currentRow.lng || 0)}
+            value={currentRow.lng || 0}
             precision={4}
-            onChange={(e) => setValueInRow("lng", parseFloat(e))}
+            onChange={(e) => setValueInRow("lng", e)}
             isDisabled={allDisabled}
-          >
-            <NumberInputField />
-          </NumberInput>
+            min={-360}
+            max={360}
+          />
 
           <FormLabel htmlFor="alarmUuid" mt={4}>
             UUID of the alarm (either timeseries or raster)
