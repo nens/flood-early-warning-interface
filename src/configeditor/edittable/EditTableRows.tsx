@@ -7,7 +7,7 @@ import { useConfigEdit } from "../hooks";
 import If from "../../components/If";
 import { getTableConfig, changeTableConfig } from "./tabUtils";
 import { moveUp, moveDown, remove, change } from "../../util/functions";
-import { ErrorObject } from "../validation";
+import { getError } from "../validation";
 
 interface EditTableRowsProps {
   tabKey: string;
@@ -31,7 +31,9 @@ function getEmptyRow(): TableTabRowConfig {
 function EditTableRows({ tabKey }: EditTableRowsProps) {
   const { status, values, errors, setValues, submit } = useConfigEdit();
 
-  const tableErrors: ErrorObject = (errors?.tableTabConfigs as ErrorObject) ?? {};
+  const error = getError(errors, ["tableTabConfigs", tabKey, "rows"]);
+  const errorByRowUuid = (rowUuid: string) =>
+    getError(errors, ["tableTabConfigs", tabKey, "rows", rowUuid]);
 
   const currentConfig = getTableConfig(values.tableTabConfigs, tabKey);
   const currentRows = currentConfig.rows ?? [];
@@ -94,14 +96,14 @@ function EditTableRows({ tabKey }: EditTableRowsProps) {
               />
             </GridItem>
             <GridItem>
-              <Text color="red.600">{tableErrors[row.uuid] ?? null}</Text>
+              <Text color="red.600">{errorByRowUuid(row.uuid)}</Text>
             </GridItem>
           </Fragment>
         ))}
       </Grid>
-      <If test={"all" in tableErrors}>
+      <If test={!!error}>
         <Text m="4" color="red.600">
-          {tableErrors.all}
+          {error}
         </Text>
       </If>
       <Button onClick={submit} disabled={allDisabled} m={4}>

@@ -2,13 +2,30 @@ import { BoundingBox } from "../util/bounds";
 import { Config, TableTabConfigs, TableTabRowConfig } from "../types/config";
 import { getTabKey } from "../providers/ConfigProvider";
 import { Tab } from "../types/config";
+import { isFeature, isFeatureCollection, validateGeometry } from "../util/geo";
 
-export interface ErrorObject {
+/* The key of errors should relate to the place in the config object that the error
+   refers to, with "/" in between.
+   To make that easier to work with, there are "addError" and "getError" functions
+   that take an array of strings or numbers as key instead.
+ */
+
+export interface ValidationErrors {
   [key: string]: string;
 }
 
-export interface ValidationErrors {
-  [key: string]: string | ErrorObject;
+function _keysTokey(keys: (string | number)[]): string {
+  return keys.map((key) => `${key}`).join("/");
+}
+
+function addError(errors: ValidationErrors, keys: (string | number)[], error: string): void {
+  const key = _keysTokey(keys);
+  errors[key] = error;
+}
+
+export function getError(errors: ValidationErrors, keys: (string | number)[]): string | undefined {
+  const key = _keysTokey(keys);
+  return errors[key];
 }
 
 function duplicates(strings: string[]) {
@@ -19,7 +36,7 @@ export function validate(config: Config) {
   const errors: ValidationErrors = {};
 
   if (config.dashboardTitle === "") {
-    errors.dashboardTitle = "Dashboard title should not be the empty string.";
+    errors.dashboardTitle = "Dashboard title should not be empty.";
   }
 
   if (config.boundingBoxes) {
@@ -46,6 +63,13 @@ export function validate(config: Config) {
     validateTabs(config.tabs, errors);
   }
 
+  if (config.floodModelTimePeriods) {
+    const labels = config.floodModelTimePeriods.map((period) => period[0]);
+    if (duplicates(labels)) {
+      addError(errors, ["floodModelTimePeriods"], "Time period labels should all be unique.");
+    }
+  }
+
   validateTableTabConfigs(config.tableTabConfigs, errors);
   return errors;
 }
@@ -53,49 +77,33 @@ export function validate(config: Config) {
 function validateBoundingBoxes(type: string, bounds: BoundingBox | null, errors: ValidationErrors) {
   if (typeof errors.boundingBoxes === "string") return;
 
+  const error = (e: string) => addError(errors, ["boundingBoxes", type], e);
+
   if (type === "default" && bounds === null) {
-    errors.boundingBoxes = {
-      ...errors.boundingBoxes,
-      [type]: "Default field is required.",
-    };
+    error("Default field is required.");
   }
 
   if (bounds) {
     if (parseFloat(bounds.northmost) < parseFloat(bounds.southmost)) {
-      errors.boundingBoxes = {
-        ...errors.boundingBoxes,
-        [type]: "North coordinate must be greater than South coordinate.",
-      };
+      error("North coordinate must be greater than South coordinate.");
     } else if (parseFloat(bounds.eastmost) < parseFloat(bounds.westmost)) {
-      errors.boundingBoxes = {
-        ...errors.boundingBoxes,
-        [type]: "East coordinate must be greater than West coordinate.",
-      };
+      error("East coordinate must be greater than West coordinate.");
     } else if (
       parseFloat(bounds.westmost) < -180 ||
       parseFloat(bounds.westmost) > 180 ||
       parseFloat(bounds.eastmost) < -180 ||
       parseFloat(bounds.eastmost) > 180
     ) {
-      errors.boundingBoxes = {
-        ...errors.boundingBoxes,
-        [type]: "West and East coordinates must be between -180° and 180°.",
-      };
+      error("West and East coordinates must be between -180° and 180°.");
     } else if (
       parseFloat(bounds.southmost) < -90 ||
       parseFloat(bounds.southmost) > 90 ||
       parseFloat(bounds.northmost) < -90 ||
       parseFloat(bounds.northmost) > 90
     ) {
-      errors.boundingBoxes = {
-        ...errors.boundingBoxes,
-        [type]: "South and North coordinates must be between -90° and 90°.",
-      };
+      error("South and North coordinates must be between -90° and 90°.");
     } else if (!bounds.toConfigBbox().every((e) => e !== "")) {
-      errors.boundingBoxes = {
-        ...errors.boundingBoxes,
-        [type]: "Please fill in all fields.",
-      };
+      error("Please fill in all fields.");
     }
   }
 }
@@ -118,7 +126,7 @@ function validateTabs(tabs: Tab[], errors: ValidationErrors) {
   }
 
   if (error) {
-    errors.tabs = error;
+    addError(errors, ["tabs"], error);
   }
 }
 
@@ -141,7 +149,7 @@ function validateTab(tab: Tab, errors: ValidationErrors) {
   }
 
   if (error) {
-    errors[tabKey] = error;
+    addError(errors, ["tabs", tabKey], error);
   }
 }
 
@@ -149,33 +157,52 @@ function validateTableTabConfigs(tableTabConfigs: TableTabConfigs, errors: Valid
   // We run this for all table tab configs, but the assumption is that there is only
   // one (the one being edited) that can have errors. Little bit hacky but otherwise
   // the error object becomes more complicated still...
-  const tableTabErrors: ErrorObject = {};
-  Object.values(tableTabConfigs).forEach((tableTabConfig) => {
-    validateTableRows(tableTabConfig.rows ?? [], tableTabErrors);
+
+  Object.entries(tableTabConfigs).forEach(([tableTabKey, tableTabConfig]) => {
+    validateTableRows(tableTabConfig.rows ?? [], tableTabKey, errors);
   });
-  if (Object.keys(tableTabErrors).length) {
-    errors.tableTabConfigs = tableTabErrors;
-  }
 }
 
-function validateTableRows(rows: TableTabRowConfig[], errors: ErrorObject) {
+function validateTableRows(
+  rows: TableTabRowConfig[],
+  tableTabKey: string,
+  errors: ValidationErrors
+) {
   rows.forEach((row) => {
-    let error = "";
-    if (!row.name) error += "Each row must have a name.";
-
+    if (!row.name) {
+      addError(
+        errors,
+        ["tableTabConfigs", tableTabKey, "rows", row.uuid],
+        "Each row must have a name."
+      );
+    }
     if (row.mapGeometry) {
-      let content = null;
       try {
-        content = JSON.parse(row.mapGeometry);
+        const content = JSON.parse(row.mapGeometry);
+        validateGeojson(content, (error: string) =>
+          addError(errors, ["tableTabConfigs", tableTabKey, "rows", row.uuid, "mapGeometry"], error)
+        );
       } catch (e) {
-        error += "Invalid JSON.";
+        addError(
+          errors,
+          ["tableTabConfigs", tableTabKey, "rows", row.uuid, "mapGeometry"],
+          "Invalid JSON."
+        );
       }
     }
-
-    if (error) errors[row.uuid] = error;
   });
 
   if (duplicates(rows.map((row) => row.name))) {
-    errors.all = "Row names must be unique.";
+    addError(errors, ["tableTabConfigs", tableTabKey, "rows"], "Row names must be unique.");
+  }
+}
+
+function validateGeojson(json: any, errorFn: (error: string) => void) {
+  if (isFeature(json)) {
+    validateGeometry(json.geometry, errorFn);
+  } else if (isFeatureCollection(json)) {
+    json.features.map((feature) => validateGeometry(feature.geometry, errorFn));
+  } else {
+    errorFn("Not a GeoJSON Feature or FeatureCollection.");
   }
 }

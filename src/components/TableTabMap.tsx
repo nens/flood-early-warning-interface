@@ -96,7 +96,7 @@ function FeaturesForRow({
         if (feature.geometry.type === "Polygon") {
           return (
             <Polygon
-              key={row.uuid + idx + hover}
+              key={row.uuid + idx + hover + color}
               positions={[geojsonToLatLngs(feature.geometry.coordinates[0])]}
               eventHandlers={eventHandlers}
               fillOpacity={hover ? 0.8 : 0.4}
@@ -109,7 +109,7 @@ function FeaturesForRow({
         } else if (feature.geometry.type === "LineString") {
           return (
             <Polyline
-              key={row.uuid + idx + hover}
+              key={row.uuid + idx + hover + color}
               positions={geojsonToLatLngs(feature.geometry.coordinates)}
               pathOptions={{ opacity: hover ? 1 : 0.5, color }}
               eventHandlers={eventHandlers}
@@ -127,8 +127,10 @@ function FeaturesForRow({
           eventHandlers={eventHandlers}
           fillOpacity={hover ? 1 : 0.7}
           color={color}
-          key={`${hover}`}
-        />
+          key={`${hover}${color}`}
+        >
+          {features.length === 0 ? <Tooltip permanent>{row.name}</Tooltip> : null}
+        </CircleMarker>
       ) : null}
     </>
   );

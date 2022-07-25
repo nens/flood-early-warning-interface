@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import {
-  Input,
   Button,
   VStack,
+  NumberInputField,
+  NumberInput,
   FormControl,
   FormLabel,
   Text,
@@ -12,7 +13,7 @@ import {
 import { Config } from "../types/config";
 import { BoundingBox } from "../util/bounds";
 import { useConfigEdit } from "./hooks";
-import { ErrorObject } from "./validation";
+import { getError } from "./validation";
 import { DEFAULT_CONFIG } from "../constants";
 
 interface LatLngInputProps {
@@ -20,7 +21,7 @@ interface LatLngInputProps {
   field: string;
   value: string;
   error: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (valueString: string) => void;
 }
 
 interface EditSingleBoundingBoxesProps {
@@ -35,14 +36,18 @@ function LatLngInput(props: LatLngInputProps) {
   return (
     <FormControl isInvalid={props.error}>
       <FormLabel htmlFor={props.field}>{props.title}</FormLabel>
-      <Input
+      <NumberInput
         id={props.field}
-        type="number"
         variant="outline"
         value={props.value}
         onChange={props.onChange}
+        precision={4}
+        min={-360}
+        max={360}
         size="sm"
-      />
+      >
+        <NumberInputField />
+      </NumberInput>
     </FormControl>
   );
 }
@@ -84,28 +89,28 @@ function EditSingleBoundingBoxes(props: EditSingleBoundingBoxesProps) {
         title="West"
         field="westmost"
         value={bounds ? bounds.westmost : ""}
-        onChange={(e) => onChange(e.target.value, "westmost")}
+        onChange={(value) => onChange(value, "westmost")}
         error={error}
       />
       <LatLngInput
         title="South"
         field="southmost"
         value={bounds ? bounds.southmost : ""}
-        onChange={(e) => onChange(e.target.value, "southmost")}
+        onChange={(value) => onChange(value, "southmost")}
         error={error}
       />
       <LatLngInput
         title="East"
         field="eastmost"
         value={bounds ? bounds.eastmost : ""}
-        onChange={(e) => onChange(e.target.value, "eastmost")}
+        onChange={(value) => onChange(value, "eastmost")}
         error={error}
       />
       <LatLngInput
         title="North"
         field="northmost"
         value={bounds ? bounds.northmost : ""}
-        onChange={(e) => onChange(e.target.value, "northmost")}
+        onChange={(value) => onChange(value, "northmost")}
         error={error}
       />
       <button
@@ -141,7 +146,7 @@ function EditBoundingBoxes() {
     : null;
   const damBounds = boundingBoxes.dams ? new BoundingBox(...boundingBoxes.dams) : null;
 
-  const boundingBoxErrors = "boundingBoxes" in errors ? (errors.boundingBoxes as ErrorObject) : {};
+  const error = (type: string) => getError(errors, ["boundingBoxes", type]);
 
   // useEffect when component first mounted to update default bounding boxes
   // to the value in DEFAULT_CONFIG if it does not have a value yet.
@@ -165,7 +170,7 @@ function EditBoundingBoxes() {
         <Text>- Default field is required and will be used in place of any missing field.</Text>
       </em>
       <FormControl>
-        <FormControl isRequired isInvalid={!!boundingBoxErrors.default}>
+        <FormControl isRequired isInvalid={!error("default")}>
           <FormLabel htmlFor="default">
             <b>Default</b>
           </FormLabel>
@@ -174,11 +179,11 @@ function EditBoundingBoxes() {
             bounds={defaultBounds}
             values={values}
             updateValues={updateValues}
-            error={!!boundingBoxErrors.default}
+            error={!!error("default")}
           />
-          <FormErrorMessage>{boundingBoxErrors.default}</FormErrorMessage>
+          <FormErrorMessage>{error("default")}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={!!boundingBoxErrors.warningAreas} marginTop={5}>
+        <FormControl isInvalid={!!error("warningAreas")} marginTop={5}>
           <FormLabel htmlFor="warningAreas">
             <b>Warning Areas</b>
           </FormLabel>
@@ -187,11 +192,11 @@ function EditBoundingBoxes() {
             bounds={warningAreaBounds}
             values={values}
             updateValues={updateValues}
-            error={!!boundingBoxErrors.warningAreas}
+            error={!!error("warningAreas")}
           />
-          <FormErrorMessage>{boundingBoxErrors.warningAreas}</FormErrorMessage>
+          <FormErrorMessage>{error("warningAreas")}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={!!boundingBoxErrors.dams} marginTop={5}>
+        <FormControl isInvalid={!!error("dams")} marginTop={5}>
           <FormLabel htmlFor="dams">
             <b>Dams</b>
           </FormLabel>
@@ -200,11 +205,11 @@ function EditBoundingBoxes() {
             bounds={damBounds}
             values={values}
             updateValues={updateValues}
-            error={!!boundingBoxErrors.dams}
+            error={!!error("dams")}
           />
-          <FormErrorMessage>{boundingBoxErrors.dams}</FormErrorMessage>
+          <FormErrorMessage>{error("dams")}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={!!boundingBoxErrors.floodModelMap} marginTop={5}>
+        <FormControl isInvalid={!!error("floodModelMap")} marginTop={5}>
           <FormLabel htmlFor="floodModelMap">
             <b>Flood Model Map</b>
           </FormLabel>
@@ -213,11 +218,11 @@ function EditBoundingBoxes() {
             bounds={floodModelMapBounds}
             values={values}
             updateValues={updateValues}
-            error={!!boundingBoxErrors.floodModelMap}
+            error={!!error("floodModelMap")}
           />
-          <FormErrorMessage>{boundingBoxErrors.floodModelMap}</FormErrorMessage>
+          <FormErrorMessage>{error("floodModelMap")}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={!!boundingBoxErrors.rainMap} marginTop={5}>
+        <FormControl isInvalid={!!error("rainMap")} marginTop={5}>
           <FormLabel htmlFor="rainMap">
             <b>Rain Map</b>
           </FormLabel>
@@ -226,9 +231,9 @@ function EditBoundingBoxes() {
             bounds={rainMapBounds}
             values={values}
             updateValues={updateValues}
-            error={!!boundingBoxErrors.rainMap}
+            error={!!error("rainMap")}
           />
-          <FormErrorMessage>{boundingBoxErrors.rainMap}</FormErrorMessage>
+          <FormErrorMessage>{error("rainMap")}</FormErrorMessage>
         </FormControl>
         <Button onClick={submit} marginTop="4" disabled={status !== "ok"}>
           Submit
