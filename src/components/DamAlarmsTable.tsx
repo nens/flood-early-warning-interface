@@ -122,6 +122,9 @@ function DamRow({ dam, alarm, now, operationalModelLevel }: RowProps) {
         {dam.properties.name.includes("Northmead") ? (
           <PdfIcon url="https://parramatta.lizard.net/media/parramatta/Emergency Plan - Northmead Basin Oct 2021.pdf" />
         ) : null}
+        {dam.properties.name.includes("Loyalty") ? (
+          <PdfIcon url="https://parramatta.lizard.net/media/parramatta/LoyaltyBasinDSEP_300609.pdf" />
+        ) : null}
       </div>
       <div className={styles.tdCenter}>
         {hasMessages || isAdmin ? (
