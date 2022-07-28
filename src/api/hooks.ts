@@ -296,6 +296,14 @@ export function useConfig<T extends { version?: number } = Config>(
           // Take defaults, and add the fields returned by the server (that will
           // usually override most or all defaults).
           const configWithDefaults: T = { ...defaults, ...serverConfig };
+          if (serverConfig.boundingBoxes) {
+            // It may have overwritten the default boundingBoxes
+            (configWithDefaults as unknown as Config).boundingBoxes = {
+              ...(defaults as unknown as Config).boundingBoxes,
+              ...serverConfig.boundingBoxes!
+            };
+          }
+
           return {
             ...response.results[0],
             clientconfig: {

@@ -11,7 +11,8 @@ export function useConfigEdit() {
   const currentConfig = useConfigContext();
   const updateConfig = useUpdateConfig(); // See below
 
-  console.assert(checkValidation(currentConfig, validate(currentConfig)), currentConfig);
+
+  console.assert(checkValidation(currentConfig, validate(currentConfig)), validate(currentConfig));
 
   const [status, setStatus] = useState("ok");
 
