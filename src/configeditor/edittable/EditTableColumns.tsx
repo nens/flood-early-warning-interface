@@ -64,7 +64,7 @@ function EditTableColumns({ tabKey }: EditTableColumnsProps) {
           isChecked={currentGeneralConfig.columnRssWarning}
           onChange={(e) => setValueInColumns("columnRssWarning", e.target.checked)}
         >
-          "Partner Warning" based on RSS feed
+          "Public Warning" based on RSS feed
         </Checkbox>
         <Checkbox
           id="columnTriggerLevel"
@@ -72,7 +72,7 @@ function EditTableColumns({ tabKey }: EditTableColumnsProps) {
           isChecked={currentGeneralConfig.columnTriggerLevel}
           onChange={(e) => setValueInColumns("columnTriggerLevel", e.target.checked)}
         >
-          Currently triggered threshold level, if any
+          "Partner Warning" based on currently triggered threshold level, if any
         </Checkbox>
         <Checkbox
           id="columnAlarmThresholds"
