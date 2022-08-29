@@ -62,7 +62,7 @@ function FeaturesForRow({
   setArea: (area: Area) => void;
 }) {
   const hover = row.uuid === area?.id;
-  const alarm = useAlarm(row.alarmUuid);
+  const alarm = useAlarm(row.alarmUuid, tabConfig.general.alarmType);
 
   const threshold = configThresholdForLevel(tabConfig, alarm?.latest_trigger.warning_level ?? "");
   const color = threshold?.color ?? "var(--trigger-none)";
