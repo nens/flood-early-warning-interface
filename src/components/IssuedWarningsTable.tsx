@@ -82,9 +82,9 @@ function IssuedWarningsTable() {
     return null;
   }
 
-  const alarms = (
-    rasterAlarms.data.results.slice() as (RasterAlarm | TimeseriesAlarm)[]
-  ).concat(timeseriesAlarms.data.slice());
+  const alarms = (rasterAlarms.data.results.slice() as (RasterAlarm | TimeseriesAlarm)[]).concat(
+    timeseriesAlarms.data.slice()
+  );
 
   if (alarms.length === 0) {
     return null;

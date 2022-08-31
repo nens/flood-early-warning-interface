@@ -12,7 +12,14 @@ import Legend from "./Legend";
 import If from "./If";
 
 function RainMap() {
-  const { boundingBoxes, mapbox_access_token, rainfallWmsLayers, rainLegend, showDesignRain, showRainfallModalButton } = useConfigContext();
+  const {
+    boundingBoxes,
+    mapbox_access_token,
+    rainfallWmsLayers,
+    rainLegend,
+    showDesignRain,
+    showRainfallModalButton,
+  } = useConfigContext();
   const rect = useRectContext();
   const [currentLayer, setCurrentLayer] = useState<string>(
     rainfallWmsLayers && rainfallWmsLayers.length ? rainfallWmsLayers[0].wms_layers : ""
