@@ -1,25 +1,15 @@
-import { useState, Fragment } from "react";
 import {
   Button,
   Checkbox,
-  Heading,
-  Grid,
-  GridItem,
-  IconButton,
   Input,
   Spinner,
   Text,
   VStack,
   Textarea,
 } from "@chakra-ui/react";
-import { BsFillArrowUpSquareFill, BsFillArrowDownSquareFill, BsTrashFill } from "react-icons/bs";
-import { FaUndo } from "react-icons/fa";
 
 import If from "../components/If";
-import { TimePeriod } from "../types/config";
-import { moveUp, moveDown, remove, change } from "../util/functions";
 import { useConfigEdit } from "./hooks";
-import NumberInput from "./inputs/NumberInput";
 import { getError } from "./validation";
 
 function EditFloodModelTab() {
