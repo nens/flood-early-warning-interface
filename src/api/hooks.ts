@@ -300,7 +300,7 @@ export function useConfig<T extends { version?: number } = Config>(
             // It may have overwritten the default boundingBoxes
             (configWithDefaults as unknown as Config).boundingBoxes = {
               ...(defaults as unknown as Config).boundingBoxes,
-              ...serverConfig.boundingBoxes!
+              ...serverConfig.boundingBoxes!,
             };
           }
 

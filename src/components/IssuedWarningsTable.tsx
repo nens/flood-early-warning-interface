@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Alarm, Trigger } from "../types/api";
-import { useRasterAlarms, useAlarmTriggers } from "../api/hooks";
+import { Alarm, Trigger, RasterAlarm, TimeseriesAlarm } from "../types/api";
+import { useRasterAlarms, useAlarmTriggers, useTimeseriesAlarms } from "../api/hooks";
 import { dashOrNum } from "../util/functions";
 
 import styles from "./IssuedWarningsTable.module.css";
@@ -71,9 +71,10 @@ function IssuedWarningsTable() {
   const [ordering, setOrdering] = useState<string>(defaultOrdering);
 
   const rasterAlarms = useRasterAlarms();
+  const timeseriesAlarms = useTimeseriesAlarms();
   const response = useAlarmTriggers();
 
-  if (!rasterAlarms.data || !rasterAlarms.data.results || !rasterAlarms.data.results.length) {
+  if (!rasterAlarms.data || !timeseriesAlarms.data) {
     return null;
   }
 
@@ -81,7 +82,14 @@ function IssuedWarningsTable() {
     return null;
   }
 
-  const alarms = rasterAlarms.data.results.slice();
+  const alarms = (rasterAlarms.data.results.slice() as (RasterAlarm | TimeseriesAlarm)[]).concat(
+    timeseriesAlarms.data.slice()
+  );
+
+  if (alarms.length === 0) {
+    return null;
+  }
+
   alarms.sort((a1, a2) => {
     if (a1.name < a2.name) return -1;
     if (a2.name < a1.name) return 1;

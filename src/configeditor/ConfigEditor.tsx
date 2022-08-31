@@ -6,6 +6,7 @@ import { getTabKey, useConfigContext } from "../providers/ConfigProvider";
 import ConfigTabs, { ConfigTabDefinition } from "./ConfigTabs";
 import EditBoundingBoxes from "./EditBoundingBoxes";
 import EditFloodModelTab from "./EditFloodModelTab";
+import EditRainfallTab from "./EditRainfallTab";
 import EditGeneral from "./EditGeneral";
 import EditData from "./EditData";
 import EditTableTab from "./EditTableTab";
@@ -36,6 +37,13 @@ function ConfigEditor() {
         url: "waterlevel",
         title: "Flood model tab",
         component: <EditFloodModelTab />,
+      });
+    } else if (tab.url === "rainfall") {
+      // Add config for 'rainfall tab'
+      tabs.push({
+        url: "rainfall",
+        title: "Rainfall tab",
+        component: <EditRainfallTab />,
       });
     }
   });
