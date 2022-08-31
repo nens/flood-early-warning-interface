@@ -602,9 +602,12 @@ function TimeseriesTile({ tile, full = false }: Props) {
       : []
   ).filter((r) => r !== null) as RasterAlarm[];
 
+  /* Sometimes not all alarms should be shown in the chart */
+  const alarmsToHide: string[] = tile.alarmsToHide ?? [];
+
   const allAlarms: Alarm[] = (rasterAlarms as Alarm[]).concat(
     timeseriesAlarmsResponse.data as Alarm[]
-  );
+  ).filter(alarm => alarmsToHide.indexOf(alarm.uuid) !== 1);
 
   // Note: always concat timeseries first, then rasters, as config items like
   // tile.colors and tile.legendStrings depend on that.

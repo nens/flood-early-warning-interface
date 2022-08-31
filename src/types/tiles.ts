@@ -81,6 +81,7 @@ export interface ChartTile extends BaseTileProps {
   historicalTimeseries?: string[];
   thresholds?: Threshold[];
   timelines?: Timeline[];
+  alarmsToHide?: string[];  /* Don't show these alarm UUIDs */
 }
 
 /* External (mostly single images) */
