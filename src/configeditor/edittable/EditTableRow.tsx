@@ -169,7 +169,7 @@ function EditTableRow({ tabKey }: EditTableRowProps) {
             variant="outline"
             placeholder="Download URL"
             value={currentRow.downloadUrl || ""}
-            onChange={(event) => setValueInRow("clickUrl", event.target.value || null)}
+            onChange={(event) => setValueInRow("downloadUrl", event.target.value || null)}
           />
 
           <If test={!!errorByRowUuid(currentRowUuid)}>
