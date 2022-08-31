@@ -161,4 +161,8 @@ export interface Config {
   emergencyPlansText: string;
   waterlevelUnit?: string;
   floodModelTimePeriods?: TimePeriod[];
+  showDesignRain?: boolean;
+  showRainfallModalButton?: boolean;
+  rainfallModalTitle?: string;
+  rainfallModalContent?: string;
 }

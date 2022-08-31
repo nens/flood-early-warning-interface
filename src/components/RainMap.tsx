@@ -7,10 +7,12 @@ import { useRectContext } from "../providers/RectProvider";
 import MapSelectBox from "./MapSelectBox";
 import GeoserverGetFeatureInfoPopup from "./GeoserverGetFeatureInfoPopup";
 import DesignStormsButton from "./DesignStormsButton";
+import RainfallModalButton from "./RainfallModalButton";
 import Legend from "./Legend";
+import If from "./If";
 
 function RainMap() {
-  const { boundingBoxes, mapbox_access_token, rainfallWmsLayers, rainLegend } = useConfigContext();
+  const { boundingBoxes, mapbox_access_token, rainfallWmsLayers, rainLegend, showDesignRain, showRainfallModalButton } = useConfigContext();
   const rect = useRectContext();
   const [currentLayer, setCurrentLayer] = useState<string>(
     rainfallWmsLayers && rainfallWmsLayers.length ? rainfallWmsLayers[0].wms_layers : ""
@@ -68,7 +70,12 @@ function RainMap() {
   return (
     <>
       {wmsLayerSelect}
-      <DesignStormsButton />
+      <If test={showDesignRain ?? true}>
+        <DesignStormsButton />
+      </If>
+      <If test={showRainfallModalButton ?? false}>
+        <RainfallModalButton />
+      </If>
       <Legend steps={rainLegend} />
       <MapContainer
         key={`${rect.width}x${rect.height}`}

@@ -70,6 +70,19 @@ export function validate(config: Config) {
     }
   }
 
+  if (config.showRainfallModalButton) {
+    if (config.showDesignRain) {
+      addError(errors, ["showRainfallModalButton"], "Please show at most one of the modal buttons, not both.");
+    }
+
+    if (!config.rainfallModalTitle) {
+      addError(errors, ["rainfallModalTitle"], "Please fill in button text (and modal title).");
+    }
+    if (!config.rainfallModalContent) {
+      addError(errors, ["rainfallModalContent"], "Please fill in content for the modal in Markdown.");
+    }
+  }
+
   validateTableTabConfigs(config.tableTabConfigs, errors);
   return errors;
 }

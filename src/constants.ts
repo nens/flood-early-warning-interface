@@ -109,6 +109,10 @@ export const DEFAULT_CONFIG: Config = {
     ["T0 + 8h", 8 * 60],
     ["T0 + 12h", 12 * 60],
   ],
+  showDesignRain: true,
+  showRainfallModalButton: false,
+  rainfallModalTitle: "",
+  rainfallModalContent: "",
 };
 
 export function getMapBackgrounds(access_token: string) {
