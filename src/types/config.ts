@@ -78,6 +78,7 @@ export interface TableTabGeneralConfig {
   columnAlarmThresholds?: boolean /* From alarm UUIDs of rows */;
   columnDownloadLinks?: boolean;
   columnAdminMessages?: boolean;
+  mapLabels?: "all" | "onhover" | "none";
 }
 
 export interface TableTabRowConfig {

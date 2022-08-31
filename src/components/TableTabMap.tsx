@@ -11,6 +11,7 @@ import { LatLngExpression } from "leaflet";
 import { useClickOnTableRow } from "./TableTabTable";
 import { useAlarm } from "../api/hooks";
 import { configThresholdForLevel } from "../util/config";
+import If from "./If";
 
 function geojsonToLatLngs(ps: Position[]): LatLngExpression[] {
   return ps.map((point) => [point[1], point[0]] as LatLngExpression);
@@ -66,8 +67,10 @@ function FeaturesForRow({
 
   const threshold = configThresholdForLevel(tabConfig, alarm?.latest_trigger.warning_level ?? "");
   const color = threshold?.color ?? "var(--trigger-none)";
-
   const rowClick = useClickOnTableRow(row, false);
+
+  const mapLabel = tabConfig.general.mapLabels || "all";
+  const showTooltip = mapLabel === "all" || (mapLabel === "onhover" && hover);
 
   // Draw map things for this feature.
   let features: Feature[] = [];
@@ -103,7 +106,9 @@ function FeaturesForRow({
               opacity={hover ? 1 : 0.5}
               color={color}
             >
-              <Tooltip permanent>{row.name}</Tooltip>
+              <If test={showTooltip}>
+                <Tooltip permanent>{row.name}</Tooltip>
+              </If>
             </Polygon>
           );
         } else if (feature.geometry.type === "LineString") {
@@ -114,7 +119,9 @@ function FeaturesForRow({
               pathOptions={{ opacity: hover ? 1 : 0.5, color }}
               eventHandlers={eventHandlers}
             >
-              <Tooltip permanent>{row.name}</Tooltip>
+              <If test={showTooltip}>
+                <Tooltip permanent>{row.name}</Tooltip>
+              </If>
             </Polyline>
           );
         }
@@ -129,7 +136,7 @@ function FeaturesForRow({
           color={color}
           key={`${hover}${color}`}
         >
-          {features.length === 0 ? <Tooltip permanent>{row.name}</Tooltip> : null}
+          {features.length === 0 && showTooltip ? <Tooltip permanent>{row.name}</Tooltip> : null}
         </CircleMarker>
       ) : null}
     </>

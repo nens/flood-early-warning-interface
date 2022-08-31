@@ -1,6 +1,6 @@
 import { Button, FormLabel, Input, Spinner, Select } from "@chakra-ui/react";
 
-import { TableTabConfig, TableTabGeneralConfig } from "../../types/config";
+import { TableTabGeneralConfig } from "../../types/config";
 import { useConfigEdit } from "../hooks";
 import If from "../../components/If";
 import { getTableConfig, changeTableConfig } from "./tabUtils";
@@ -76,6 +76,18 @@ function EditTableGeneral({ tabKey }: EditTableGeneralProps) {
         <option value="raster">Raster alarm</option>
         <option value="timeseries">Timeseries alarm</option>
         <option value="none">None</option>
+      </Select>
+      <FormLabel htmlFor="mapLabels">Map Labels</FormLabel>
+      <Select
+        id="mapLabels"
+        variant="outline"
+        placeholder="-- Map Labels --"
+        value={currentGeneralConfig.mapLabels || "all"}
+        onChange={(event) => setValueInGeneral("mapLabels", event.target.value)}
+      >
+        <option value="all">Show all</option>
+        <option value="onhover">Show label on hover</option>
+        <option value="none">Show no map labels</option>
       </Select>
       <Button onClick={submit} disabled={allDisabled} mt={4}>
         Submit
