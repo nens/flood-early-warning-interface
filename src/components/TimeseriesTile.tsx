@@ -607,7 +607,7 @@ function TimeseriesTile({ tile, full = false }: Props) {
 
   const allAlarms: Alarm[] = (rasterAlarms as Alarm[])
     .concat(timeseriesAlarmsResponse.data as Alarm[])
-    .filter((alarm) => alarmsToHide.indexOf(alarm.uuid) !== 1);
+    .filter((alarm) => alarmsToHide.indexOf(alarm.uuid) === -1);
 
   // Note: always concat timeseries first, then rasters, as config items like
   // tile.colors and tile.legendStrings depend on that.
