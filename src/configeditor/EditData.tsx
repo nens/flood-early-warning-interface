@@ -6,7 +6,6 @@ import {
   FormControl,
   FormLabel,
   Text,
-  Textarea,
   FormErrorMessage,
 } from "@chakra-ui/react";
 import { useConfigEdit } from "./hooks";

@@ -1,6 +1,6 @@
-import { VStack, Button, Checkbox, FormLabel, Input, Spinner, Select } from "@chakra-ui/react";
+import { VStack, Button, Checkbox, Spinner } from "@chakra-ui/react";
 
-import { TableTabConfig, TableTabGeneralConfig } from "../../types/config";
+import { TableTabGeneralConfig } from "../../types/config";
 import { useConfigEdit } from "../hooks";
 import If from "../../components/If";
 import { getTableConfig, changeTableConfig } from "./tabUtils";
