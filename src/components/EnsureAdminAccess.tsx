@@ -1,7 +1,7 @@
-import { FC } from "react";
+import { FC, PropsWithChildren } from "react";
 import { useUserHasRole } from "../api/hooks";
 
-const EnsureAdminAccess: FC<{}> = ({ children }) => {
+const EnsureAdminAccess: FC<PropsWithChildren<{}>> = ({ children }) => {
   const isAdmin = useUserHasRole("admin");
 
   if (!isAdmin) {

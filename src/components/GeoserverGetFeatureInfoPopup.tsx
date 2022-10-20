@@ -26,7 +26,8 @@ function GetFeatureInfoSubComponent({ url, layer, click, close }: FeatureInfoSub
   if (featureInfo === null) return null;
 
   return (
-    <Popup position={click.position} onClose={close}>
+    <Popup position={click.position}
+      eventHandlers={{popupclose: close}}>
       {config.rainPopupFields.map((field) => (
         <div className={styles.PopupRow} key={field.description}>
           <div className={styles.PopupField}>{field.description}</div>

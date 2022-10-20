@@ -2151,8 +2151,10 @@
     "prop-types" "^15.7.2"
     "tslib" "^2.1.0"
 
-"@react-leaflet/core@^1.0.2":
-  "version" "1.0.2"
+"@react-leaflet/core@^2.1.0":
+  "integrity" "sha512-Qk7Pfu8BSarKGqILj4x7bCSZ1pjuAPZ+qmRwH5S7mDS91VSbVVsJSrW4qA+GPrro8t69gFYVMWb1Zc4yFmPiVg=="
+  "resolved" "https://registry.npmjs.org/@react-leaflet/core/-/core-2.1.0.tgz"
+  "version" "2.1.0"
 
 "@remix-run/router@1.0.0":
   "integrity" "sha512-SCR1cxRSMNKjaVYptCzBApPDqGwa3FGdjVHc+rOToocNPHQdIYLZBfv/3f+KvYuXDkUGVIW9IAzmPNZDRL1I4A=="
@@ -2642,7 +2644,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/leaflet@*", "@types/leaflet@^1.5.23":
+"@types/leaflet@*", "@types/leaflet@^1.9.0":
   "integrity" "sha512-7LeOSj7EloC5UcyOMo+1kc3S1UT3MjJxwqsMT1d2PTyvQz53w0Y0oSSk9nwZnOZubCmBvpSNGceucxiq+ZPEUw=="
   "resolved" "https://registry.npmjs.org/@types/leaflet/-/leaflet-1.9.0.tgz"
   "version" "1.9.0"
@@ -2719,14 +2721,14 @@
   "resolved" "https://registry.npmjs.org/@types/range-parser/-/range-parser-1.2.4.tgz"
   "version" "1.2.4"
 
-"@types/react-dom@^16.9.8":
-  "integrity" "sha512-Oqc0RY4fggGA3ltEgyPLc3IV9T73IGoWjkONbsyJ3ZBn+UPPCYpU2ec0i3cEbJuEdZtkqcCF2l1zf2pBdgUGSg=="
-  "resolved" "https://registry.npmjs.org/@types/react-dom/-/react-dom-16.9.16.tgz"
-  "version" "16.9.16"
+"@types/react-dom@^18.0.5":
+  "integrity" "sha512-OWPWTUrY/NIrjsAPkAk1wW9LZeIjSvkXRhclsFO8CZcZGCOg2G0YZy4ft+rOyYxy8B7ui5iZzi9OkDebZ7/QSA=="
+  "resolved" "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.0.5.tgz"
+  "version" "18.0.5"
   dependencies:
-    "@types/react" "^16"
+    "@types/react" "*"
 
-"@types/react-leaflet@^2.5.2":
+"@types/react-leaflet@^2.8.2":
   "integrity" "sha512-Iel8Vd1bSCD38Yhiqcmm/+9hjPEdd39LFE3tBMbOytq3QAQsC3LDrbo6ifoh8JbpqPbCsQPo9Wx5OELHixEShg=="
   "resolved" "https://registry.npmjs.org/@types/react-leaflet/-/react-leaflet-2.8.2.tgz"
   "version" "2.8.2"
@@ -2759,10 +2761,22 @@
     "@types/history" "^4.7.11"
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16", "@types/react@^16.8.0 || ^17.0.0", "@types/react@^16.8.0 || ^17.0.0 || ^18.0.0", "@types/react@^16.9.0 || ^17.0.0 || ^18.0.0", "@types/react@^16.9.53", "@types/react@>=16":
-  "version" "16.14.2"
+"@types/react@*", "@types/react@^16.8.0 || ^17.0.0 || ^18.0.0", "@types/react@^16.9.0 || ^17.0.0 || ^18.0.0", "@types/react@^18.0.14", "@types/react@>=16":
+  "integrity" "sha512-x4gGuASSiWmo0xjDLpm5mPb52syZHJx02VKbqUKdLmKtAwIh63XClGsiTI1K6DO5q7ox4xAsQrU+Gl3+gGXF9Q=="
+  "resolved" "https://registry.npmjs.org/@types/react/-/react-18.0.14.tgz"
+  "version" "18.0.14"
   dependencies:
     "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    "csstype" "^3.0.2"
+
+"@types/react@^16.8.0 || ^17.0.0":
+  "integrity" "sha512-ZCBHzpDb5skMnc1zFXAXnL3l1FAdi+xZvwxK+PkglMmBrwjpp9nKaWuEvrGnSifCJmBFGxZOOFuwC6KH/s0NuA=="
+  "resolved" "https://registry.npmjs.org/@types/react/-/react-17.0.50.tgz"
+  "version" "17.0.50"
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
     "csstype" "^3.0.2"
 
 "@types/resolve@1.17.1":
@@ -2779,6 +2793,11 @@
 
 "@types/retry@^0.12.0":
   "version" "0.12.1"
+
+"@types/scheduler@*":
+  "integrity" "sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew=="
+  "resolved" "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.2.tgz"
+  "version" "0.16.2"
 
 "@types/serve-index@^1.9.1":
   "integrity" "sha512-d/Hs3nWDxNL2xAczmOVZNj92YZCS6RGxfBPjKzuu/XirCgXdpKEb88dYNbrYGint6IVWLNP+yonwVAuRC0T2Dg=="
@@ -3302,11 +3321,11 @@
   "version" "2.0.1"
 
 "aria-hidden@^1.1.1":
-  "integrity" "sha512-RhVWFtKH5BiGMycI72q2RAFMLQi8JP9bLuQXgR5a8Znp7P5KOIADSJeyfI8PCVxLEp067B2HbP5JIiI/PXIZeA=="
-  "resolved" "https://registry.npmjs.org/aria-hidden/-/aria-hidden-1.1.3.tgz"
-  "version" "1.1.3"
+  "integrity" "sha512-PN344VAf9j1EAi+jyVHOJ8XidQdPVssGco39eNcsGdM4wcsILtxrKLkbuiMfLWYROK1FjRQasMWCBttrhjnr6A=="
+  "resolved" "https://registry.npmjs.org/aria-hidden/-/aria-hidden-1.2.1.tgz"
+  "version" "1.2.1"
   dependencies:
-    "tslib" "^1.0.0"
+    "tslib" "^2.0.0"
 
 "aria-query@^4.2.2":
   "integrity" "sha512-o/HelwhuKpTj/frsOsbNLNgnNGVIFsVP/SW2BSF14gVl7kAfMOJ6/8wUAUvG1R1NHKrfG+2sHZTu0yauT1qBrA=="
@@ -8396,8 +8415,10 @@
   dependencies:
     "package-json" "^6.3.0"
 
-"leaflet@^1.7.1":
-  "version" "1.7.1"
+"leaflet@^1.9.0", "leaflet@^1.9.2":
+  "integrity" "sha512-Kc77HQvWO+y9y2oIs3dn5h5sy2kr3j41ewdqCMEUA4N89lgfUUfOBy7wnnHEstDpefiGFObq12FdopGRMx4J7g=="
+  "resolved" "https://registry.npmjs.org/leaflet/-/leaflet-1.9.2.tgz"
+  "version" "1.9.2"
 
 "lerp@^1.0.3":
   "integrity" "sha1-oYyJaPkXiW3hXM/MKNVaa3Med24="
@@ -10683,12 +10704,13 @@
     "strip-ansi" "^6.0.1"
     "text-table" "^0.2.0"
 
-"react-dom@*", "react-dom@^16.8.0 || 17.x", "react-dom@^17.0.1", "react-dom@>=16.8", "react-dom@>=16.8 || ^17.0.0 || ^18.0.0", "react-dom@>=16.8.6":
-  "version" "17.0.1"
+"react-dom@*", "react-dom@^16.8.0 || 17.x", "react-dom@^18.0.0", "react-dom@^18.2.0", "react-dom@>=16.8", "react-dom@>=16.8 || ^17.0.0 || ^18.0.0", "react-dom@>=16.8.6":
+  "integrity" "sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g=="
+  "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
+  "version" "18.2.0"
   dependencies:
     "loose-envify" "^1.1.0"
-    "object-assign" "^4.1.1"
-    "scheduler" "^0.20.1"
+    "scheduler" "^0.23.0"
 
 "react-error-overlay@^6.0.10":
   "version" "6.0.10"
@@ -10730,10 +10752,12 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-18.1.0.tgz"
   "version" "18.1.0"
 
-"react-leaflet@^3.1.0":
-  "version" "3.1.0"
+"react-leaflet@^4.1.0":
+  "integrity" "sha512-i+V9pX5lywJ48O2+K3USeeTdYLIhxnLMweH+YLd/UPqVIj3uKzE3Q29bzt83PBtViyZmxDlulzC6uoR3JLiE9A=="
+  "resolved" "https://registry.npmjs.org/react-leaflet/-/react-leaflet-4.1.0.tgz"
+  "version" "4.1.0"
   dependencies:
-    "@react-leaflet/core" "^1.0.2"
+    "@react-leaflet/core" "^2.1.0"
 
 "react-markdown@^8.0.3":
   "integrity" "sha512-We36SfqaKoVNpN1QqsZwWSv/OZt5J15LNgTLWynwAN5b265hrQrsjMtlRNwUvS+YyR3yDM8HpTNc4pK9H/Gc0A=="
@@ -10778,11 +10802,11 @@
   "version" "0.11.0"
 
 "react-remove-scroll-bar@^2.1.0":
-  "integrity" "sha512-IvGX3mJclEF7+hga8APZczve1UyGMkMG+tjS0o/U1iLgvZRpjFAQEUBJ4JETfvbNlfNnZnoDyWJCICkA15Mghg=="
-  "resolved" "https://registry.npmjs.org/react-remove-scroll-bar/-/react-remove-scroll-bar-2.3.1.tgz"
-  "version" "2.3.1"
+  "integrity" "sha512-63C4YQBUt0m6ALadE9XV56hV8BgJWDmmTPY758iIJjfQKt2nYwoUrPk0LXRXcB/yIj82T1/Ixfdpdk68LwIB0A=="
+  "resolved" "https://registry.npmjs.org/react-remove-scroll-bar/-/react-remove-scroll-bar-2.3.4.tgz"
+  "version" "2.3.4"
   dependencies:
-    "react-style-singleton" "^2.2.0"
+    "react-style-singleton" "^2.2.1"
     "tslib" "^2.0.0"
 
 "react-remove-scroll@2.4.1":
@@ -10863,20 +10887,21 @@
   optionalDependencies:
     "fsevents" "^2.3.2"
 
-"react-style-singleton@^2.1.0", "react-style-singleton@^2.2.0":
-  "integrity" "sha512-nK7mN92DMYZEu3cQcAhfwE48NpzO5RpxjG4okbSqRRbfal9Pk+fG2RdQXTMp+f6all1hB9LIJSt+j7dCYrU11g=="
-  "resolved" "https://registry.npmjs.org/react-style-singleton/-/react-style-singleton-2.2.0.tgz"
-  "version" "2.2.0"
+"react-style-singleton@^2.1.0", "react-style-singleton@^2.2.1":
+  "integrity" "sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g=="
+  "resolved" "https://registry.npmjs.org/react-style-singleton/-/react-style-singleton-2.2.1.tgz"
+  "version" "2.2.1"
   dependencies:
     "get-nonce" "^1.0.0"
     "invariant" "^2.2.4"
     "tslib" "^2.0.0"
 
-"react@*", "react@^15.3.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || 17.x", "react@^17.0.1", "react@>= 16", "react@>=16", "react@>=16.8", "react@>=16.8 || ^17.0.0 || ^18.0.0", "react@>=16.8.0", "react@>=16.8.6", "react@>0.13.0", "react@17.0.1":
-  "version" "17.0.1"
+"react@*", "react@^15.3.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || 17.x", "react@^16.9.0 || ^17.0.0 || ^18.0.0", "react@^18.0.0", "react@^18.2.0", "react@>= 16", "react@>=16", "react@>=16.8", "react@>=16.8 || ^17.0.0 || ^18.0.0", "react@>=16.8.0", "react@>=16.8.6", "react@>0.13.0":
+  "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
+  "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
+  "version" "18.2.0"
   dependencies:
     "loose-envify" "^1.1.0"
-    "object-assign" "^4.1.1"
 
 "readable-stream@^2.0.0", "readable-stream@^2.0.1", "readable-stream@^2.2.2", "readable-stream@^2.3.5", "readable-stream@~2.3.6":
   "integrity" "sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw=="
@@ -11479,11 +11504,12 @@
   dependencies:
     "xmlchars" "^2.2.0"
 
-"scheduler@^0.20.1":
-  "version" "0.20.1"
+"scheduler@^0.23.0":
+  "integrity" "sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw=="
+  "resolved" "https://registry.npmjs.org/scheduler/-/scheduler-0.23.0.tgz"
+  "version" "0.23.0"
   dependencies:
     "loose-envify" "^1.1.0"
-    "object-assign" "^4.1.1"
 
 "schema-utils@^2.6.5":
   "integrity" "sha512-SHiNtMOUGWBQJwzISiVYKu82GiV4QYGePp3odlY1tuKO7gPtphAT5R/py0fA6xtbgLL/RvtJZnU9b8s0F1q0Xg=="

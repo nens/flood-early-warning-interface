@@ -52,7 +52,7 @@ function StationPopup(props: PopupProps) {
     <Popup
       position={[station.geometry.coordinates[1], station.geometry.coordinates[0]]}
       maxWidth={500}
-      onClose={onClose}
+      eventHandlers={{popupclose: onClose}}
     >
       <h3>{station.name}</h3>
       <table className={styles.PopupTable}>

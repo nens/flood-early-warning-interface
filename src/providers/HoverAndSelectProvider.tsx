@@ -1,7 +1,7 @@
 // Select a dam or area by its uuid to highlight it
 // Also store its name. Make get and set functions available in sub components.
 
-import { createContext, FC, SetStateAction, Dispatch, useState } from "react";
+import { createContext, FC, SetStateAction, Dispatch, useState, PropsWithChildren } from "react";
 
 export type Area = {
   id: string;
@@ -23,7 +23,7 @@ export const HoverAndSelectContext = createContext<HoverAndSelectContextInterfac
   setSelect: () => null,
 });
 
-const HoverAndSelectProvider: FC<{}> = ({ children }) => {
+const HoverAndSelectProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
   const [hover, setHover] = useState<Area>(null);
   const [select, setSelect] = useState<Area>(null);
 

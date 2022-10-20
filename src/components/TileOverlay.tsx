@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, PropsWithChildren } from "react";
 
 import styles from "./Tile.module.css";
 
@@ -10,7 +10,7 @@ interface TileOverlayProps {
   x?: () => void;
 }
 
-const TileOverlay: FC<TileOverlayProps> = ({ open, children, title, x }) => {
+const TileOverlay: FC<PropsWithChildren<TileOverlayProps>> = ({ open, children, title, x }) => {
   return (
     <div
       className={styles.TileOverlay}
