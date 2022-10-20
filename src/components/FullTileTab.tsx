@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 
-import { useParams, Redirect, useHistory } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 
 import { TileDefinition } from "../types/tiles";
 import Tile from "./Tile";
@@ -11,18 +11,22 @@ import styles from "./FullTileTab.module.css";
 
 interface Props {
   tiles: TileDefinition[];
-  url: string;
 }
 
-function FullTileTab({ tiles, url }: Props) {
+function FullTileTab({ tiles }: Props) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const urlWithoutTileId = location.pathname.split("/").slice(0, -1).join("/");
+
   const { tileId } = useParams<{ tileId: string }>();
-  const routerHistory = useHistory();
-  const onClickFullTile = useCallback(() => routerHistory.push(url), [routerHistory, url]);
+
+  const onClickFullTile = useCallback(() => navigate(urlWithoutTileId), [navigate, urlWithoutTileId]);
 
   const tilesWithId = tiles.filter((t) => "" + t.id === tileId);
 
   if (tilesWithId.length !== 1) {
-    return <Redirect to={url} />;
+    navigate(urlWithoutTileId);
   }
 
   const fullTile = tilesWithId[0];
@@ -32,7 +36,7 @@ function FullTileTab({ tiles, url }: Props) {
       <div className={styles.Sidebar}>
         {tiles.map((tile) =>
           tile.type === "timeseries" ? (
-            <TileWithCallback key={tile.id} size="smallsquare" tile={tile} baseUrl={url} />
+            <TileWithCallback key={tile.id} size="smallsquare" tile={tile} baseUrl={urlWithoutTileId} />
           ) : null
         )}
       </div>

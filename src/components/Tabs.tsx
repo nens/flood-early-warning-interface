@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route, useRouteMatch } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import { Tab } from "../types/config";
 import TabBar from "./TabBar";
@@ -14,19 +14,19 @@ interface TabsProps {
 }
 
 function Tabs({ definition }: TabsProps) {
-  let { path } = useRouteMatch();
-
   return (
-    <Switch>
+    <Routes>
       {definition.map(({ url, component }) => (
-        <Route path={`${path}${url}`} key={url}>
-          <div className={styles.Tabs}>
-            <TabBar tabs={definition} current={url} path={path} />
+        <Route
+          path={`${url}/*`}
+          key={url}
+          element={<div className={styles.Tabs}>
+            <TabBar tabs={definition} current={url} />
             <div className={styles.TabContent}>{component}</div>
-          </div>
-        </Route>
+          </div>}
+        />
       ))}
-    </Switch>
+    </Routes>
   );
 }
 

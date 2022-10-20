@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useRouteMatch, useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import styles from "./Tile.module.css";
 
 import { TileDefinition } from "../types/tiles";
@@ -23,10 +23,11 @@ export function TileWithCallback({ tile, baseUrl, size = "smallsquare" }: TileWi
   // Put the call to Tile in its own component instead of inside the
   // map() in TileList so that each Tile can have its own memoized
   // callback function to use in onClick.
-  const routerHistory = useHistory();
+  const navigate = useNavigate();
+
   const handleOnClick = useCallback(
-    () => routerHistory.push(`${baseUrl}/${tile.id}`),
-    [routerHistory, baseUrl, tile]
+    () => navigate(`${baseUrl}/${tile.id}`),
+    [navigate, baseUrl, tile]
   );
 
   return (
@@ -43,12 +44,12 @@ export function TileWithCallback({ tile, baseUrl, size = "smallsquare" }: TileWi
 }
 
 function TileList({ tiles }: TileListProps) {
-  const { url } = useRouteMatch();
+  const { pathname } = useLocation();
 
   return (
     <div className={styles.TileList}>
       {tiles.map((tile) => (
-        <TileWithCallback key={tile.id} tile={tile} baseUrl={url} />
+        <TileWithCallback key={tile.id} tile={tile} baseUrl={pathname} />
       ))}
     </div>
   );

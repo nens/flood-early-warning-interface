@@ -1,7 +1,7 @@
 /* Version of components/Tabs for the configeditor */
 
 import React from "react";
-import { Switch, Route, useRouteMatch } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Flex, Box } from "@chakra-ui/react";
 
 import ConfigTabBar from "../configeditor/ConfigTabBar";
@@ -19,17 +19,16 @@ interface ConfigTabsProps {
 
 function ConfigTabs({ definition, placeholder }: ConfigTabsProps) {
   const tabs = definition.map(({ url, title }) => ({ url, title }));
-  let { path } = useRouteMatch();
 
   return (
-    <Switch>
+    <Routes>
       {definition.map(({ url, component }) => (
         <Route
-          path={`${path}${url}`}
+          path={`${url}/*`}
           key={url}
-          children={
+          element={
             <Flex>
-              <ConfigTabBar tabs={tabs} current={url} path={path} />
+              <ConfigTabBar tabs={tabs} current={url} />
               <Box flex="1" marginLeft="8">
                 {component}
               </Box>
@@ -37,15 +36,15 @@ function ConfigTabs({ definition, placeholder }: ConfigTabsProps) {
           }
         />
       ))}
-      <Route path={path}>
+      <Route path="" element={
         <Flex>
-          <ConfigTabBar tabs={tabs} current="" path={path} />
+          <ConfigTabBar tabs={tabs} current="" />
           <Box flex="1" marginLeft="4">
             {placeholder}
           </Box>
         </Flex>
-      </Route>
-    </Switch>
+      } />
+    </Routes>
   );
 }
 

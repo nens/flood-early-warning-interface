@@ -1,6 +1,6 @@
 /* The table that is on the left of the table tab */
 import { useCallback, useContext, MouseEvent } from "react";
-import { useRouteMatch, useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 import { AiOutlineFilePdf } from "react-icons/ai";
 
@@ -54,22 +54,22 @@ function PdfIcon({ url }: { url: string }) {
 }
 
 export function useClickOnTableRow(row: TableTabRowConfig, iframe: boolean) {
-  const { url } = useRouteMatch();
-  const history = useHistory();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const callback = useCallback(() => {
-    // url starts with something like /floodsmart/, we don't hardcode it so it can change.
+    // url starts with something like /floodsmart/ (BASE_URL).
     // urlParts[0] is the empty string, use [1].
     // row.clickUrl is the part after that, e.g. "stations/24/" (that does not
     // work well with iframe mode, but we try by replacing "stations" with "iframe".
     if (row.clickUrl) {
-      const urlParts = url.split("/");
+      const urlParts = pathname.split("/");
       const clickUrl = iframe ? row.clickUrl.replace("stations", "iframe") : row.clickUrl;
       const newUrl = `/${urlParts[1]}/${clickUrl}`;
 
-      history.push(newUrl);
+      navigate(newUrl);
     }
-  }, [history, url, iframe, row]);
+  }, [navigate, pathname, iframe, row]);
 
   return callback;
 }

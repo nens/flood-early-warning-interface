@@ -1,7 +1,10 @@
 // Called from ../components/Tabs
 
-import { Link, useHistory } from "react-router-dom";
+import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { Box, VStack } from "@chakra-ui/react";
+
+import { BASE_URL } from "../App";
 
 interface ConfigTabBarProps {
   tabs: {
@@ -9,11 +12,10 @@ interface ConfigTabBarProps {
     title: string;
   }[];
   current: string;
-  path: string;
 }
 
-function ConfigTabBar({ tabs, current, path }: ConfigTabBarProps) {
-  const history = useHistory();
+function ConfigTabBar({ tabs, current }: ConfigTabBarProps) {
+  const navigate = useNavigate();
 
   return (
     <Box w="200px" borderRightWidth={2} borderRightColor="var(--primary-color)">
@@ -29,9 +31,9 @@ function ConfigTabBar({ tabs, current, path }: ConfigTabBarProps) {
               color: "var(--white-color)",
               cursor: "pointer",
             }}
-            onClick={() => history.push(`${path}${url}`)}
+            onClick={() => navigate(`${BASE_URL}config/${url}`)}
           >
-            <Link key={url} to={`${path}${url}`}>
+            <Link key={url} to={`${BASE_URL}config/${url}`}>
               {title}
             </Link>
           </Box>

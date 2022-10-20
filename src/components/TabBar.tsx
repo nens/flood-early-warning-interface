@@ -1,6 +1,7 @@
-import React, { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { Link, useHistory } from "react-router-dom";
+import { BASE_URL } from "../App";
 
 import styles from "./TabBar.module.css";
 
@@ -10,16 +11,11 @@ interface TabBarProps {
     title: string;
   }[];
   current: string;
-  path: string;
 }
 
-function TabBar({ tabs, current, path }: TabBarProps) {
+function TabBar({ tabs, current }: TabBarProps) {
   // The following hooks are used to make the tab <li>s clickable using react-router
-  const routerHistory = useHistory();
-  const handleOnClick = useCallback(
-    (link: string) => () => routerHistory.push(link),
-    [routerHistory]
-  );
+  const navigate = useNavigate();
 
   return (
     <nav className={styles.TabBar}>
@@ -28,9 +24,9 @@ function TabBar({ tabs, current, path }: TabBarProps) {
           <li
             key={url}
             className={url === current ? styles.ActiveTab : styles.InactiveTab}
-            onClick={handleOnClick(`${path}${url}`)}
+            onClick={() => navigate(`${BASE_URL}${url}`)}
           >
-            <Link to={`${path}${url}`} className={styles.linkTest}>
+            <Link to={`${BASE_URL}${url}`} className={styles.linkTest}>
               {title}
             </Link>
           </li>

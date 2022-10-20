@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import LizardAuthProvider from "./providers/LizardAuthProvider";
 import { Tab } from "./types/config";
@@ -19,6 +19,8 @@ import TableTab from "./tabs/TableTab";
 import IframeScreen from "./tabs/IframeScreen";
 import Header from "./components/Header";
 
+export const BASE_URL = "/floodsmart/";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: QUERY_OPTIONS,
@@ -29,10 +31,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <Switch>
+        <Routes>
           <Route
-            path="/floodsmart/iframe"
-            children={
+            path={`${BASE_URL}iframe`}
+            element={
               // No Auth needed
               <ConfigProvider>
                 <TimeProvider>
@@ -42,8 +44,8 @@ function App() {
             }
           />
           <Route
-            path="/"
-            children={
+            path="/*"
+            element={
               <LizardAuthProvider>
                 <ConfigProvider>
                   <TimeProvider>
@@ -53,7 +55,7 @@ function App() {
               </LizardAuthProvider>
             }
           />
-        </Switch>
+        </Routes>
       </Router>
     </QueryClientProvider>
   );
@@ -97,25 +99,18 @@ function AppWithAuthentication() {
   if (tabsWithComponents.length === 0) return null;
 
   return (
-    <Router>
-      <Switch>
-        <Route path="/floodsmart/config/">
-          <ConfigEditor />
-        </Route>
-        <Route
-          path="/floodsmart/"
-          exact={true}
-          children={<Redirect to={"/floodsmart/" + tabsWithComponents[0].url} />}
-        />
-        <Route path="/floodsmart/">
-          <div className="root">
-            {/* Class defined in index.css */}
-            <Header title={title} />
-            <Tabs definition={tabsWithComponents} />
-          </div>
-        </Route>
-      </Switch>
-    </Router>
+    <Routes>
+      <Route path={`${BASE_URL}config/*`} element={<ConfigEditor />} />
+      <Route
+        path={BASE_URL}
+        element={<Navigate to={BASE_URL + tabsWithComponents[0].url} />}
+      />
+      <Route path={`${BASE_URL}*`} element={<div className="root">
+        {/* Class defined in index.css */}
+        <Header title={title} />
+        <Tabs definition={tabsWithComponents} />
+      </div>} />
+    </Routes>
   );
 }
 
